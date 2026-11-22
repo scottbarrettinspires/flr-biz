@@ -57,7 +57,6 @@ function render_app_inner(array $a, string $name): string {
         . '<li><strong>Save Favorites</strong> Save the homes you love and come back to them any time.</li>'
         . '<li><strong>Get Help From Me</strong> Chat with me directly with questions or to set up a showing.</li>'
         . '</ul>';
-    $o .= '<section class="adl"><h2>Download Your FREE App</h2><p class="lead">The local home search app is a free download from your smartphone app store.</p>' . $cta . '</section>';
     if (!empty($a['app_url'])) $o .= '<div class="astick"><a class="btn contact" href="' . h($a['app_url']) . '" target="_blank" rel="noopener"><span class="t">Download FREE Home Search App</span></a></div>';
     return $o;
 }

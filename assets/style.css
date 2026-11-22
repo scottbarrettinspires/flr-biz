@@ -179,3 +179,5 @@ nav.links .btn .tx{flex:1;min-width:0}
 .abul li{position:relative;padding-left:26px;color:var(--muted);line-height:1.5;font-size:1rem}
 .abul li::before{content:"";position:absolute;left:4px;top:.55em;width:9px;height:9px;border-radius:50%;background:var(--accent)}
 .abul strong{display:block;color:var(--text);font-size:1.08rem}
+
+.abul{margin-bottom:96px}
