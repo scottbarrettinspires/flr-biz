@@ -70,3 +70,4 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
   .dtop{padding:8px 14px}.dlogo img{height:36px}.dview{display:none}.dash .row3{grid-template-columns:1fr}.sc-qr{width:96px;height:96px}
 }
 .sb.pri{background:var(--navy);border-color:var(--navy);color:#fff}
+.dash a.dashlink{max-width:900px;margin:12px 0 4px;border-color:var(--orange)}
