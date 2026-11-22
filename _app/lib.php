@@ -224,6 +224,8 @@ function save_photo(string $code, array $f): string {
 // ---------- config + landing pages + leads ----------
 require_once __DIR__ . '/pages.php';
 require_once __DIR__ . '/slots.php';
+require_once __DIR__ . '/qr.php';
+require_once __DIR__ . '/share.php';
 
 function config(): array {
     static $c;

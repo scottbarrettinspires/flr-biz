@@ -69,19 +69,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
-?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Listing &amp; open house pages | <?= h(BROKERAGE) ?></title><link rel="stylesheet" href="/assets/style.css"></head>
-<body><main class="card">
-<h1>Listing &amp; open house pages</h1>
-<p class="tag"><?= h(ucwords(strtolower($agent['name']))) ?> &middot; <a href="/setup/?a=<?= h(urlencode($code)) ?>&amp;k=<?= h(urlencode($key)) ?>">&larr; My page setup</a></p>
+?><?= dash_open('listings', $agent, $key, 'Listings & Open Houses', 'Each page has a permanent link and QR code that never change. Edit what it shows, or point it at any existing page, whenever you like.') ?>
 <?php if (isset($_GET['saved'])): ?><div class="note ok">Saved. Your page is updated.</div><?php endif; ?>
 <?php if (isset($_GET['deleted'])): ?><div class="note ok">Page cleared.</div><?php endif; ?>
 <?php foreach ($errors as $e): ?><div class="note err"><?= h($e) ?></div><?php endforeach; ?>
 <?php if ($sid !== '' && isset($slots[$sid])): $s = $slots[$sid]; $photo = slot_photo_url($code, $sid);
   $val = fn($k) => $s[$k] ?? ''; $url = $base . $sid . '/';
   $f = fn($id, $label, $v, $ph, $type = 'text', $hint = '') => '<label for="' . $id . '">' . h($label) . '</label><input id="' . $id . '" name="' . $id . '" type="' . $type . '" value="' . h($v) . '" placeholder="' . h($ph) . '" autocomplete="off">' . ($hint ? '<small>' . h($hint) . '</small>' : ''); ?>
-<div class="urlbox"><small>Permanent link for your QR code (never changes)</small><strong><?= h(preg_replace('~^https://~', '', $url)) ?></strong>
-<a href="/<?= h($code) ?>/<?= h($sid) ?>/" target="_blank" rel="noopener">Open this page</a></div>
+<?= share_card(trim(($s['title'] ?? 'Listing') . ': ' . ($s['address'] ?? $sid), ': '), $url, $code, $key) ?>
+<p style="margin:6px 0 12px"><small>This link and QR code never change, even when you edit the page or point it somewhere else.</small></p>
 <form method="post" enctype="multipart/form-data" class="form">
 <input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="s" value="<?= h($sid) ?>"><input type="hidden" name="act" value="save">
 <label style="color:var(--accent)">What should this link do?</label>
@@ -117,12 +113,10 @@ $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
 <script>(function(){var t=document.getElementById('target'),c=document.getElementById('custom_wrap'),f=document.getElementById('slot_fields');
 function u(){c.style.display=t.value==='custom'?'':'none';f.style.display=(t.value===''?'':'none');}t.addEventListener('change',u);u();})();</script>
 <?php else: ?>
-<p class="tag" style="margin-bottom:14px">Each page has a permanent link that never changes, so the QR code on a yard sign or flyer keeps working. Edit what it shows any time.</p>
 <?php foreach ($slots as $id => $s): $rd = slot_redirect(agent($code), $s); ?>
 <a class="btn slotrow" href="<?= h($self . '&s=' . $id) ?>"><span class="tx"><span class="t"><?= h($id) ?> &middot; <?= h($rd ? 'Sends to ' . (SLOT_TARGETS[$s['target']] ?? 'a link') : (trim(($s['title'] ?? '') . ' ' . ($s['address'] ?? '')) ?: 'Not set up')) ?></span><small>flr.biz/<?= h($code) ?>/<?= h($id) ?>/</small></span></a>
 <?php endforeach; ?>
 <form method="post"><input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="act" value="new">
 <button class="btn contact" type="submit"><span class="t">+ Add a listing or open house page</span></button></form>
 <?php endif; ?>
-<footer><?= h(BROKERAGE) ?><br><span>Keep this link private. It is your personal setup link.</span></footer>
-</main></body></html>
+<?= dash_close() ?>

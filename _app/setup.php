@@ -53,11 +53,7 @@ $photo = photo_url($code);
 $field = fn($id, $label, $v, $ph, $type = 'text', $hint = '') =>
     '<label for="' . $id . '">' . h($label) . '</label><input id="' . $id . '" name="' . $id . '" type="' . $type . '" value="' . h($v) . '" placeholder="' . h($ph) . '" autocomplete="off">'
     . ($hint ? '<small>' . h($hint) . '</small>' : '');
-?><!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Set up your page | <?= h(BROKERAGE) ?></title><link rel="stylesheet" href="/assets/style.css"></head>
-<body><main class="card">
-<h1>Set up your mobile page</h1>
-<p class="tag"><?= h(ucwords(strtolower($agent['name']))) ?> &middot; flr.biz/<?= h($p['main']) ?></p>
+?><?= dash_open('info', $agent, $key, 'My Page & Info', 'Update the details shown on your mobile page: <b>flr.biz/' . h($p['main']) . '</b>') ?>
 <?php if ($saved): ?><div class="note ok">Saved. Your page is updated. <a href="/<?= h($p['main']) ?>/" target="_blank" rel="noopener">View my page</a></div><?php endif; ?>
 <?php foreach ($errors as $e): ?><div class="note err"><?= h($e) ?></div><?php endforeach; ?>
 <form method="post" enctype="multipart/form-data" class="form">
@@ -65,7 +61,6 @@ $field = fn($id, $label, $v, $ph, $type = 'text', $hint = '') =>
 <label>Your photo</label>
 <div class="photo-row"><div class="avatar sm" data-initials="<?= h(initials_text($agent['name'])) ?>"><?= $photo ? '<img src="' . h($photo) . '" alt="">' : '' ?></div>
 <input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div><small>JPG, PNG or WebP. A clear head-and-shoulders photo works best; it is cropped to a square.</small>
-<a class="btn slotrow" href="/setup/listings/?a=<?= h(urlencode($code)) ?>&amp;k=<?= h(urlencode($key)) ?>"><span class="tx"><span class="t">Listing &amp; open house QR pages</span><small>Set up pages for yard signs and flyers</small></span></a>
 <?= $field('youtube', 'YouTube video link', $yt, 'https://youtu.be/...', 'text', 'Shows on your main page. Leave blank for no video.') ?>
 <?php if (isset($agent['faq'])): ?>
 <label style="margin-top:18px;font-size:1.02rem;color:var(--accent)">Buyer FAQ videos</label><small>Your video for each question on your Buyer FAQ page. Leave blank until recorded.</small>
@@ -82,5 +77,4 @@ $field = fn($id, $label, $v, $ph, $type = 'text', $hint = '') =>
 <?= $field('app_url', 'Home search app download link (the download button on your app page goes here)', $val('app_url'), 'https://...') ?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>
-<footer><?= h(BROKERAGE) ?><br><span>Keep this link private. It is your personal setup link.</span></footer>
-</main></body></html>
+<?= dash_close() ?>
