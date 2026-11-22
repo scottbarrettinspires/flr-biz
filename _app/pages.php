@@ -31,10 +31,10 @@ function page_defs(): array {
     'app' => ['type' => 'app', 'title' => 'The Home Search App',
         'sub' => 'Every home with all the details right at your fingertips!', 'body' => []],
     'buyer-steps' => ['type' => 'video', 'vkey' => 'vid_steps', 'title' => 'What Are The Right Steps To Buying A Home?',
-        'sub' => 'Helping you with your questions is something I love to do.', 'body' => ['Watch my video to learn the right steps to buying a home.']],
+        'sub' => 'Helping you with your questions is something I love to do.', 'body' => []],
     'buyer-broker-agreement' => ['type' => 'video', 'vkey' => 'vid_broker', 'title' => 'Why Is A Buyer Broker Agreement Required?',
-        'sub' => 'Helping you with your questions is something I love to do.', 'body' => ["Watch my video to help you understand the purpose and benefits of a buyer's brokerage agreement."]],
+        'sub' => 'Helping you with your questions is something I love to do.', 'body' => []],
     'avoid-buyer-agent-fee' => ['type' => 'video', 'vkey' => 'vid_avoid', 'title' => 'Can I Avoid Paying For A Buyer\'s Agent To Help Me?',
-        'sub' => 'Helping you with your questions is something I love to do.', 'body' => ["Watch my video to understand how buyer agent compensation works and what your options are."]],
+        'sub' => 'Helping you with your questions is something I love to do.', 'body' => []],
     ];
 }
