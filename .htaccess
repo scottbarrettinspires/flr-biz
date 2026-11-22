@@ -1,0 +1,7 @@
+# Keep build sources private; serve clean URLs; force HTTPS
+RedirectMatch 404 ^/_source(/|$)
+Options -Indexes
+DirectoryIndex index.html
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
