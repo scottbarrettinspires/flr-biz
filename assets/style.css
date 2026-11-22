@@ -190,3 +190,8 @@ nav.links .btn .tx{flex:1;min-width:0}
 .abul{margin-bottom:6px}.card.wide:has(.astick) footer{margin-top:6px;padding-bottom:84px}
 .abul{margin-bottom:0}.card.wide:has(.astick) footer{margin-top:0;padding-top:0}.abul li:last-child{margin-bottom:0}
 .card.wide:has(.astick) footer{margin-top:14px}
+
+/* Buttons: slightly lighter navy shade with a soft shadow so they stand out from the page */
+nav.links .btn:not(.contact){background:linear-gradient(180deg,#27406a 0%,#1f3559 100%);border-color:rgba(201,163,78,.7);
+  box-shadow:0 4px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08)}
+nav.links .btn:not(.contact):hover{background:linear-gradient(180deg,#2d4a7a 0%,#243d66 100%)}
