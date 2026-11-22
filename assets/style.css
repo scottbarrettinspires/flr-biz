@@ -271,3 +271,4 @@ a.btn.slotrow{display:block;text-align:left;margin:8px 0}.slotrow .tx{display:fl
 .sb.gold{border-color:rgba(201,163,78,.9);color:#f0d9a0}.sb[hidden]{display:none}
 .homebox{margin:14px 0 4px;padding:12px 14px;border-radius:12px;border:1px solid rgba(201,163,78,.7);background:rgba(255,255,255,.06);text-align:left}
 .homebox small{display:block;color:var(--muted);font-size:.78rem}.homebox strong{font-size:1.05rem}
+.card h1.pt.gold,h1.pt.gold{color:var(--accent)}
