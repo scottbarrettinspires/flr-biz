@@ -22,6 +22,7 @@ function not_found(): never {
 
 if (!$parts) { header('Location: https://floridaluxuryrealty.com', true, 302); exit; }
 if ($parts[0] === 'setup' && count($parts) === 1) { require __DIR__ . '/_app/setup.php'; exit; }
+if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'listings') { require __DIR__ . '/_app/setup_listings.php'; exit; }
 if ($parts[0] === 'lead' && count($parts) === 1) { require __DIR__ . '/_app/lead.php'; exit; }
 
 $routes = routes();
@@ -34,6 +35,22 @@ if (count($parts) === 2 && $parts[1] === 'contact.vcf' && $view === 'main') {
     header('Content-Type: text/vcard; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $code . '.vcf"');
     echo render_vcard($a); exit;
+}
+if ($view === 'main' && count($parts) >= 2 && slot_id_ok($parts[1])) {          // listing / open house pages (QR code URLs)
+    $slot = slots_load($code)[$parts[1]] ?? null;
+    if (!$slot) not_found();
+    if (count($parts) === 3 && $parts[2] === 'calendar') {
+        $ics = render_slot_ics($a, $parts[1], $slot);
+        if (!$ics) not_found();
+        header('Content-Type: text/calendar; charset=utf-8'); header('Content-Disposition: attachment; filename="open-house.ics"');
+        echo $ics; exit;
+    }
+    if (count($parts) !== 2) not_found();
+    if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/' . $parts[1] . '/', true, 301); exit; }
+    header('Cache-Control: no-store');
+    if ($to = slot_redirect($a, $slot)) { header('Location: ' . $to, true, 302); exit; }
+    header('Content-Type: text/html; charset=utf-8');
+    echo render_slot($a, $parts[1], $slot); exit;
 }
 if (count($parts) === 2 && $view === 'main' && $parts[1] === 'social') {
     if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/social/', true, 301); exit; }

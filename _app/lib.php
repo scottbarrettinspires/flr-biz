@@ -115,6 +115,14 @@ function social_links(array $a): array {
     return $out;
 }
 
+function fit_script(): string {
+    return '<script>(function(){function fit(){var ts=[].slice.call(document.querySelectorAll("nav.links .btn:not(.contact) .t")),m=18;ts.forEach(function(t){var b=t.parentElement;if(!b||!b.clientWidth)return;var s=18;t.style.fontSize=s+"px";while(s>12&&t.scrollWidth>b.clientWidth){s-=0.25;t.style.fontSize=s+"px";}if(s<m)m=s;});ts.forEach(function(t){t.style.fontSize=m+"px";});}fit();addEventListener("resize",fit);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);})();</script>';
+}
+function menu_button(string $icon, string $title, string $href, bool $ext = false, string $attrs = ''): string {
+    return '<a class="btn" href="' . h($href) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . ($attrs ? ' ' . $attrs : '') . '>' . btn_icon(['icon' => $icon])
+        . '<span class="tx"><span class="t">' . h($title) . '</span></span></a>' . "\n";
+}
+
 function render_page(array $a, string $view): string {
     if ($view === 'social') $a['social'] = ['name' => 'CONNECT WITH ME', 'sub' => 'Follow along on social media', 'headline' => '', 'section' => '', 'links' => social_links($a)];
     $code = $a['code']; $main = $view === 'main'; $v = $a[$view]; $p = paths_for($code);
@@ -154,8 +162,7 @@ function render_page(array $a, string $view): string {
       . '<div class="hero-in">' . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
       . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . '</div></header>'
       . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . ($links0 ?? '') . $links . $contact . '</nav>'
-      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>'
-      . '<script>(function(){function fit(){var ts=[].slice.call(document.querySelectorAll("nav.links .btn:not(.contact) .t")),m=18;ts.forEach(function(t){var b=t.parentElement;if(!b||!b.clientWidth)return;var s=18;t.style.fontSize=s+"px";while(s>12&&t.scrollWidth>b.clientWidth){s-=0.25;t.style.fontSize=s+"px";}if(s<m)m=s;});ts.forEach(function(t){t.style.fontSize=m+"px";});}fit();addEventListener("resize",fit);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);})();</script></body></html>';
+      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
 }
 
 function render_vcard(array $a): string {
@@ -216,6 +223,7 @@ function save_photo(string $code, array $f): string {
 
 // ---------- config + landing pages + leads ----------
 require_once __DIR__ . '/pages.php';
+require_once __DIR__ . '/slots.php';
 
 function config(): array {
     static $c;

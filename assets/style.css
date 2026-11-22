@@ -239,3 +239,19 @@ nav.links .btn .ic{background:rgba(201,163,78,.18);box-shadow:none}
 .card:not(.wide){padding-left:12px;padding-right:12px}
 nav.links .btn:not(.contact){padding:12px 12px;gap:10px}
 nav.links .btn .ic{width:32px;height:32px}nav.links .btn .ic svg{width:18px;height:18px}
+
+/* Listing / open house pages */
+.slothero{min-height:340px}
+.slothero h1{font-size:1.6rem;letter-spacing:.02em}
+.welcome{margin:10px 4px 0;text-align:center;color:#e6e9ef;line-height:1.5}
+.presby{display:flex;align-items:center;gap:12px;margin:22px 4px 6px;padding:12px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:var(--text);text-decoration:none;text-align:left}
+.presby img{width:54px;height:54px;border-radius:50%;object-fit:cover;object-position:50% 20%;flex:none}
+.presby span{display:flex;flex-direction:column;line-height:1.3}.presby small{color:var(--muted);font-size:.75rem}.presby strong{font-size:1rem}.presby em{font-style:normal;color:var(--muted);font-size:.8rem}
+.urlbox{background:rgba(255,255,255,.07);border:1px solid rgba(201,163,78,.6);border-radius:12px;padding:10px 12px;margin:10px 0 14px;text-align:left;display:flex;flex-direction:column;gap:2px;word-break:break-all}
+.urlbox a{color:var(--accent);margin-top:4px}
+.form select,.form textarea{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:var(--text);font:inherit}
+.form select option{color:#000}
+.row3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px}.row3 input{min-width:0}
+.slotprev{display:block;width:100%;border-radius:10px;margin:6px 0}
+a.btn.slotrow{display:block;text-align:left;margin:8px 0}.slotrow .tx{display:flex;flex-direction:column}.slotrow small{color:var(--muted)}
+.linkbtn{background:none;border:0;color:#ff9b9b;text-decoration:underline;font:inherit;cursor:pointer;padding:0}

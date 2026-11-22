@@ -65,6 +65,7 @@ $field = fn($id, $label, $v, $ph, $type = 'text', $hint = '') =>
 <label>Your photo</label>
 <div class="photo-row"><div class="avatar sm" data-initials="<?= h(initials_text($agent['name'])) ?>"><?= $photo ? '<img src="' . h($photo) . '" alt="">' : '' ?></div>
 <input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div><small>JPG, PNG or WebP. A clear head-and-shoulders photo works best; it is cropped to a square.</small>
+<a class="btn slotrow" href="/setup/listings/?a=<?= h(urlencode($code)) ?>&amp;k=<?= h(urlencode($key)) ?>"><span class="tx"><span class="t">Listing &amp; open house QR pages</span><small>Set up pages for yard signs and flyers</small></span></a>
 <?= $field('youtube', 'YouTube video link', $yt, 'https://youtu.be/...', 'text', 'Shows on your main page. Leave blank for no video.') ?>
 <?php if (isset($agent['faq'])): ?>
 <label style="margin-top:18px;font-size:1.02rem;color:var(--accent)">Buyer FAQ videos</label><small>Your video for each question on your Buyer FAQ page. Leave blank until recorded.</small>
