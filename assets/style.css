@@ -102,3 +102,9 @@ h1.pt{font-size:1.35rem;margin:10px 0 6px;text-align:center}
 .hero-in{padding-bottom:6px}.hero .tag{margin-bottom:2px}.socials{margin:8px 0 14px}
 .hero .socials.sm{margin:8px 0 0}
 .hero{min-height:300px}.hero-in{min-height:300px}
+
+/* Button icons on the left */
+nav.links .btn:not(.contact){display:flex;align-items:center;gap:14px;text-align:left}
+nav.links .btn .ic{flex:none;width:40px;height:40px;border-radius:50%;background:rgba(201,163,78,.16);color:var(--accent);display:flex;align-items:center;justify-content:center}
+nav.links .btn .ic svg{width:22px;height:22px}
+nav.links .btn .tx{flex:1;min-width:0}

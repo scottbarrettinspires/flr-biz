@@ -69,6 +69,29 @@ const ICONS = [
 ];
 function icon(string $n): string { return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . ICONS[$n] . '</svg>'; }
 
+const BTN_ICONS = [
+ 'home'=>'<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
+ 'sell'=>'<path d="M21.41 11.58l-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>',
+ 'calendar'=>'<path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>',
+ 'dollar'=>'<path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>',
+ 'help'=>'<path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/>',
+ 'list'=>'<path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>',
+ 'doc'=>'<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>',
+ 'download'=>'<path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>',
+ 'search'=>'<path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>',
+ 'link'=>'<path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 0-10z"/>',
+];
+function btn_icon(array $l): string {
+    $k = $l['icon'] ?? null;
+    if (!$k) {
+        $v = $l['view'] ?? ''; $pg = $l['page'] ?? ''; $u = strtolower($l['url'] ?? '');
+        $map = ['buyer'=>'home','seller'=>'sell','faq'=>'help','buyer-consult'=>'calendar','seller-consult'=>'calendar','value'=>'dollar',
+                'seller-guide'=>'download','buyer-guide'=>'download','buyer-steps'=>'list','buyer-broker-agreement'=>'doc','avoid-buyer-agent-fee'=>'dollar','app'=>'search'];
+        $k = $map[$v] ?? $map[$pg] ?? (str_contains($u, 'sellers') ? 'sell' : (str_contains($u, 'buyers') ? 'home' : 'link'));
+    }
+    return '<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . (BTN_ICONS[$k] ?? BTN_ICONS['link']) . '</svg></span>';
+}
+
 function link_href(array $a, array $l): string {
     $p = paths_for($a['code']);
     if (isset($l['view'])) return '/' . $p[$l['view']] . '/';
@@ -96,8 +119,8 @@ function render_page(array $a, string $view): string {
     foreach ($v['links'] as $l) {
         if (!empty($l['pending'])) continue;      // hidden until that feature is live
         $ext = !isset($l['view']) && !isset($l['page']);
-        $links .= '<a class="btn" href="' . h(link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '><span class="t">'
-            . h($l['title']) . '</span>' . (!empty($l['sub']) ? '<span class="sub">' . h($l['sub']) . '</span>' : '') . '</a>' . "\n";
+        $links .= '<a class="btn" href="' . h(link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . btn_icon($l) . '<span class="tx"><span class="t">'
+            . h($l['title']) . '</span>' . (!empty($l['sub']) ? '<span class="sub">' . h($l['sub']) . '</span>' : '') . '</span></a>' . "\n";
     }
     $video = (!empty($a['youtube_id']) && $main)
         ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($a['youtube_id']) . '" title="Video" loading="lazy" allowfullscreen></iframe></div>' : '';
