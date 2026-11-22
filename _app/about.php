@@ -35,5 +35,5 @@ function render_about(array $a): string {
       . '<h1 class="pt">About ' . h($first) . '</h1><p class="tag">' . h($name) . ' &middot; ' . h($tag) . '</p>'
       . $paras . ($facts !== '' ? '<div class="aboutfacts">' . $facts . '</div>' : '')
       . '<nav class="links">' . $links . '</nav>'
-      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
+      . '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }

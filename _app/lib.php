@@ -170,7 +170,7 @@ function render_page(array $a, string $view): string {
       . '<div class="hero-in">' . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
       . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . '</div></header>'
       . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . ($links0 ?? '') . $links . $contact . share_button($p[$view]) . '</nav>'
-      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
+      . '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
 }
 
 function render_vcard(array $a): string {
@@ -378,7 +378,7 @@ function render_landing(array $a, string $slug, bool $done): string {
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body>'
       . '<main class="card wide">' . ($d['type'] === 'video' ? '<a class="back vback" href="/' . paths_for($code)['main'] . '/">&larr; My page</a>' : agent_card($a, in_array($d['type'], ['app', 'consult', 'value'], true))) . ($d['type'] === 'app' ? '<h1 class="pt ahd">The Home Search App for Every Home and Detail.</h1>' : '<h1 class="pt' . ($slug === 'private-showing' ? ' gold' : '') . '">' . h($title) . '</h1>') . '<p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
       . '<nav class="links sharenav">' . share_button($code . '/' . $slug) . '</nav>'
-      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
+      . '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
 
 /** Store a lead, email the agent + broker, optionally post to a webhook (e.g. Zapier -> Google Sheet). Returns true when stored. */
