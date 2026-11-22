@@ -182,3 +182,5 @@ nav.links .btn .tx{flex:1;min-width:0}
 
 .abul{margin-bottom:96px}
 .ahero{padding-bottom:0;margin-bottom:0}.heroimg{margin-bottom:0}.card h2.asec{margin-top:4px}
+
+.card h1.pt.ahd{color:var(--accent);font-size:min(1.9rem,6.8vw);white-space:nowrap;margin:2px 0 4px}
