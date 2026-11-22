@@ -300,6 +300,10 @@ function consult_fields(): string {
 function lead_form_html(array $a, array $d, string $return = ''): string {
     $code = $a['code']; $ts = time(); $extra = '';
     if ($d['type'] === 'value') $extra .= '<label for="address">Property address *</label><input id="address" name="address" type="text" required maxlength="200" placeholder="Street, city, state, ZIP" autocomplete="street-address">';
+    if (!empty($d['address_field'])) {
+        $home = mb_substr(trim(preg_replace('/\s+/', ' ', (string)($_GET['home'] ?? ''))), 0, 200);
+        $extra .= '<label for="address">Home you would like to see *</label><input id="address" name="address" type="text" required maxlength="200" value="' . h($home) . '" placeholder="Street, city, state" autocomplete="off">';
+    }
     return '<form method="post" action="/lead" class="form">'
       . '<input type="hidden" name="agent" value="' . h($code) . '"><input type="hidden" name="form" value="' . h($d['form']) . '"><input type="hidden" name="ts" value="' . $ts . '">'
       . ($return !== '' ? '<input type="hidden" name="return" value="' . h($return) . '">' : '')

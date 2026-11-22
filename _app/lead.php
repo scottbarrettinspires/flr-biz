@@ -33,7 +33,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $fail('Please enter a valid emai
 if (empty($_POST['consent'])) $fail('Please check the consent box to continue.');
 $lead = ['form' => $form, 'name' => $name, 'phone' => $phone, 'email' => $email,
          'consented_at' => gmdate('c'), 'ip' => $ip, 'ua' => substr((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 200)];
-if ($defs[$form]['type'] === 'value') {
+if ($defs[$form]['type'] === 'value' || !empty($defs[$form]['address_field'])) {
     $addr = trim((string)($_POST['address'] ?? ''));
     if ($addr === '' || mb_strlen($addr) > 200) $fail('Please enter the property address.');
     $lead['address'] = $addr;

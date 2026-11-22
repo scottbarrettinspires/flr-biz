@@ -40,7 +40,7 @@ function agent_pages(array $agent): array {
     if (isset($p['seller'])) $out[] = ['Seller page', $abs($p['seller'])];
     if (isset($p['faq']))    $out[] = ['Buyer FAQ page', $abs($p['faq'])];
     $out[] = ['Social media page', $abs($p['social'])];
-    $labels = ['app' => 'Home search app page', 'buyer-consult' => 'Book a buyer consultation', 'seller-consult' => 'Book a seller consultation',
+    $labels = ['app' => 'Home search app page', 'buyer-consult' => 'Book a buyer consultation', 'private-showing' => 'Schedule a private showing', 'seller-consult' => 'Book a seller consultation',
                'seller-guide' => 'Free seller guide', 'buyer-guide' => 'Free buyer guide', 'value' => 'Home value page',
                'buyer-steps' => 'Video: Right steps to buying a home', 'buyer-broker-agreement' => 'Video: Why a buyer broker agreement',
                'avoid-buyer-agent-fee' => 'Video: Avoiding the buyer agent fee'];
