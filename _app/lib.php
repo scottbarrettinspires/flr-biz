@@ -127,7 +127,7 @@ function render_page(array $a, string $view): string {
         if ($isApp ? empty($a['app_url']) : !empty($l['pending'])) continue;
         $ext = !isset($l['view']) && !isset($l['page']);
         $links .= '<a class="btn" href="' . h(link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . btn_icon($l) . '<span class="tx"><span class="t">'
-            . h($l['title']) . '</span>' . (!empty($l['sub']) ? '<span class="sub">' . h($l['sub']) . '</span>' : '') . '</span></a>' . "\n";
+            . h($l['title']) . '</span></span></a>' . "\n";
     }
     $video = (!empty($a['youtube_id']) && $main)
         ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($a['youtube_id']) . '" title="Video" loading="lazy" allowfullscreen></iframe></div>' : '';
