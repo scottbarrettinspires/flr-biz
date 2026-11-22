@@ -116,3 +116,4 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 @media (max-width:640px){.igrid{grid-template-columns:1fr}}
 .dash .form .igrid{gap:18px 16px;margin-top:18px}
 .dash .form .igrid label{margin:0 0 6px}
+.dash .form{max-width:none}
