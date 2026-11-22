@@ -48,7 +48,9 @@ function agent(string $code): ?array {
 
 function photo_url(string $code): ?string {
     $f = UPLOAD_DIR . "/$code.jpg";
-    return is_file($f) ? "/uploads/$code.jpg?v=" . filemtime($f) : null;
+    if (is_file($f)) return "/uploads/$code.jpg?v=" . filemtime($f);
+    $g = dirname(__DIR__) . "/assets/agents/$code.jpg";      // seeded headshot from the shared drive
+    return is_file($g) ? "/assets/agents/$code.jpg?v=" . filemtime($g) : null;
 }
 
 function initials_text(string $name): string {
@@ -109,8 +111,9 @@ function render_page(array $a, string $view): string {
       . '<title>' . h($title) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($tag) . '">'
       . '<meta property="og:title" content="' . h($title) . '"><meta property="og:description" content="' . h($tag) . '">' . $og
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $p[$view] . '/"><link rel="stylesheet" href="/assets/style.css"></head><body><main class="card">'
-      . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
-      . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . ($main ? '<p class="headline">' . h($headline) . '</p>' : '')
+      . '<header class="hero' . ($photo ? '' : ' nophoto') . '"' . ($photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '') . '>'
+      . '<div class="hero-in">' . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
+      . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . ($main ? '<p class="headline">' . h($headline) . '</p>' : '') . '</div></header>'
       . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . $links . $contact . '</nav>'
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
