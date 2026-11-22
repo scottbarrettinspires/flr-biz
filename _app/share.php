@@ -46,7 +46,7 @@ function agent_pages(array $agent): array {
                'avoid-buyer-agent-fee' => 'Avoiding the buyer agent fee'];
     foreach (page_defs() as $slug => $d) {
         if (($d['type'] ?? '') === 'video' && !isset($agent['faq'])) continue;
-        $out[] = [$labels[$slug] ?? $d['title'], $abs($code . '/' . $slug), ($d['type'] ?? '') === 'video' ? ($d['vkey'] ?? '') : ''];
+        $out[] = [$labels[$slug] ?? $d['title'], $abs($code . '/' . $slug), ($d['type'] ?? '') === 'video' ? ($d['vkey'] ?? '') : (($d['type'] ?? '') === 'app' ? 'app_url' : '')];
     }
     return $out;
 }
@@ -84,4 +84,12 @@ function video_form(string $code, string $key, string $vkey, ?string $current, s
       . '<input type="hidden" name="act" value="video"><input type="hidden" name="vkey" value="' . h($vkey) . '">'
       . '<label for="v_' . h($vkey) . '">YouTube video link</label><div class="vrow"><input id="v_' . h($vkey) . '" name="url" type="text" value="' . h($v) . '" placeholder="https://youtu.be/..." autocomplete="off"><button class="sb pri" type="submit">Save video</button></div>'
       . '<small>' . h($hint) . '</small></form>';
+}
+
+// Inline "download link" form on the Home search app page card.
+function applink_form(string $code, string $key, string $current): string {
+    return '<form method="post" class="vidform" action="/setup/links/"><input type="hidden" name="a" value="' . h($code) . '"><input type="hidden" name="k" value="' . h($key) . '">'
+      . '<input type="hidden" name="act" value="video"><input type="hidden" name="vkey" value="app_url">'
+      . '<label for="v_app_url">Home search app download link</label><div class="vrow"><input id="v_app_url" name="url" type="text" value="' . h($current) . '" placeholder="https://..." autocomplete="off"><button class="sb pri" type="submit">Save link</button></div>'
+      . '<small>The download button on your app page goes here.</small></form>';
 }

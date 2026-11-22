@@ -24,12 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'instagram'  => clean_url($_POST['instagram'] ?? '', 'https://instagram.com/'),
         'facebook'   => clean_url($_POST['facebook'] ?? '', 'https://facebook.com/'),
         'tiktok'     => clean_url($_POST['tiktok'] ?? '', 'https://tiktok.com/@'),
-        'app_url'    => clean_url($_POST['app_url'] ?? ''),
     ];
     if ($raw['phone'] === null) $errors[] = 'Phone can only contain numbers, spaces and ( ) + - .';
     if ($raw['email'] !== '' && !filter_var($raw['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'That email address does not look right.';
-    foreach (['website', 'instagram', 'facebook', 'tiktok', 'app_url'] as $k)
-        if (trim($_POST[$k] ?? '') !== '' && $raw[$k] === '') $errors[] = ($k === 'app_url' ? 'Home search app' : ucfirst($k)) . ' link does not look right.';
+    foreach (['website', 'instagram', 'facebook', 'tiktok'] as $k)
+        if (trim($_POST[$k] ?? '') !== '' && $raw[$k] === '') $errors[] = ucfirst($k) . ' link does not look right.';
     $errors = array_values(array_unique($errors));
     if (!$errors) $errors[] = save_photo($code, $_FILES['photo'] ?? []) ?: null;
     $errors = array_values(array_filter($errors));
@@ -50,7 +49,7 @@ $first = explode(' ', ucwords(strtolower($agent['name'])))[0]; $q = '?a=' . urle
 echo dash_open('overview', $agent, $key, 'Welcome, ' . $first, 'Your LeadStream Systems dashboard: mobile pages, listing and open house pages, and the links and QR codes that bring you leads.');
 ?>
 <div class="tiles">
-  <a class="tile" href="#info"><span class="n">1</span><strong>Complete your info</strong><small>Photo, phone, email, social links and your home search app link.</small></a>
+  <a class="tile" href="#info"><span class="n">1</span><strong>Complete your info</strong><small>Photo, phone, email, and social links.</small></a>
   <a class="tile" href="/setup/listings/<?= h($q) ?>"><span class="n">2</span><strong>Add listing &amp; open house pages</strong><small><?= $nslots ?> page<?= $nslots === 1 ? '' : 's' ?> ready for yard signs and flyers. Choose which home each one shows.</small></a>
   <a class="tile" href="/setup/links/<?= h($q) ?>"><span class="n">3</span><strong>Share your mobile pages &amp; QR codes</strong><small>Text, email or post any page, or download its QR code to print.</small></a>
 </div>
@@ -69,7 +68,6 @@ echo dash_open('overview', $agent, $key, 'Welcome, ' . $first, 'Your LeadStream 
 <?= $field('instagram', 'Instagram', $val('instagram'), '@yourname or link') ?>
 <?= $field('facebook', 'Facebook', $val('facebook'), 'link to your page') ?>
 <?= $field('tiktok', 'TikTok', $val('tiktok'), '@yourname or link') ?>
-<?= $field('app_url', 'Home search app download link (the download button on your app page goes here)', $val('app_url'), 'https://...') ?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>
 <?= dash_close() ?>
