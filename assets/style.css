@@ -209,3 +209,15 @@ input[type=date]{width:100%;padding:12px;border-radius:10px;border:1px solid rgb
 .tm input:checked+span{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .tm input:focus-visible+span{outline:2px solid #fff;outline-offset:2px}
 .hint{margin:10px 0 0;color:var(--muted);font-size:.85rem}
+
+/* Inline calendar */
+.sched{text-align:left}.sched h2.sch{font-size:1.05rem;color:var(--accent);margin:18px 0 8px}
+.cal{border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);padding:12px}
+.calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.calh strong{font-size:1rem}
+.calh button{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:var(--text);font-size:1.4rem;line-height:1;cursor:pointer}
+.calh button:disabled{opacity:.25;cursor:default}
+.calw,.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.calw span{color:var(--muted);font-size:.78rem;padding:4px 0}
+.calg button{aspect-ratio:1;border-radius:50%;border:0;background:transparent;color:var(--text);font:inherit;font-weight:600;cursor:pointer}
+.calg button:hover:not(:disabled){background:rgba(201,163,78,.25)}.calg button:disabled{color:#5d6a80;cursor:default}
+.calg button.sel{background:var(--accent);color:var(--accent-ink)}
+.times[hidden],#times_wrap[hidden],.note[hidden]{display:none}

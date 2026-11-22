@@ -250,10 +250,28 @@ function agent_card(array $a, bool $compact = false): string {
 
 function consult_fields(): string {
     [$min, $max] = consult_window();
-    $o = '<label for="pref_date">Choose a date *</label><input id="pref_date" name="pref_date" type="date" required min="' . $min . '" max="' . $max . '">'
-       . '<label>Choose a time (Eastern Time) *</label><div class="times">';
-    foreach (consult_times() as $i => $t) $o .= '<label class="tm"><input type="radio" name="pref_time" value="' . h($t) . '"' . ($i === 0 ? ' required' : '') . '><span>' . h($t) . '</span></label>';
-    return $o . '</div><p class="hint">This is a request. I will confirm your appointment by phone or email.</p>';
+    $o = '<div class="sched"><h2 class="sch">1. Choose a date</h2>'
+       . '<div id="cal" class="cal" data-min="' . $min . '" data-max="' . $max . '"><div class="calh"><button type="button" id="cal_prev" aria-label="Previous month">&#8249;</button><strong id="cal_title"></strong><button type="button" id="cal_next" aria-label="Next month">&#8250;</button></div>'
+       . '<div class="calw"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div id="cal_grid" class="calg"></div></div>'
+       . '<input type="hidden" id="pref_date" name="pref_date" value="">'
+       . '<div id="times_wrap" hidden><h2 class="sch" id="times_label">2. Choose a time</h2><div class="times">';
+    foreach (consult_times() as $t) $o .= '<label class="tm"><input type="radio" name="pref_time" value="' . h($t) . '"><span>' . h($t) . '</span></label>';
+    $o .= '</div></div><p id="cal_err" class="note err" hidden>Please choose a date and a time first.</p>'
+       . '<h2 class="sch">3. Your contact information</h2></div>'
+       . '<script>(function(){var root=document.getElementById("cal");if(!root)return;var min=root.dataset.min,max=root.dataset.max;'
+       . 'function P(s){var a=s.split("-");return new Date(+a[0],+a[1]-1,+a[2]);}'
+       . 'function S(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}'
+       . 'var dmin=P(min),dmax=P(max),cur=new Date(dmin.getFullYear(),dmin.getMonth(),1);'
+       . 'var grid=document.getElementById("cal_grid"),title=document.getElementById("cal_title"),prev=document.getElementById("cal_prev"),next=document.getElementById("cal_next"),hid=document.getElementById("pref_date"),tw=document.getElementById("times_wrap"),tl=document.getElementById("times_label");'
+       . 'function render(){var y=cur.getFullYear(),m=cur.getMonth();title.textContent=cur.toLocaleDateString("en-US",{month:"long",year:"numeric"});grid.innerHTML="";'
+       . 'var f=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate(),i;for(i=0;i<f;i++)grid.appendChild(document.createElement("span"));'
+       . 'for(i=1;i<=n;i++){(function(d){var s=S(new Date(y,m,d)),b=document.createElement("button");b.type="button";b.textContent=d;if(s<min||s>max)b.disabled=true;if(s===hid.value)b.className="sel";'
+       . 'b.onclick=function(){hid.value=s;tw.hidden=false;tl.textContent="2. Choose a time on "+P(s).toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})+" (Eastern Time)";render();};grid.appendChild(b);})(i);}'
+       . 'prev.disabled=cur<=new Date(dmin.getFullYear(),dmin.getMonth(),1);next.disabled=cur>=new Date(dmax.getFullYear(),dmax.getMonth(),1);}'
+       . 'prev.onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()-1,1);render();};next.onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()+1,1);render();};render();'
+       . 'var form=root.closest("form"),err=document.getElementById("cal_err");form.addEventListener("submit",function(e){if(!hid.value||!form.querySelector("input[name=pref_time]:checked")){e.preventDefault();err.hidden=false;root.scrollIntoView({behavior:"smooth",block:"center"});}else{err.hidden=true;}});'
+       . '})();</script>';
+    return $o;
 }
 
 function render_landing(array $a, string $slug, bool $done): string {
@@ -294,10 +312,11 @@ function render_landing(array $a, string $slug, bool $done): string {
           . '<input type="hidden" name="agent" value="' . h($code) . '"><input type="hidden" name="form" value="' . h($d['form']) . '"><input type="hidden" name="ts" value="' . $ts . '">'
           . '<div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>'
           . $extra
+          . (!empty($d['time_field']) ? consult_fields() : '')
           . '<label for="name">Name *</label><input id="name" name="name" type="text" required maxlength="100" autocomplete="name">'
           . '<label for="phone">Phone *</label><input id="phone" name="phone" type="tel" required maxlength="24" autocomplete="tel">'
           . '<label for="email">Email *</label><input id="email" name="email" type="email" required maxlength="120" autocomplete="email">'
-          . (!empty($d['time_field']) ? consult_fields() . '<label for="msg">Anything you would like me to know (optional)</label><textarea id="msg" name="message" rows="3" maxlength="800"></textarea>' : '')
+          . (!empty($d['time_field']) ? '<label for="msg">Anything you would like me to know (optional)</label><textarea id="msg" name="message" rows="3" maxlength="800"></textarea>' : '')
           . '<label class="consent"><input type="checkbox" name="consent" value="1" required> <span>' . consent_html($a) . '</span></label>'
           . '<button class="btn contact" type="submit"><span class="t">' . h($d['button']) . '</span></button></form>';
     }
