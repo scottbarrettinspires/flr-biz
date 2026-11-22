@@ -35,7 +35,7 @@ function dash_close(): string { return '<p class="dfoot">LeadStream Systems &mid
 // Every public page this agent has, as [label, absolute URL].
 function agent_pages(array $agent): array {
     $code = $agent['code']; $p = paths_for($code); $abs = fn($path) => 'https://' . SITE_DOMAIN . '/' . $path . '/';
-    $out = [['My main page (all links)', $abs($p['main']), 'youtube_id']];
+    $out = [['Mobile Business Card', $abs($p['main']), 'youtube_id']];
     if (isset($p['buyer']))  $out[] = ['Buyer page', $abs($p['buyer'])];
     if (isset($p['seller'])) $out[] = ['Seller page', $abs($p['seller'])];
     if (isset($p['faq']))    $out[] = ['Buyer FAQ page', $abs($p['faq'])];
