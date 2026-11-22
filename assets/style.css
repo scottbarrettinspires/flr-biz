@@ -82,3 +82,11 @@ h2.sec{font-size:1.05rem;color:var(--accent);margin:6px 0 12px}
 .hero.nophoto{min-height:0;background:none}.hero.nophoto::before{display:none}
 .hero.nophoto .avatar{display:flex}.hero.nophoto .back{position:static;display:inline-block;margin-bottom:14px}
 .hero.nophoto .hero-in{padding-top:32px}
+
+.hero .avatar,.hero.nophoto .avatar{display:none}
+.hero.nophoto{min-height:200px;background:linear-gradient(180deg,var(--bg2),var(--bg))}.hero.nophoto::before{display:none}
+.hero .ainfo{font-size:.9rem;line-height:1.5;color:#e6e9ef;text-shadow:0 1px 8px rgba(0,0,0,.7);margin-top:6px}
+.hero .ainfo a{color:#fff}
+.card.wide .hero{margin-bottom:18px}
+h1.pt{font-size:1.35rem;margin:10px 0 6px;text-align:center}
+.hero{min-height:420px}

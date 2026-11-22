@@ -199,15 +199,17 @@ function consent_html(array $a): string {
 }
 
 function agent_card(array $a): string {
+    // Landing-page header: headshot as background, agent details over the bottom of the photo
     $p = paths_for($a['code']); $photo = photo_url($a['code']);
     $rows = '';
     if (!empty($a['license'])) $rows .= '<div>Broker License ID: ' . h($a['license']) . '</div>';
     if (!empty($a['phone']))   $rows .= '<div><a href="tel:' . h(preg_replace('/[^0-9+]/', '', $a['phone'])) . '">' . h($a['phone']) . '</a></div>';
     if (!empty($a['email']))   $rows .= '<div><a href="mailto:' . h($a['email']) . '">' . h($a['email']) . '</a></div>';
     if (!empty($a['office']))  $rows .= '<div>' . h($a['office']) . '</div>';
-    return '<section class="agentcard"><div class="avatar sm" data-initials="' . h(initials_text($a['name'])) . '">' . ($photo ? '<img src="' . h($photo) . '" alt="">' : '')
-      . '</div><div class="ainfo"><strong>' . h(ucwords(strtolower($a['name']))) . '</strong><div>' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</div>' . $rows
-      . '<a class="miniback" href="/' . $p['main'] . '/">&larr; Back to my page</a></div></section>';
+    return '<header class="hero' . ($photo ? '' : ' nophoto') . '"' . ($photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '') . '>'
+      . '<div class="hero-in"><a class="back" href="/' . $p['main'] . '/">&larr; My page</a>'
+      . '<h1>' . h(ucwords(strtolower($a['name']))) . '</h1><p class="tag">' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</p>'
+      . '<div class="ainfo">' . $rows . '</div></div></header>';
 }
 
 function render_landing(array $a, string $slug, bool $done): string {
@@ -254,7 +256,7 @@ function render_landing(array $a, string $slug, bool $done): string {
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($title) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($d['sub']) . '">'
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css"></head><body>'
-      . '<main class="card wide"><h1>' . h($title) . '</h1><p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner . agent_card($a)
+      . '<main class="card wide">' . agent_card($a) . '<h1 class="pt">' . h($title) . '</h1><p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
 
