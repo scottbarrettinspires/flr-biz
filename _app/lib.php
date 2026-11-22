@@ -129,7 +129,7 @@ function render_page(array $a, string $view): string {
     foreach ($soc as [$k, $u, $lab, $ext])
         $socHtml .= '<a class="soc" href="' . h($u) . '" aria-label="' . $lab . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . icon($k) . '</a>';
 
-    if ($main && social_links($a)) $v['links'][] = ['title' => 'Connect On Social Media', 'view' => 'social', 'icon' => 'share'];
+    if ($main && social_links($a)) $v['links'][] = ['title' => 'Connect With Me On Social Media', 'view' => 'social', 'icon' => 'share'];
     if ($view === 'social' && !$v['links']) $links0 = '<div class="note">Social links are coming soon.</div>';
     $links = !empty($v['section']) ? '<h2 class="sec">' . h($v['section']) . '</h2>' : '';
     foreach ($v['links'] as $l) {
