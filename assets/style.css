@@ -90,3 +90,9 @@ h2.sec{font-size:1.05rem;color:var(--accent);margin:6px 0 12px}
 .card.wide .hero{margin-bottom:18px}
 h1.pt{font-size:1.35rem;margin:10px 0 6px;text-align:center}
 .hero{min-height:420px}
+
+/* Back link: top of the photo, in normal flow so it can never overlap the title */
+.hero{align-items:stretch}
+.hero-in{display:flex;flex-direction:column;justify-content:flex-end;min-height:420px;padding-top:14px}
+.hero .back,.hero.nophoto .back{position:static;display:block;align-self:flex-start;margin:0 0 auto;padding:4px 0 18px;text-align:left}
+.hero h1{overflow-wrap:anywhere}
