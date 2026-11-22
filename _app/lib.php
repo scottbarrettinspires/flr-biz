@@ -227,7 +227,12 @@ function consent_html(array $a): string {
       . 'Consent is not a condition of any purchase. You can also call for direct assistance.';
 }
 
-function agent_card(array $a): string {
+function agent_card(array $a, bool $compact = false): string {
+    if ($compact) {
+        $p = paths_for($a['code']); $photo = photo_url($a['code']);
+        return '<header class="minihead"><a class="back" href="/' . $p['main'] . '/">&larr; My page</a><div class="mh">'
+          . ($photo ? '<img src="' . h($photo) . '" alt="">' : '') . '<div><strong>' . h(ucwords(strtolower($a['name']))) . '</strong><span>' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</span></div></div></header>';
+    }
     // Landing-page header: headshot as background, agent details over the bottom of the photo
     $p = paths_for($a['code']); $photo = photo_url($a['code']);
     $rows = '';
@@ -292,7 +297,7 @@ function render_landing(array $a, string $slug, bool $done): string {
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($title) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($d['sub']) . '">'
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body>'
-      . '<main class="card wide">' . agent_card($a) . '<h1 class="pt">' . h($title) . '</h1><p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
+      . '<main class="card wide">' . agent_card($a, $d['type'] === 'app') . '<h1 class="pt">' . h($title) . '</h1><p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
 
