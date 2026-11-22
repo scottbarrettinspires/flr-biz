@@ -35,6 +35,11 @@ if (count($parts) === 2 && $parts[1] === 'contact.vcf' && $view === 'main') {
     header('Content-Disposition: attachment; filename="' . $code . '.vcf"');
     echo render_vcard($a); exit;
 }
+if (count($parts) === 2 && $view === 'main' && $parts[1] === 'social') {
+    if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/social/', true, 301); exit; }
+    header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-cache');
+    echo render_page($a, 'social'); exit;
+}
 if (count($parts) === 2 && $view === 'main' && isset(page_defs()[$parts[1]])) {
     if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/' . $parts[1] . '/', true, 301); exit; }
     header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-store');

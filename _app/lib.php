@@ -31,6 +31,7 @@ function routes(): array {
 function paths_for(string $code): array {
     $p = [];
     foreach (routes() as $name => [$c, $v]) if ($c === $code) $p[$v] = $name;
+    if (isset($p['main'])) $p['social'] = $p['main'] . '/social';
     return $p;
 }
 
@@ -85,6 +86,7 @@ const BTN_ICONS = [
  'heart'=>'<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>',
  'chat'=>'<path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>',
  'search'=>'<path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>',
+ 'share'=>'<path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>',
  'link'=>'<path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 0-10z"/>',
 ];
 function btn_icon(array $l): string {
@@ -95,7 +97,7 @@ function btn_icon(array $l): string {
                 'seller-guide'=>'download','buyer-guide'=>'download','buyer-steps'=>'list','buyer-broker-agreement'=>'doc','avoid-buyer-agent-fee'=>'dollar','app'=>'search'];
         $k = $map[$v] ?? $map[$pg] ?? (str_contains($u, 'sellers') ? 'sell' : (str_contains($u, 'buyers') ? 'home' : 'link'));
     }
-    return '<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . (BTN_ICONS[$k] ?? BTN_ICONS['link']) . '</svg></span>';
+    return '<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . (BTN_ICONS[$k] ?? ICONS[$k] ?? BTN_ICONS['link']) . '</svg></span>';
 }
 
 function link_href(array $a, array $l): string {
@@ -106,7 +108,15 @@ function link_href(array $a, array $l): string {
     return $l['url'];
 }
 
+function social_links(array $a): array {
+    $defs = [['instagram', 'Follow Me On Instagram'], ['facebook', 'Like My Page On Facebook'], ['tiktok', 'Follow Me On TikTok'], ['website', 'Visit My Website']];
+    $out = [];
+    foreach ($defs as [$k, $t]) if (!empty($a[$k])) $out[] = ['title' => $t, 'url' => $a[$k], 'icon' => $k];
+    return $out;
+}
+
 function render_page(array $a, string $view): string {
+    if ($view === 'social') $a['social'] = ['name' => 'CONNECT WITH ME', 'sub' => 'Follow along on social media', 'headline' => '', 'section' => '', 'links' => social_links($a)];
     $code = $a['code']; $main = $view === 'main'; $v = $a[$view]; $p = paths_for($code);
     $title = $main ? $a['name'] . ' - ' . $a['title'] : $v['name'];
     $tag = $main ? $a['tagline'] : $v['sub'];
@@ -115,12 +125,12 @@ function render_page(array $a, string $view): string {
     $soc = [];
     if (!empty($a['phone'])) $soc[] = ['phone', 'tel:' . preg_replace('/[^0-9+]/', '', $a['phone']), 'Call', false];
     if (!empty($a['email'])) $soc[] = ['email', 'mailto:' . $a['email'], 'Email', false];
-    foreach (['instagram'=>'Instagram','facebook'=>'Facebook','tiktok'=>'TikTok','website'=>'Website'] as $k => $lab)
-        if (!empty($a[$k])) $soc[] = [$k, $a[$k], $lab, true];
     $socHtml = '';
     foreach ($soc as [$k, $u, $lab, $ext])
         $socHtml .= '<a class="soc" href="' . h($u) . '" aria-label="' . $lab . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . icon($k) . '</a>';
 
+    if ($main && social_links($a)) $v['links'][] = ['title' => 'Connect On Social Media', 'view' => 'social', 'icon' => 'share'];
+    if ($view === 'social' && !$v['links']) $links0 = '<div class="note">Social links are coming soon.</div>';
     $links = !empty($v['section']) ? '<h2 class="sec">' . h($v['section']) . '</h2>' : '';
     foreach ($v['links'] as $l) {
         $isApp = ($l['page'] ?? '') === 'app';    // home-search app page: shows once the agent adds its link
@@ -143,7 +153,7 @@ function render_page(array $a, string $view): string {
       . '<header class="hero' . ($photo ? '' : ' nophoto') . '"' . ($photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '') . '>'
       . '<div class="hero-in">' . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
       . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . '</div></header>'
-      . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . $links . $contact . '</nav>'
+      . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . ($links0 ?? '') . $links . $contact . '</nav>'
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
 
