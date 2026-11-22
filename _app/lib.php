@@ -238,6 +238,7 @@ require_once __DIR__ . '/qr.php';
 require_once __DIR__ . '/share.php';
 require_once __DIR__ . '/mls.php';
 require_once __DIR__ . '/about.php';
+require_once __DIR__ . '/lspitch.php';
 
 function config(): array {
     static $c;

@@ -69,6 +69,11 @@ if (count($parts) === 2 && $view === 'main' && $parts[1] === 'about') {
     header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-cache');
     echo render_about($a); exit;
 }
+if (count($parts) === 2 && $view === 'main' && $parts[1] === 'leadstream') {
+    if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/leadstream/', true, 301); exit; }
+    header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-cache');
+    echo render_leadstream_pitch($a); exit;
+}
 if (count($parts) === 2 && $view === 'main' && $parts[1] === 'social') {
     if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/social/', true, 301); exit; }
     header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-cache');

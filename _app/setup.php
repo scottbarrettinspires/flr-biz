@@ -79,7 +79,7 @@ echo $ifield('tiktok', 'TikTok', '@yourname or link', 'text', '#111111');
 echo $ifield('linkedin', 'LinkedIn', 'link to your profile', 'text', '#0A66C2');
 echo $ifield('x', 'X (Twitter)', '@yourname or link', 'text', '#111111');
 echo '</div>';
-echo '<div style="margin-top:18px">' . $field('join_url', '"Are you a real estate agent? Learn more here" link (shown at the bottom of your pages)', $val('join_url'), 'https://joinflr.com/agents/yourname/', 'text', 'Your page on joinflr.com for agents who want to learn about joining Florida Luxury Realty. Leave blank to hide the link.') . '</div>';
+echo '<div style="margin-top:18px">' . $field('join_url', 'My joinflr.com agent page (the "Request information" buttons on your "Are you a real estate agent?" page go here)', $val('join_url'), 'https://joinflr.com/agents/yourname/', 'text', 'Optional. Leave blank to hide those buttons.') . '</div>';
 ?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>
