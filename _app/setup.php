@@ -78,7 +78,7 @@ $field = fn($id, $label, $v, $ph, $type = 'text', $hint = '') =>
 <?= $field('instagram', 'Instagram', $val('instagram'), '@yourname or link') ?>
 <?= $field('facebook', 'Facebook', $val('facebook'), 'link to your page') ?>
 <?= $field('tiktok', 'TikTok', $val('tiktok'), '@yourname or link') ?>
-<?= $field('app_url', 'Home search app page (shows the "Search homes / download my app" button)', $val('app_url'), 'https://...') ?>
+<?= $field('app_url', 'Home search app download link (the download button on your app page goes here)', $val('app_url'), 'https://...') ?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>
 <footer><?= h(BROKERAGE) ?><br><span>Keep this link private. It is your personal setup link.</span></footer>
