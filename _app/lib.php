@@ -250,14 +250,14 @@ function agent_card(array $a, bool $compact = false): string {
 
 function consult_fields(): string {
     [$min, $max] = consult_window();
-    $o = '<div class="sched"><h2 class="sch">1. Choose a date</h2>'
+    $o = '<div class="sched"><h2 class="sch">Choose a date</h2>'
        . '<div id="cal" class="cal" data-min="' . $min . '" data-max="' . $max . '"><div class="calh"><button type="button" id="cal_prev" aria-label="Previous month">&#8249;</button><strong id="cal_title"></strong><button type="button" id="cal_next" aria-label="Next month">&#8250;</button></div>'
        . '<div class="calw"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div id="cal_grid" class="calg"></div></div>'
        . '<input type="hidden" id="pref_date" name="pref_date" value="">'
-       . '<div id="times_wrap" hidden><h2 class="sch" id="times_label">2. Choose a time</h2><div class="times">';
+       . '<div id="times_wrap" hidden><h2 class="sch" id="times_label">Choose a time</h2><div class="times">';
     foreach (consult_times() as $t) $o .= '<label class="tm"><input type="radio" name="pref_time" value="' . h($t) . '"><span>' . h($t) . '</span></label>';
     $o .= '</div></div><p id="cal_err" class="note err" hidden>Please choose a date and a time first.</p>'
-       . '<h2 class="sch">3. Your contact information</h2></div>'
+       . '<h2 class="sch">Your contact information</h2></div>'
        . '<script>(function(){var root=document.getElementById("cal");if(!root)return;var min=root.dataset.min,max=root.dataset.max;'
        . 'function P(s){var a=s.split("-");return new Date(+a[0],+a[1]-1,+a[2]);}'
        . 'function S(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}'
@@ -266,12 +266,29 @@ function consult_fields(): string {
        . 'function render(){var y=cur.getFullYear(),m=cur.getMonth();title.textContent=cur.toLocaleDateString("en-US",{month:"long",year:"numeric"});grid.innerHTML="";'
        . 'var f=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate(),i;for(i=0;i<f;i++)grid.appendChild(document.createElement("span"));'
        . 'for(i=1;i<=n;i++){(function(d){var s=S(new Date(y,m,d)),b=document.createElement("button");b.type="button";b.textContent=d;if(s<min||s>max)b.disabled=true;if(s===hid.value)b.className="sel";'
-       . 'b.onclick=function(){hid.value=s;tw.hidden=false;tl.textContent="2. Choose a time on "+P(s).toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})+" (Eastern Time)";render();};grid.appendChild(b);})(i);}'
+       . 'b.onclick=function(){hid.value=s;tw.hidden=false;tl.textContent="Choose a time on "+P(s).toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})+" (Eastern Time)";render();};grid.appendChild(b);})(i);}'
        . 'prev.disabled=cur<=new Date(dmin.getFullYear(),dmin.getMonth(),1);next.disabled=cur>=new Date(dmax.getFullYear(),dmax.getMonth(),1);}'
        . 'prev.onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()-1,1);render();};next.onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()+1,1);render();};render();'
        . 'var form=root.closest("form"),err=document.getElementById("cal_err");form.addEventListener("submit",function(e){if(!hid.value||!form.querySelector("input[name=pref_time]:checked")){e.preventDefault();err.hidden=false;root.scrollIntoView({behavior:"smooth",block:"center"});}else{err.hidden=true;}});'
        . '})();</script>';
     return $o;
+}
+
+function lead_form_html(array $a, array $d, string $return = ''): string {
+    $code = $a['code']; $ts = time(); $extra = '';
+    if ($d['type'] === 'value') $extra .= '<label for="address">Property address *</label><input id="address" name="address" type="text" required maxlength="200" placeholder="Street, city, state, ZIP" autocomplete="street-address">';
+    return '<form method="post" action="/lead" class="form">'
+      . '<input type="hidden" name="agent" value="' . h($code) . '"><input type="hidden" name="form" value="' . h($d['form']) . '"><input type="hidden" name="ts" value="' . $ts . '">'
+      . ($return !== '' ? '<input type="hidden" name="return" value="' . h($return) . '">' : '')
+      . '<div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>'
+      . $extra
+      . (!empty($d['time_field']) ? consult_fields() : '')
+      . '<label for="name">Name *</label><input id="name" name="name" type="text" required maxlength="100" autocomplete="name">'
+      . '<label for="phone">Phone *</label><input id="phone" name="phone" type="tel" required maxlength="24" autocomplete="tel">'
+      . '<label for="email">Email *</label><input id="email" name="email" type="email" required maxlength="120" autocomplete="email">'
+      . (!empty($d['time_field']) ? '<label for="msg">Anything you would like me to know (optional)</label><textarea id="msg" name="message" rows="3" maxlength="800"></textarea>' : '')
+      . '<label class="consent"><input type="checkbox" name="consent" value="1" required> <span>' . consent_html($a) . '</span></label>'
+      . '<button class="btn contact" type="submit"><span class="t">' . h($d['button']) . '</span></button></form>';
 }
 
 function render_landing(array $a, string $slug, bool $done): string {
@@ -291,7 +308,11 @@ function render_landing(array $a, string $slug, bool $done): string {
         $vid = $a[$d['vkey']] ?? '';
         $inner = $vid ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($vid) . '" title="' . h($title) . '" loading="lazy" allowfullscreen></iframe></div>'
                       : '<div class="note">My video for this question is coming soon. In the meantime, ask me directly.</div>';
-        $inner .= '<a class="btn contact" href="/' . $code . '/buyer-consult/"><span class="t">Book A 15 Minute Complimentary Consultation</span></a>';
+        $cd = page_defs()['buyer-consult'];
+        $inner .= '<h2 class="vsched">Schedule A Complimentary Consultation</h2>';
+        $inner .= $done
+            ? '<div class="note ok">Submitted successfully. Thank you, ' . h(explode(' ', $name)[0]) . ' will confirm your appointment time shortly.</div>'
+            : '<p class="lead">' . h($cd['body'][0]) . '</p>' . lead_form_html($a, $cd, $slug);
         $paths = paths_for($code);
         if (isset($paths['faq'])) $inner .= '<a class="back" href="/' . $paths['faq'] . '/">&larr; More answers to your questions</a>';
         $done = null;
@@ -305,26 +326,13 @@ function render_landing(array $a, string $slug, bool $done): string {
             : '<p class="lead">Your guide is on its way. ' . h($name) . ' will send it to you shortly.</p>';
         if ($d['type'] === 'value') $inner .= '<p class="lead">Your home market value report is being prepared and will be sent to you shortly.</p>';
     } else {
-        $ts = time();
-        $extra = '';
-        if ($d['type'] === 'value') $extra .= '<label for="address">Property address *</label><input id="address" name="address" type="text" required maxlength="200" placeholder="Street, city, state, ZIP" autocomplete="street-address">';
-        $inner = '<form method="post" action="/lead" class="form">'
-          . '<input type="hidden" name="agent" value="' . h($code) . '"><input type="hidden" name="form" value="' . h($d['form']) . '"><input type="hidden" name="ts" value="' . $ts . '">'
-          . '<div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>'
-          . $extra
-          . (!empty($d['time_field']) ? consult_fields() : '')
-          . '<label for="name">Name *</label><input id="name" name="name" type="text" required maxlength="100" autocomplete="name">'
-          . '<label for="phone">Phone *</label><input id="phone" name="phone" type="tel" required maxlength="24" autocomplete="tel">'
-          . '<label for="email">Email *</label><input id="email" name="email" type="email" required maxlength="120" autocomplete="email">'
-          . (!empty($d['time_field']) ? '<label for="msg">Anything you would like me to know (optional)</label><textarea id="msg" name="message" rows="3" maxlength="800"></textarea>' : '')
-          . '<label class="consent"><input type="checkbox" name="consent" value="1" required> <span>' . consent_html($a) . '</span></label>'
-          . '<button class="btn contact" type="submit"><span class="t">' . h($d['button']) . '</span></button></form>';
+        $inner = lead_form_html($a, $d);
     }
     $h2 = isset($d['h2']) ? '<h2>' . h($d['h2']) . '</h2>' : '';
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($title) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($d['sub']) . '">'
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body>'
-      . '<main class="card wide">' . agent_card($a, in_array($d['type'], ['app', 'consult', 'value'], true)) . ($d['type'] === 'app' ? '<h1 class="pt ahd">The Home Search App for Every Home and Detail.</h1>' : '<h1 class="pt">' . h($title) . '</h1>') . '<p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
+      . '<main class="card wide">' . agent_card($a, in_array($d['type'], ['app', 'consult', 'value', 'video'], true)) . ($d['type'] === 'app' ? '<h1 class="pt ahd">The Home Search App for Every Home and Detail.</h1>' : '<h1 class="pt">' . h($title) . '</h1>') . '<p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
 

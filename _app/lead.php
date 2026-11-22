@@ -5,7 +5,8 @@ $a = agent(strtolower((string)($_POST['agent'] ?? '')));
 $form = (string)($_POST['form'] ?? '');
 $defs = page_defs();
 if (!$a || !isset($defs[$form])) { http_response_code(400); echo 'Bad request'; exit; }
-$back = '/' . $a['code'] . '/' . $form . '/';
+$ret = (string)($_POST['return'] ?? '');
+$back = '/' . $a['code'] . '/' . ((isset($defs[$ret]) && $defs[$ret]['type'] === 'video' && $defs[$form]['type'] === 'consult') ? $ret : $form) . '/';
 $fail = function (string $msg) use ($back) {
     http_response_code(422);
     echo '<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/assets/style.css"><main class="card"><div class="note err">'
