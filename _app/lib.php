@@ -6,7 +6,7 @@ const ROOT_DIR    = __DIR__ . '/..';
 const DATA_DIR    = ROOT_DIR . '/_data';
 const UPLOAD_DIR  = ROOT_DIR . '/uploads';
 const APP_URL_BASE = 'https://bk.homestack.com/floridaluxuryrealtyhomesearch/?aik=';   // current Lofty app download page; agents can replace it in setup
-const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url', 'vid_listings', 'vid_openhouses'];
+const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x', 'bio', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url', 'vid_listings', 'vid_openhouses'];
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -143,12 +143,7 @@ function render_page(array $a, string $view): string {
     $tag = $main ? $a['tagline'] : $v['sub'];
     $photo = photo_url($code);
 
-    $soc = [];
-    if (!empty($a['phone'])) $soc[] = ['phone', 'tel:' . preg_replace('/[^0-9+]/', '', $a['phone']), 'Call', false];
-    if (!empty($a['email'])) $soc[] = ['email', 'mailto:' . $a['email'], 'Email', false];
-    $socHtml = '';
-    foreach ($soc as [$k, $u, $lab, $ext])
-        $socHtml .= '<a class="soc" href="' . h($u) . '" aria-label="' . $lab . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . icon($k) . '</a>';
+    $socHtml = contact_row($a);
 
     if ($main && social_links($a)) $v['links'][] = ['title' => 'Connect With Me On Social Media', 'view' => 'social', 'icon' => 'share'];
     if ($view === 'social' && !$v['links']) $links0 = '<div class="note">Social links are coming soon.</div>';
@@ -242,6 +237,7 @@ require_once __DIR__ . '/slots.php';
 require_once __DIR__ . '/qr.php';
 require_once __DIR__ . '/share.php';
 require_once __DIR__ . '/mls.php';
+require_once __DIR__ . '/about.php';
 
 function config(): array {
     static $c;
@@ -275,10 +271,8 @@ function agent_card(array $a, bool $compact = false): string {
     $rows = '';
     if (!empty($a['license'])) $rows .= '<div>Broker License ID: ' . h($a['license']) . '</div>';
     if (!empty($a['office']))  $rows .= '<div>' . h($a['office']) . '</div>';
-    $ic = '';
-    if (!empty($a['phone'])) $ic .= '<a class="soc" href="tel:' . h(preg_replace('/[^0-9+]/', '', $a['phone'])) . '" aria-label="Call">' . icon('phone') . '</a>';
-    if (!empty($a['email'])) $ic .= '<a class="soc" href="mailto:' . h($a['email']) . '" aria-label="Email">' . icon('email') . '</a>';
-    if ($ic) $rows .= '<div class="socials sm">' . $ic . '</div>';
+    $ic = contact_row($a, true);
+    if ($ic) $rows .= $ic;
     return '<header class="hero' . ($photo ? '' : ' nophoto') . '"' . ($photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '') . '>'
       . '<div class="hero-in"><a class="back" href="/' . $p['main'] . '/">&larr; My page</a>'
       . '<h1>' . h(ucwords(strtolower($a['name']))) . '</h1><p class="tag">' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</p>'

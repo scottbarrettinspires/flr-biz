@@ -64,6 +64,11 @@ if ($view === 'main' && count($parts) >= 2 && slot_id_ok($parts[1])) {          
     header('Content-Type: text/html; charset=utf-8');
     echo render_slot($a, $parts[1], $slot); exit;
 }
+if (count($parts) === 2 && $view === 'main' && $parts[1] === 'about') {
+    if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/about/', true, 301); exit; }
+    header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-cache');
+    echo render_about($a); exit;
+}
 if (count($parts) === 2 && $view === 'main' && $parts[1] === 'social') {
     if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/social/', true, 301); exit; }
     header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-cache');

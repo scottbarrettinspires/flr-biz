@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'tiktok'     => clean_url($_POST['tiktok'] ?? '', 'https://tiktok.com/@'),
         'linkedin'   => clean_url($_POST['linkedin'] ?? '', 'https://linkedin.com/in/'),
         'x'          => clean_url($_POST['x'] ?? '', 'https://x.com/'),
+        'bio'        => mb_substr(trim(str_replace("\r\n", "\n", (string)($_POST['bio'] ?? ''))), 0, 2000),
     ];
     if ($raw['phone'] === null) $errors[] = 'Phone can only contain numbers, spaces and ( ) + - .';
     if ($raw['email'] !== '' && !filter_var($raw['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'That email address does not look right.';
@@ -63,6 +64,8 @@ echo dash_open('overview', $agent, $key, 'Welcome, ' . $first, 'Your LeadStream 
 <label>Your photo</label>
 <div class="photo-row"><div class="avatar sm" data-initials="<?= h(initials_text($agent['name'])) ?>"><?= $photo ? '<img src="' . h($photo) . '" alt="">' : '' ?></div>
 <input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div><small>JPG, PNG or WebP. A clear head-and-shoulders photo works best; it is cropped to a square.</small>
+<label for="bio" style="margin-top:18px">About me <small style="display:inline;font-weight:400">(shown on your About Me page)</small></label>
+<textarea id="bio" name="bio" rows="6" maxlength="2000" placeholder="Tell visitors who you are, how long you have worked in real estate, the areas you serve and how you help buyers and sellers. Leave a blank line between paragraphs."><?= h($val('bio')) ?></textarea>
 <?php
 $ifield = fn($id, $label, $ph, $type, $color) => '<div class="icell"><label for="' . $id . '">' . h($label) . '</label><div class="ifield"><span class="ico" style="color:' . $color . '"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' . ICONS[$id === 'x' ? 'x' : ($id === 'phone' || $id === 'email' || $id === 'website' ? $id : $id)] . '</svg></span><input id="' . $id . '" name="' . $id . '" type="' . $type . '" value="' . h($val($id)) . '" placeholder="' . h($ph) . '" autocomplete="off"></div></div>';
 echo '<div class="igrid">';
