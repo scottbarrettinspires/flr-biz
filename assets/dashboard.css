@@ -93,3 +93,7 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 .vidform input[type=text]{padding:8px 12px}
 .sb{padding:7px 13px}
 @media (max-width:600px){.sharecard{grid-template-columns:1fr}.sc-qrbox{grid-column:1;grid-row:auto;flex-direction:row;align-items:center;gap:12px;max-width:none;margin-top:8px;order:2}.sc-btns,.sharecard .vidform{grid-column:1;grid-row:auto}.sc-info{grid-row:auto}}
+/* fixed-width QR column so every QR code lines up regardless of URL length */
+.sc-qrbox{width:210px;max-width:210px;flex:none}
+.sc-url{font-size:.8rem;line-height:1.25;overflow-wrap:anywhere;word-break:normal}
+@media (max-width:600px){.sc-qrbox{width:auto;max-width:none}.sc-qrbox .sc-url{text-align:left}}
