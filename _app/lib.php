@@ -125,6 +125,10 @@ function menu_button(string $icon, string $title, string $href, bool $ext = fals
         . '<span class="tx"><span class="t">' . h($title) . '</span></span></a>' . "\n";
 }
 
+/** "Share This" button: opens the public share page (QR code + email / text / Facebook / Instagram) for this page. */
+function share_href(string $path): string { return '/share/?u=' . rawurlencode('https://' . SITE_DOMAIN . '/' . trim($path, '/') . '/'); }
+function share_button(string $path): string { return menu_button('share', 'Share This', share_href($path)); }
+
 function render_page(array $a, string $view): string {
     if ($view === 'social') $a['social'] = ['name' => 'CONNECT WITH ME', 'sub' => 'Follow along on social media', 'headline' => '', 'section' => '', 'links' => social_links($a)];
     $code = $a['code']; $main = $view === 'main'; $v = $a[$view]; $p = paths_for($code);
@@ -163,7 +167,7 @@ function render_page(array $a, string $view): string {
       . '<header class="hero' . ($photo ? '' : ' nophoto') . '"' . ($photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '') . '>'
       . '<div class="hero-in">' . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
       . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . '</div></header>'
-      . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . ($links0 ?? '') . $links . $contact . '</nav>'
+      . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . ($links0 ?? '') . $links . $contact . share_button($p[$view]) . '</nav>'
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
 }
 
@@ -372,6 +376,7 @@ function render_landing(array $a, string $slug, bool $done): string {
       . '<title>' . h($title) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($d['sub']) . '">'
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body>'
       . '<main class="card wide">' . ($d['type'] === 'video' ? '<a class="back vback" href="/' . paths_for($code)['main'] . '/">&larr; My page</a>' : agent_card($a, in_array($d['type'], ['app', 'consult', 'value'], true))) . ($d['type'] === 'app' ? '<h1 class="pt ahd">The Home Search App for Every Home and Detail.</h1>' : '<h1 class="pt' . ($slug === 'private-showing' ? ' gold' : '') . '">' . h($title) . '</h1>') . '<p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
+      . '<nav class="links sharenav">' . share_button($code . '/' . $slug) . '</nav>'
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
 

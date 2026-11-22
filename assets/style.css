@@ -283,3 +283,13 @@ a.btn.slotrow{display:block;text-align:left;margin:8px 0}.slotrow .tx{display:fl
 .gal img{height:150px;width:auto;border-radius:10px;scroll-snap-align:start;flex:none}
 .remarks{text-align:left;line-height:1.55;margin:12px 4px}
 .mlsdisc{color:var(--muted);font-size:.72rem;line-height:1.45;margin:16px 6px 0;text-align:center}
+/* share page */
+.sharepage .shp-who{display:flex;gap:12px;align-items:center;justify-content:center;margin:6px 0 10px;text-align:left}
+.sharepage .shp-who img{width:52px;height:52px;border-radius:50%;object-fit:cover}
+.sharepage .shp-who span{display:block;font-size:.85rem;color:var(--muted)}
+.sharepage .shp-qr{display:flex;flex-direction:column;align-items:center;gap:10px;margin:18px 0 20px}
+.sharepage .shp-qr img{background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:14px;padding:10px}
+.sharepage .shp-url{color:var(--accent);word-break:break-all;font-weight:700}
+.sharepage .shp-note{margin:-4px 0 10px;font-size:.9rem;color:var(--muted)}
+.sharepage .btn[hidden],.sharepage .shp-note[hidden]{display:none}
+nav.links.sharenav{margin-top:18px}

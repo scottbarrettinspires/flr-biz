@@ -150,6 +150,7 @@ function render_slot(array $a, string $id, array $s): string {
     $links .= $oh ? menu_button('calendar', 'Book A Complimentary Consultation', '/' . $code . '/buyer-consult/')
                   : menu_button('calendar', 'Book A Private Showing', '/' . $code . '/private-showing/' . ($addr !== '' ? '?l=' . rawurlencode($id) : ''));
     $links .= menu_button('dollar', "Get Your Home's Value Instantly", '/' . $code . '/value/');
+    $links .= share_button($code . '/' . $id);
 
     $vid = $a[$oh ? 'vid_openhouses' : 'vid_listings'] ?? '';   // one video for all listing pages, one for all open house pages (set on the dashboard)
     $video = $vid !== '' ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($vid) . '" title="Video" loading="lazy" allowfullscreen></iframe></div>' : '';
@@ -206,7 +207,7 @@ function render_slot_details(array $a, string $id, array $s): ?string {
       . ($d['type'] !== '' ? '<p class="ptype">' . h($d['type']) . ' &middot; MLS #' . h($d['number']) . '</p>' : '')
       . ($gal !== '' ? '<div class="gal">' . $gal . '</div>' : '')
       . ($d['remarks'] !== '' ? '<p class="remarks">' . nl2br(h($d['remarks'])) . '</p>' : '')
-      . '<nav class="links">' . $links . '</nav>' . $by
+      . '<nav class="links">' . $links . share_button($code . '/' . $id . '/details') . '</nav>' . $by
       . '<p class="mlsdisc">' . ($d['office'] !== '' ? 'Listing courtesy of ' . h($d['office']) . '. ' : '') . 'Information is deemed reliable but is not guaranteed and should be independently verified. Listing data last updated ' . h($upd) . '.</p>'
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
 }

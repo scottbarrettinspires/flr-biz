@@ -26,6 +26,8 @@ if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'listings') { 
 if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'dashboard') { header('Location: /setup/?' . http_build_query(['a' => $_GET['a'] ?? '', 'k' => $_GET['k'] ?? '']), true, 301); exit; }
 if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'links') { require __DIR__ . '/_app/setup_links.php'; exit; }
 if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'qr') { require __DIR__ . '/_app/setup_qr.php'; exit; }
+if ($parts[0] === 'share' && count($parts) === 1) { require __DIR__ . '/_app/sharepage.php'; exit; }
+if ($parts[0] === 'share' && count($parts) === 2 && $parts[1] === 'qr') { require __DIR__ . '/_app/shareqr.php'; exit; }
 if ($parts[0] === 'lead' && count($parts) === 1) { require __DIR__ . '/_app/lead.php'; exit; }
 
 $routes = routes();
