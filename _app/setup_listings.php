@@ -34,6 +34,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             slots_save($code, $slots);
             header('Location: ' . $self . '&s=' . $pre . $n . '&new=1', true, 303); exit;
         }
+    } elseif (in_array($act, ['assign', 'unlink'], true) && $sid !== '' && isset($slots[$sid])) {
+        if ($act === 'assign') {
+            [$fields, $err] = mls_assign($agent, $sid, (string)($_POST['mls_key'] ?? ''));
+            if ($err !== '') $errors[] = $err;
+            else {
+                $keep = $slots[$sid]; foreach (['title', 'address', 'price', 'property_url', 'mls_key', 'mls_number', 'mls_status'] as $k) unset($keep[$k]);
+                $slots[$sid] = ['title' => ''] + $fields + $keep; slots_save($code, $slots);
+                header('Location: ' . $self . '&s=' . $sid . '&assigned=1', true, 303); exit;
+            }
+        } else {
+            mls_unlink($code, $sid);
+            foreach (['mls_key', 'mls_number', 'mls_status'] as $k) unset($slots[$sid][$k]);
+            slots_save($code, $slots);
+            header('Location: ' . $self . '&s=' . $sid . '&unlinked=1', true, 303); exit;
+        }
     } elseif ($act === 'videos') {
         $v = ['vid_listings' => youtube_id((string)($_POST['vid_listings'] ?? '')), 'vid_openhouses' => youtube_id((string)($_POST['vid_openhouses'] ?? ''))];
         foreach (['vid_listings', 'vid_openhouses'] as $k) if (trim((string)($_POST[$k] ?? '')) !== '' && $v[$k] === '') $errors[] = 'Paste the full YouTube video link (youtube.com/watch?v=... or youtu.be/...).';
@@ -42,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Clear the property details but keep the permanent link live (printed signs and flyers depend on it).
         $slots[$sid] = ['title' => ''];
         slots_save($code, $slots);
-        @unlink(UPLOAD_DIR . "/$code-$sid.jpg");
+        @unlink(UPLOAD_DIR . "/$code-$sid.jpg"); mls_unlink($code, $sid);
         header('Location: ' . $self . '&s=' . $sid . '&reset=1', true, 303); exit;
     } elseif ($act === 'save' && $sid !== '' && isset($slots[$sid])) {
         $s = [
@@ -64,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($s['target'] !== '' && $s['target'] !== 'custom' && !isset(SLOT_TARGETS[$s['target']])) $s['target'] = '';
         if ($s['target'] === 'custom' && $s['custom_url'] === '') $errors[] = 'Enter the link to send visitors to, or choose a different option.';
         if ($s['target'] !== 'custom') $s['custom_url'] = '';
+        foreach (['mls_key', 'mls_number', 'mls_status'] as $k) if (isset($slots[$sid][$k])) $s[$k] = $slots[$sid][$k];   // saving the form never drops the MLS link
         if (!$errors) $errors[] = save_slot_photo($code, $sid, $_FILES['photo'] ?? []);
         $errors = array_values(array_filter($errors));
         if (!$errors) {
@@ -79,6 +95,8 @@ $f2 = fn($id, $label, $v) => '<label for="' . $id . '">' . h($label) . '</label>
 ?><?= dash_open('listings', $agent, $key, $sid !== '' && isset($slots[$sid]) ? slot_kind($sid) . ' ' . $sid : 'Listings & Open Houses', $sid !== '' && isset($slots[$sid]) ? 'Choose which property this link shows. The link and QR code never change.' : 'Your listing pages and open house pages are ready, each with a permanent link and QR code for yard signs and flyers. Click Edit property to choose which home each one shows.') ?>
 <?php if (isset($_GET['saved'])): ?><div class="note ok">Saved. Your page is updated.</div><?php endif; ?>
 <?php if (isset($_GET['videos'])): ?><div class="note ok">Videos saved. They now show on all of your listing and open house pages.</div><?php endif; ?>
+<?php if (isset($_GET['assigned'])): ?><div class="note ok">Listing assigned. The page now shows this home, and a View Listing Details button was added.</div><?php endif; ?>
+<?php if (isset($_GET['unlinked'])): ?><div class="note ok">MLS listing unlinked. The details you typed are still on the page.</div><?php endif; ?>
 <?php if (isset($_GET['reset'])): ?><div class="note ok">Property cleared. The link and QR code still work and show a general welcome page until you add the next property.</div><?php endif; ?>
 <?php foreach ($errors as $e): ?><div class="note err"><?= h($e) ?></div><?php endforeach; ?>
 <?php if ($sid !== '' && isset($slots[$sid])): $s = $slots[$sid]; $photo = slot_photo_url($code, $sid);
@@ -86,6 +104,24 @@ $f2 = fn($id, $label, $v) => '<label for="' . $id . '">' . h($label) . '</label>
   $f = fn($id, $label, $v, $ph, $type = 'text', $hint = '') => '<label for="' . $id . '">' . h($label) . '</label><input id="' . $id . '" name="' . $id . '" type="' . $type . '" value="' . h($v) . '" placeholder="' . h($ph) . '" autocomplete="off">' . ($hint ? '<small>' . h($hint) . '</small>' : ''); ?>
 <?= share_card(slot_kind($sid) . ' ' . $sid . ': ' . slot_status($agent, $s), $url, $code, $key) ?>
 <p style="margin:6px 0 12px"><small>This link and QR code never change, even when you edit the page or point it somewhere else.</small></p>
+<?php [$mlist, $mnote] = mls_agent_listings($agent, isset($_GET['refresh'])); ?>
+<form method="post" class="form" style="margin-bottom:14px">
+<input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="s" value="<?= h($sid) ?>"><input type="hidden" name="act" value="assign">
+<label for="mls_key" style="font-size:1.05rem">Choose one of my MLS listings</label>
+<?php if (!empty($s['mls_key'])): ?><div class="note ok" style="margin:6px 0">Linked to MLS #<?= h($s['mls_number'] ?? '') ?> (<?= h($s['mls_status'] ?? '') ?>). Status and price stay current automatically.</div><?php endif; ?>
+<?php if ($mlist): ?>
+<select name="mls_key" id="mls_key">
+<?php foreach ($mlist as $l): ?><option value="<?= h($l['key']) ?>"<?= ($s['mls_key'] ?? '') === $l['key'] ? ' selected' : '' ?>><?= h($l['status'] . ' · ' . mls_money($l['price']) . ' · ' . $l['address'] . ' (MLS #' . $l['number'] . ')') ?></option><?php endforeach; ?>
+</select>
+<small>Your active, coming soon and pending listings from the MLS. Assigning one fills in the address, price, photos and details, and adds a "View Listing Details" button to this page. <a href="<?= h($self . '&s=' . $sid . '&refresh=1') ?>">Refresh list</a></small>
+<?php if ($mnote): ?><div class="note err" style="margin-top:8px"><?= h($mnote) ?></div><?php endif; ?>
+<button class="btn contact" type="submit"><span class="t">Assign this listing to this page</span></button>
+<?php else: ?>
+<div class="note <?= $mnote === '' ? 'ok' : 'err' ?>" style="margin:6px 0"><?= h($mnote !== '' ? $mnote : 'You have no active, coming soon or pending listings in the MLS right now.') ?></div>
+<small>You can still type a property in below. <a href="<?= h($self . '&s=' . $sid . '&refresh=1') ?>">Refresh list</a></small>
+<?php endif; ?>
+</form>
+<?php if (!empty($s['mls_key'])): ?><form method="post" style="margin:-4px 0 14px"><input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="s" value="<?= h($sid) ?>"><input type="hidden" name="act" value="unlink"><button class="linkbtn" type="submit">Unlink the MLS listing from this page</button></form><?php endif; ?>
 <form method="post" enctype="multipart/form-data" class="form">
 <input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="s" value="<?= h($sid) ?>"><input type="hidden" name="act" value="save">
 <label>What should this link do?</label>

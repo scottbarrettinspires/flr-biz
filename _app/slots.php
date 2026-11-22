@@ -37,12 +37,17 @@ function slot_title(string $id, array $s): string {
     $t = trim((string)($s['title'] ?? '')); $addr = trim((string)($s['address'] ?? '')); $oh = slot_is_oh($id);
     if (!$oh && strcasecmp($t, 'OPEN HOUSE') === 0) $t = '';                                  // listing pages are never "open house"
     if ($addr === '' && ($t === '' || in_array(strtoupper($t), ['OPEN HOUSE', 'JUST LISTED'], true))) return 'WELCOME';
-    return $t !== '' ? $t : ($oh ? 'OPEN HOUSE' : 'JUST LISTED');
+    if ($t !== '' && in_array(strtoupper($t), ['JUST LISTED', 'UNDER CONTRACT', 'COMING SOON'], true) && !empty($s['mls_status'])) $t = '';   // MLS-linked pages follow the listing's real status
+    if ($t !== '') return $t;
+    if ($oh) return 'OPEN HOUSE';
+    $ms = (string)($s['mls_status'] ?? '');
+    return in_array($ms, ['Pending', 'Active Under Contract'], true) ? 'UNDER CONTRACT' : ($ms === 'Coming Soon' ? 'COMING SOON' : 'JUST LISTED');
 }
 function slot_status(array $a, array $s): string {
     if ($rd = slot_redirect($a, $s)) return 'Sends visitors to ' . (SLOT_TARGETS[$s['target']] ?? 'a link you pasted');
     $addr = trim((string)($s['address'] ?? ''));
-    return $addr !== '' ? $addr : 'Not set up yet (shows a welcome page)';
+    $mls = !empty($s['mls_key']) ? ' (MLS ' . ($s['mls_status'] ?? '') . ')' : '';
+    return $addr !== '' ? $addr . $mls : 'Not set up yet (shows a welcome page)';
 }
 function slot_photo_url(string $code, string $id): ?string {
     $f = UPLOAD_DIR . "/$code-$id.jpg";
@@ -51,13 +56,16 @@ function slot_photo_url(string $code, string $id): ?string {
 function save_slot_photo(string $code, string $id, array $f): string {
     if (($f['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return '';
     if ($f['error'] !== UPLOAD_ERR_OK || $f['size'] > 10 * 1024 * 1024) return 'Photo must be under 10 MB.';
-    $info = @getimagesize($f['tmp_name']);
+    return slot_store_photo($code, $id, $f['tmp_name']);
+}
+/** Validate an image file, crop to 3:2 landscape and store it as the page's cover image. Returns error text or ''. */
+function slot_store_photo(string $code, string $id, string $path): string {
+    $info = @getimagesize($path);
     if (!$info || !in_array($info[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true)) return 'Photo must be a JPG, PNG or WebP image.';
     if ($info[0] * $info[1] > 40000000) return 'Photo is too large; please use a smaller image.';
-    $src = match ($info[2]) { IMAGETYPE_JPEG => @imagecreatefromjpeg($f['tmp_name']), IMAGETYPE_PNG => @imagecreatefrompng($f['tmp_name']), default => @imagecreatefromwebp($f['tmp_name']) };
+    $src = match ($info[2]) { IMAGETYPE_JPEG => @imagecreatefromjpeg($path), IMAGETYPE_PNG => @imagecreatefrompng($path), default => @imagecreatefromwebp($path) };
     if (!$src) return 'Could not read that photo.';
     $w = imagesx($src); $h = imagesy($src);
-    // crop to 3:2 landscape, then scale to 1200x800
     $tw = $w; $th = (int)round($w * 2 / 3);
     if ($th > $h) { $th = $h; $tw = (int)round($h * 3 / 2); }
     $dst = imagecreatetruecolor(1200, 800);
@@ -114,11 +122,17 @@ function render_slot_ics(array $a, string $id, array $s): ?string {
 }
 
 function render_slot(array $a, string $id, array $s): string {
+    $mls = null; $gone = false;
+    if (!empty($s['mls_key'])) {                      // linked to an MLS listing: follow its real status and price
+        $mls = mls_refresh($a, $id, $s);
+        if ($mls && mls_visible($mls)) { $s['mls_status'] = $mls['status']; if ($mls['price'] > 0) $s['price'] = mls_money($mls['price']); }
+        else { $s = ['title' => '']; $mls = null; $gone = true; }   // sold, withdrawn or hidden by the MLS: the page falls back to a welcome page
+    }
     $code = $a['code']; $p = paths_for($code); $name = ucwords(strtolower($a['name'])); $first = explode(' ', $name)[0];
     $addr = trim((string)($s['address'] ?? '')); $price = trim((string)($s['price'] ?? ''));
     $oh = slot_is_oh($id);
     $title = slot_title($id, $s);
-    $photo = slot_photo_url($code, $id);
+    $photo = $gone ? null : slot_photo_url($code, $id);
     $heroPhoto = $photo ?: photo_url($code);   // no property photo yet: use the agent's headshot so the page is never blank
     $when = $oh ? slot_when($s) : null;
     $base = '/' . $code . '/' . $id . '/';
@@ -129,7 +143,8 @@ function render_slot(array $a, string $id, array $s): string {
 
     $links = '';
     if ($when) $links .= menu_button('calendar', 'Open House ' . $when['short'], $base . 'calendar/');
-    if (!empty($s['property_url'])) $links .= menu_button('home', 'View This Home', $s['property_url'], true);
+    if ($mls) $links .= menu_button('home', 'View Listing Details', $base . 'details/');
+    elseif (!empty($s['property_url'])) $links .= menu_button('home', 'View This Home', $s['property_url'], true);
     if ($addr !== '') $links .= menu_button('pin', 'Get Directions', 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($addr), true);
     if (!empty($a['app_url'])) $links .= menu_button('search', 'Find The Perfect Home Now', '/' . $code . '/app/');
     $links .= $oh ? menu_button('calendar', 'Book A Complimentary Consultation', '/' . $code . '/buyer-consult/')
@@ -152,5 +167,46 @@ function render_slot(array $a, string $id, array $s): string {
       . ($addr !== '' ? '<p class="tag">' . h($addr) . '</p>' : '') . ($price !== '' ? '<p class="headline">' . h($price) . '</p>' : '') . '</div></header>'
       . ($welcome !== '' ? '<p class="welcome">' . h($welcome) . '</p>' : '')
       . '<div class="socials">' . $soc . '</div>' . $video . '<nav class="links">' . $links . '</nav>' . $by
+      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
+}
+
+
+/** Listing details page for an MLS-linked page: /<code>/<id>/details/. Returns null when the page has no live MLS listing. */
+function render_slot_details(array $a, string $id, array $s): ?string {
+    if (empty($s['mls_key'])) return null;
+    $d = mls_refresh($a, $id, $s);
+    if (!$d || !mls_visible($d)) return null;
+    $code = $a['code']; $p = paths_for($code); $name = ucwords(strtolower($a['name'])); $base = '/' . $code . '/' . $id . '/';
+    $photos = mls_photo_urls($code, $id);
+    $ap = photo_url($code);
+    $statusLab = ['Active' => 'Active', 'Coming Soon' => 'Coming Soon', 'Pending' => 'Pending', 'Active Under Contract' => 'Under Contract'][$d['status']] ?? $d['status'];
+    $facts = [];
+    if ($d['beds'] > 0) $facts[] = [(string)$d['beds'], 'Beds'];
+    if ($d['baths'] > 0) $facts[] = [rtrim(rtrim(number_format($d['baths'], 1), '0'), '.'), 'Baths'];
+    if ($d['sqft'] > 0) $facts[] = [number_format($d['sqft']), 'Sq Ft'];
+    if ($d['year'] > 0) $facts[] = [(string)$d['year'], 'Year Built'];
+    if ($d['acres'] > 0) $facts[] = [rtrim(rtrim(number_format($d['acres'], 2), '0'), '.'), 'Acres'];
+    $fh = ''; foreach ($facts as [$v, $l]) $fh .= '<div><b>' . h($v) . '</b><span>' . h($l) . '</span></div>';
+    $hero = $photos ? ' style="--hero:url(\'' . h($photos[0]) . '\')"' : '';
+    $gal = ''; foreach (array_slice($photos, 1) as $i => $u) $gal .= '<img src="' . h($u) . '" alt="Photo ' . ($i + 2) . ' of ' . h($d['street']) . '" loading="lazy">';
+    $links = menu_button('calendar', 'Book A Private Showing', '/' . $code . '/private-showing/?l=' . rawurlencode($id))
+           . menu_button('pin', 'Get Directions', 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($d['address']), true)
+           . (!empty($a['app_url']) ? menu_button('search', 'Find The Perfect Home Now', '/' . $code . '/app/') : '');
+    $upd = $d['modified'] !== '' ? date('F j, Y', strtotime($d['modified']) ?: time()) : date('F j, Y');
+    $by = '<a class="presby" href="/' . $p['main'] . '/">' . ($ap ? '<img src="' . h($ap) . '" alt="">' : '')
+        . '<span><small>Presented by</small><strong>' . h($name) . '</strong><em>' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</em></span></a>';
+    return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+      . '<title>' . h($d['address']) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="robots" content="noindex">'
+      . ($photos ? '<meta property="og:image" content="https://' . SITE_DOMAIN . h(strtok($photos[0], '?')) . '">' : '')
+      . '<link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body><main class="card wide">'
+      . '<a class="back vback" href="' . h($base) . '">&larr; Back</a>'
+      . '<header class="hero slothero' . ($photos ? '' : ' nophoto') . '"' . $hero . '><div class="hero-in"><p class="statusbadge">' . h($statusLab) . '</p><h1>' . h($d['street']) . '</h1>'
+      . '<p class="tag">' . h(trim($d['city'] . ', ' . $d['state'] . ' ' . $d['zip'], ' ,')) . '</p>' . ($d['price'] > 0 ? '<p class="headline">' . h(mls_money($d['price'])) . '</p>' : '') . '</div></header>'
+      . ($fh !== '' ? '<div class="facts">' . $fh . '</div>' : '')
+      . ($d['type'] !== '' ? '<p class="ptype">' . h($d['type']) . ' &middot; MLS #' . h($d['number']) . '</p>' : '')
+      . ($gal !== '' ? '<div class="gal">' . $gal . '</div>' : '')
+      . ($d['remarks'] !== '' ? '<p class="remarks">' . nl2br(h($d['remarks'])) . '</p>' : '')
+      . '<nav class="links">' . $links . '</nav>' . $by
+      . '<p class="mlsdisc">' . ($d['office'] !== '' ? 'Listing courtesy of ' . h($d['office']) . '. ' : '') . 'Information is deemed reliable but is not guaranteed and should be independently verified. Listing data last updated ' . h($upd) . '.</p>'
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
 }

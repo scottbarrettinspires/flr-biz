@@ -272,3 +272,14 @@ a.btn.slotrow{display:block;text-align:left;margin:8px 0}.slotrow .tx{display:fl
 .homebox{margin:14px 0 4px;padding:12px 14px;border-radius:12px;border:1px solid rgba(201,163,78,.7);background:rgba(255,255,255,.06);text-align:left}
 .homebox small{display:block;color:var(--muted);font-size:.78rem}.homebox strong{font-size:1.05rem}
 .card h1.pt.gold,h1.pt.gold{color:var(--accent)}
+
+/* MLS listing details page */
+.statusbadge{display:inline-block;margin:0 0 8px;padding:4px 12px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:8px;margin:14px 0 4px}
+.facts div{display:flex;flex-direction:column;align-items:center;padding:10px 4px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15)}
+.facts b{font-size:1.15rem}.facts span{color:var(--muted);font-size:.74rem}
+.ptype{margin:6px 0 10px;color:var(--muted);font-size:.85rem;text-align:center}
+.gal{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin:10px -4px;padding:0 4px}
+.gal img{height:150px;width:auto;border-radius:10px;scroll-snap-align:start;flex:none}
+.remarks{text-align:left;line-height:1.55;margin:12px 4px}
+.mlsdisc{color:var(--muted);font-size:.72rem;line-height:1.45;margin:16px 6px 0;text-align:center}

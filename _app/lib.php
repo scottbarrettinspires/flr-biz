@@ -228,6 +228,7 @@ require_once __DIR__ . '/pages.php';
 require_once __DIR__ . '/slots.php';
 require_once __DIR__ . '/qr.php';
 require_once __DIR__ . '/share.php';
+require_once __DIR__ . '/mls.php';
 
 function config(): array {
     static $c;

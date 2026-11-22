@@ -48,6 +48,13 @@ if ($view === 'main' && count($parts) >= 2 && slot_id_ok($parts[1])) {          
         header('Content-Type: text/calendar; charset=utf-8'); header('Content-Disposition: attachment; filename="open-house.ics"');
         echo $ics; exit;
     }
+    if (count($parts) === 3 && $parts[2] === 'details') {
+        if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/' . $parts[1] . '/details/', true, 301); exit; }
+        $html = render_slot_details($a, $parts[1], $slot);
+        header('Cache-Control: no-store');
+        if (!$html) { header('Location: /' . $name . '/' . $parts[1] . '/', true, 302); exit; }   // no live MLS listing: back to the page itself
+        header('Content-Type: text/html; charset=utf-8'); echo $html; exit;
+    }
     if (count($parts) !== 2) not_found();
     if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/' . $parts[1] . '/', true, 301); exit; }
     header('Cache-Control: no-store');
