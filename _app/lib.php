@@ -154,7 +154,8 @@ function render_page(array $a, string $view): string {
       . '<div class="hero-in">' . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
       . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . '</div></header>'
       . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . ($links0 ?? '') . $links . $contact . '</nav>'
-      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
+      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>'
+      . '<script>(function(){function fit(){var ts=[].slice.call(document.querySelectorAll("nav.links .btn:not(.contact) .t")),m=18;ts.forEach(function(t){var b=t.parentElement;if(!b||!b.clientWidth)return;var s=18;t.style.fontSize=s+"px";while(s>12&&t.scrollWidth>b.clientWidth){s-=0.25;t.style.fontSize=s+"px";}if(s<m)m=s;});ts.forEach(function(t){t.style.fontSize=m+"px";});}fit();addEventListener("resize",fit);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);})();</script></body></html>';
 }
 
 function render_vcard(array $a): string {
