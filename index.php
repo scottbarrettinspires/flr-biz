@@ -4,6 +4,7 @@ if (PHP_SAPI === 'cli-server') {           // local testing only
     $f = __DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     if (is_file($f) && substr($f, -4) !== '.php') return false;
 }
+header('Cache-Control: no-cache, must-revalidate');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 
