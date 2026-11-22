@@ -312,7 +312,7 @@ function render_landing(array $a, string $slug, bool $done): string {
         $inner .= '<h2 class="vsched">Schedule A Complimentary Consultation</h2>';
         $inner .= $done
             ? '<div class="note ok">Submitted successfully. Thank you, ' . h(explode(' ', $name)[0]) . ' will confirm your appointment time shortly.</div>'
-            : '<p class="lead">' . h($cd['body'][0]) . '</p>' . lead_form_html($a, $cd, $slug);
+            : lead_form_html($a, $cd, $slug);
         $paths = paths_for($code);
         if (isset($paths['faq'])) $inner .= '<a class="back" href="/' . $paths['faq'] . '/">&larr; More answers to your questions</a>';
         $done = null;
@@ -332,7 +332,7 @@ function render_landing(array $a, string $slug, bool $done): string {
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($title) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($d['sub']) . '">'
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body>'
-      . '<main class="card wide">' . agent_card($a, in_array($d['type'], ['app', 'consult', 'value', 'video'], true)) . ($d['type'] === 'app' ? '<h1 class="pt ahd">The Home Search App for Every Home and Detail.</h1>' : '<h1 class="pt">' . h($title) . '</h1>') . '<p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
+      . '<main class="card wide">' . ($d['type'] === 'video' ? '<a class="back vback" href="/' . paths_for($code)['main'] . '/">&larr; My page</a>' : agent_card($a, in_array($d['type'], ['app', 'consult', 'value'], true))) . ($d['type'] === 'app' ? '<h1 class="pt ahd">The Home Search App for Every Home and Detail.</h1>' : '<h1 class="pt">' . h($title) . '</h1>') . '<p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
 

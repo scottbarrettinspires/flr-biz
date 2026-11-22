@@ -231,3 +231,6 @@ nav.links .btn:not(.contact):active{transform:scale(.98)}
 nav.links .btn .ic{background:rgba(201,163,78,.18);box-shadow:none}
 
 .card h2.vsched{text-align:center;margin:22px 0 6px}
+
+.vback{display:block;text-align:left;margin:14px 0 6px}
+.card .vback{display:block;text-align:left}
