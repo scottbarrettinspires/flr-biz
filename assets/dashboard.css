@@ -71,3 +71,9 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 }
 .sb.pri{background:var(--navy);border-color:var(--navy);color:#fff}
 .dash a.dashlink{max-width:900px;margin:12px 0 4px;border-color:var(--orange)}
+.vidform{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.vidform label{display:block;font-weight:600;font-size:.9rem;margin-bottom:6px}
+.vidform .vrow{display:flex;gap:8px;flex-wrap:wrap}
+.vidform input[type=text]{flex:1;min-width:220px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit}
+.vidform input[type=text]:focus{outline:2px solid var(--orange);border-color:var(--orange)}
+.vidform small{display:block;color:var(--muted);font-size:.85rem;margin-top:4px}

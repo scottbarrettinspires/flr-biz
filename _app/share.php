@@ -35,7 +35,7 @@ function dash_close(): string { return '<p class="dfoot">LeadStream Systems &mid
 // Every public page this agent has, as [label, absolute URL].
 function agent_pages(array $agent): array {
     $code = $agent['code']; $p = paths_for($code); $abs = fn($path) => 'https://' . SITE_DOMAIN . '/' . $path . '/';
-    $out = [['My main page (all links)', $abs($p['main'])]];
+    $out = [['My main page (all links)', $abs($p['main']), 'youtube_id']];
     if (isset($p['buyer']))  $out[] = ['Buyer page', $abs($p['buyer'])];
     if (isset($p['seller'])) $out[] = ['Seller page', $abs($p['seller'])];
     if (isset($p['faq']))    $out[] = ['Buyer FAQ page', $abs($p['faq'])];
@@ -46,12 +46,12 @@ function agent_pages(array $agent): array {
                'avoid-buyer-agent-fee' => 'Video: Avoiding the buyer agent fee'];
     foreach (page_defs() as $slug => $d) {
         if (($d['type'] ?? '') === 'video' && !isset($agent['faq'])) continue;
-        $out[] = [$labels[$slug] ?? $d['title'], $abs($code . '/' . $slug)];
+        $out[] = [$labels[$slug] ?? $d['title'], $abs($code . '/' . $slug), ($d['type'] ?? '') === 'video' ? ($d['vkey'] ?? '') : ''];
     }
     return $out;
 }
 
-function share_card(string $label, string $url, string $code, string $key, string $id = '', string $edit = ''): string {
+function share_card(string $label, string $url, string $code, string $key, string $id = '', string $edit = '', string $extra = ''): string {
     $qs = '?a=' . urlencode($code) . '&k=' . urlencode($key) . '&u=' . urlencode($url);
     $file = preg_replace('~[^a-z0-9]+~', '-', strtolower($code . '-' . trim(preg_replace('~^https://[^/]+/~', '', $url), '/')));
     $png = '/setup/qr/' . $qs . '&fmt=png&dl=1&n=' . urlencode($file); $svg = '/setup/qr/' . $qs . '&fmt=svg&dl=1&n=' . urlencode($file);
@@ -65,7 +65,7 @@ function share_card(string $label, string $url, string $code, string $key, strin
       . '<a class="sb" href="mailto:?subject=' . rawurlencode($label) . '&body=' . $body . '">Email it</a>'
       . '<a class="sb" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' . rawurlencode($url) . '">Facebook</a>'
       . '<button type="button" class="sb sbshare" data-share-url="' . h($url) . '" data-share-title="' . h($label) . '" hidden>Share&hellip;</button>'
-      . '<a class="sb gold" href="' . h($png) . '">QR PNG</a><a class="sb gold" href="' . h($svg) . '">QR SVG (print)</a></div></section>';
+      . '<a class="sb gold" href="' . h($png) . '">QR PNG</a><a class="sb gold" href="' . h($svg) . '">QR SVG (print)</a></div>' . $extra . '</section>';
 }
 
 function share_script(): string {
@@ -75,4 +75,13 @@ function share_script(): string {
       . 'var s=e.target.closest("[data-share-url]");if(s&&navigator.share){navigator.share({title:s.getAttribute("data-share-title"),url:s.getAttribute("data-share-url")}).catch(function(){})}});'
       . 'function fb(u){var x=document.createElement("textarea");x.value=u;document.body.appendChild(x);x.select();try{document.execCommand("copy")}catch(_){}document.body.removeChild(x)}'
       . 'if(navigator.share){document.querySelectorAll(".sbshare").forEach(function(n){n.hidden=false})}})();</script>';
+}
+
+// Inline "YouTube video link" form shown on a page's card in My Mobile Pages.
+function video_form(string $code, string $key, string $vkey, ?string $current, string $hint): string {
+    $v = $current !== null && $current !== '' ? 'https://youtu.be/' . $current : '';
+    return '<form method="post" class="vidform" action="/setup/links/"><input type="hidden" name="a" value="' . h($code) . '"><input type="hidden" name="k" value="' . h($key) . '">'
+      . '<input type="hidden" name="act" value="video"><input type="hidden" name="vkey" value="' . h($vkey) . '">'
+      . '<label for="v_' . h($vkey) . '">YouTube video link</label><div class="vrow"><input id="v_' . h($vkey) . '" name="url" type="text" value="' . h($v) . '" placeholder="https://youtu.be/..." autocomplete="off"><button class="sb pri" type="submit">Save video</button></div>'
+      . '<small>' . h($hint) . '</small></form>';
 }
