@@ -320,7 +320,7 @@ function render_landing(array $a, string $slug, bool $done): string {
         $inner = $vid ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($vid) . '" title="' . h($title) . '" loading="lazy" allowfullscreen></iframe></div>'
                       : '<div class="note">My video for this question is coming soon. In the meantime, ask me directly.</div>';
         $cd = page_defs()['buyer-consult'];
-        $inner .= '<h2 class="vsched">Schedule A Complimentary Consultation</h2>';
+        $inner .= '<h2 class="vsched">Book A Complimentary Consultation</h2>';
         $inner .= $done
             ? '<div class="note ok">Submitted successfully. Thank you, ' . h(explode(' ', $name)[0]) . ' will confirm your appointment time shortly.</div>'
             : lead_form_html($a, $cd, $slug);
