@@ -16,7 +16,7 @@ function dash_open(string $active, array $agent, string $key, string $title, str
     $main = '/' . (paths_for($code)['main'] ?? $code) . '/';
     $ic = ['home' => '<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>', 'user' => '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>',
            'house' => '<path d="M3 21V10l9-6 9 6v11h-7v-6h-4v6z"/>', 'qr' => '<path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM14 14h3v3h-3zM18 18h3v3h-3zM18 14h3v2h-3zM14 18h2v3h-2z"/>'];
-    $items = ['overview' => ['Overview', '/setup/dashboard/', 'home'], 'info' => ['My Page & Info', '/setup/', 'user'],
+    $items = ['overview' => ['Overview', '/setup/', 'home'],
               'listings' => ['Listings & Open Houses', '/setup/listings/', 'house'], 'links' => ['Links & QR Codes', '/setup/links/', 'qr']];
     $nav = '';
     foreach ($items as $k => [$lab, $path, $i]) $nav .= '<a href="' . h($path . $q) . '"' . ($k === $active ? ' class="on"' : '') . '><svg viewBox="0 0 24 24" aria-hidden="true">' . $ic[$i] . '</svg><span>' . h($lab) . '</span></a>';
@@ -24,7 +24,7 @@ function dash_open(string $active, array $agent, string $key, string $title, str
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">'
       . '<title>' . h($title) . ' | LeadStream Systems</title><link rel="icon" href="/assets/leadstream-favicon.png">'
       . '<link rel="stylesheet" href="/assets/dashboard.css?v=' . filemtime(dirname(__DIR__) . '/assets/dashboard.css') . '"></head><body class="dash">'
-      . '<header class="dtop"><a class="dlogo" href="/setup/dashboard/' . h($q) . '"><img src="/assets/leadstream-logo.png" alt="LeadStream Systems"></a>'
+      . '<header class="dtop"><a class="dlogo" href="/setup/' . h($q) . '"><img src="/assets/leadstream-logo.png" alt="LeadStream Systems"></a>'
       . '<div class="dtop-r"><a class="dview" href="' . h($main) . '" target="_blank" rel="noopener">View my mobile page &#8599;</a>'
       . '<span class="dwho">' . ($photo ? '<img src="' . h($photo) . '" alt="">' : '') . '<b>' . h($name) . '</b></span></div></header>'
       . '<div class="dbody"><aside class="dside"><nav>' . $nav . '</nav><p class="dpow">Florida Luxury Realty<br>Agent Dashboard</p></aside>'

@@ -23,7 +23,7 @@ function not_found(): never {
 if (!$parts) { header('Location: https://floridaluxuryrealty.com', true, 302); exit; }
 if ($parts[0] === 'setup' && count($parts) === 1) { require __DIR__ . '/_app/setup.php'; exit; }
 if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'listings') { require __DIR__ . '/_app/setup_listings.php'; exit; }
-if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'dashboard') { require __DIR__ . '/_app/setup_home.php'; exit; }
+if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'dashboard') { header('Location: /setup/?' . http_build_query(['a' => $_GET['a'] ?? '', 'k' => $_GET['k'] ?? '']), true, 301); exit; }
 if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'links') { require __DIR__ . '/_app/setup_links.php'; exit; }
 if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'qr') { require __DIR__ . '/_app/setup_qr.php'; exit; }
 if ($parts[0] === 'lead' && count($parts) === 1) { require __DIR__ . '/_app/lead.php'; exit; }
