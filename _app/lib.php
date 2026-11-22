@@ -80,7 +80,6 @@ function link_href(array $a, array $l): string {
 function render_page(array $a, string $view): string {
     $code = $a['code']; $main = $view === 'main'; $v = $a[$view]; $p = paths_for($code);
     $title = $main ? $a['name'] . ' - ' . $a['title'] : $v['name'];
-    $headline = $main ? $a['headline'] : $v['headline'];
     $tag = $main ? $a['tagline'] : $v['sub'];
     $photo = photo_url($code);
 
@@ -113,7 +112,7 @@ function render_page(array $a, string $view): string {
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $p[$view] . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body><main class="card">'
       . '<header class="hero' . ($photo ? '' : ' nophoto') . '"' . ($photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '') . '>'
       . '<div class="hero-in">' . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
-      . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . ($main ? '<p class="headline">' . h($headline) . '</p>' : '') . '</div></header>'
+      . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . '</div></header>'
       . '<div class="socials">' . $socHtml . '</div>' . $video . '<nav class="links">' . $links . $contact . '</nav>'
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
 }
