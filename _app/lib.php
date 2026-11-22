@@ -69,6 +69,7 @@ function icon(string $n): string { return '<svg viewBox="0 0 24 24" aria-hidden=
 function link_href(array $a, array $l): string {
     $p = paths_for($a['code']);
     if (isset($l['view'])) return '/' . $p[$l['view']] . '/';
+    if (isset($l['page'])) return '/' . $a['code'] . '/' . $l['page'] . '/';
     if (isset($l['lofty'])) return rtrim($a['lofty_base'], '/') . $l['lofty'];
     return $l['url'];
 }
@@ -91,7 +92,8 @@ function render_page(array $a, string $view): string {
 
     $links = '';
     foreach ($v['links'] as $l) {
-        $ext = !isset($l['view']);
+        if (!empty($l['pending'])) continue;      // hidden until that feature is live
+        $ext = !isset($l['view']) && !isset($l['page']);
         $links .= '<a class="btn" href="' . h(link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '><span class="t">'
             . h($l['title']) . '</span>' . (!empty($l['sub']) ? '<span class="sub">' . h($l['sub']) . '</span>' : '') . '</a>' . "\n";
     }
@@ -165,4 +167,102 @@ function save_photo(string $code, array $f): string {
     if (!is_dir(UPLOAD_DIR)) mkdir(UPLOAD_DIR, 0755, true);
     imagejpeg($dst, UPLOAD_DIR . "/$code.jpg", 88);
     return '';
+}
+
+
+// ---------- config + landing pages + leads ----------
+require_once __DIR__ . '/pages.php';
+
+function config(): array {
+    static $c;
+    if ($c === null) {
+        $c = ['broker_email' => 'broker@myflroffice.com', 'webhook_url' => '',
+              'terms_url' => 'https://floridaluxuryrealty.com/site-privacy-terms', 'privacy_url' => 'https://floridaluxuryrealty.com/site-privacy-terms',
+              'consent_url' => 'https://floridaluxuryrealty.com/site-privacy-terms'];
+        $f = DATA_DIR . '/config.json';
+        if (is_file($f)) $c = (json_decode((string)file_get_contents($f), true) ?: []) + $c;
+    }
+    return $c;
+}
+
+function consent_html(array $a): string {
+    $c = config(); $b = h(BROKERAGE);
+    return 'By checking this box, I give my electronic signature and agree to the <a href="' . h($c['consent_url']) . '" target="_blank" rel="noopener">Electronic Disclosure Consent Agreement</a>, '
+      . 'and to receive recurring marketing messages from or on behalf of ' . $b . ' and ' . h(ucwords(strtolower($a['name']))) . ', including automated calls, texts and prerecorded voice messages, at the number I provided. '
+      . 'Message frequency varies and message and data rates may apply. Reply STOP to stop texts or HELP for help. I also agree to the '
+      . '<a href="' . h($c['terms_url']) . '" target="_blank" rel="noopener">Terms of Service</a> and <a href="' . h($c['privacy_url']) . '" target="_blank" rel="noopener">Privacy Policy</a>. '
+      . 'Consent is not a condition of any purchase. You can also call for direct assistance.';
+}
+
+function agent_card(array $a): string {
+    $p = paths_for($a['code']); $photo = photo_url($a['code']);
+    $rows = '';
+    if (!empty($a['license'])) $rows .= '<div>Broker License ID: ' . h($a['license']) . '</div>';
+    if (!empty($a['phone']))   $rows .= '<div><a href="tel:' . h(preg_replace('/[^0-9+]/', '', $a['phone'])) . '">' . h($a['phone']) . '</a></div>';
+    if (!empty($a['email']))   $rows .= '<div><a href="mailto:' . h($a['email']) . '">' . h($a['email']) . '</a></div>';
+    if (!empty($a['office']))  $rows .= '<div>' . h($a['office']) . '</div>';
+    return '<section class="agentcard"><div class="avatar sm" data-initials="' . h(initials_text($a['name'])) . '">' . ($photo ? '<img src="' . h($photo) . '" alt="">' : '')
+      . '</div><div class="ainfo"><strong>' . h(ucwords(strtolower($a['name']))) . '</strong><div>' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</div>' . $rows
+      . '<a class="miniback" href="/' . $p['main'] . '/">&larr; Back to my page</a></div></section>';
+}
+
+function render_landing(array $a, string $slug, bool $done): string {
+    $defs = page_defs(); $d = $defs[$slug]; $code = $a['code']; $name = ucwords(strtolower($a['name']));
+    $title = $d['title'];
+    $body = '';
+    foreach ($d['body'] as $para) $body .= '<p class="lead">' . h($para) . '</p>';
+    $fileUrl = null;
+    if (($d['file'] ?? null) && is_file(ROOT_DIR . '/guides/' . $d['file'])) $fileUrl = '/guides/' . $d['file'];
+
+    if ($done) {
+        $inner = '<div class="note ok">Submitted successfully. Thank you' . ($d['type'] === 'guide' ? '.' : ', ' . h(explode(' ', $name)[0]) . ' will be in touch shortly.') . '</div>';
+        if ($d['type'] === 'guide') $inner .= $fileUrl
+            ? '<p class="lead">Your guide should download automatically. If it does not, <a href="' . h($fileUrl) . '" download>click here</a>.</p><meta http-equiv="refresh" content="1;url=' . h($fileUrl) . '">'
+            : '<p class="lead">Your guide is on its way. ' . h($name) . ' will send it to you shortly.</p>';
+        if ($d['type'] === 'value') $inner .= '<p class="lead">Your home market value report is being prepared and will be sent to you shortly.</p>';
+    } else {
+        $ts = time();
+        $extra = '';
+        if ($d['type'] === 'value') $extra .= '<label for="address">Property address *</label><input id="address" name="address" type="text" required maxlength="200" placeholder="Street, city, state, ZIP" autocomplete="street-address">';
+        $inner = '<form method="post" action="/lead" class="form">'
+          . '<input type="hidden" name="agent" value="' . h($code) . '"><input type="hidden" name="form" value="' . h($d['form']) . '"><input type="hidden" name="ts" value="' . $ts . '">'
+          . '<div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label></div>'
+          . $extra
+          . '<label for="name">Name *</label><input id="name" name="name" type="text" required maxlength="100" autocomplete="name">'
+          . '<label for="phone">Phone *</label><input id="phone" name="phone" type="tel" required maxlength="24" autocomplete="tel">'
+          . '<label for="email">Email *</label><input id="email" name="email" type="email" required maxlength="120" autocomplete="email">'
+          . (!empty($d['time_field']) ? '<label for="msg">Best days or times to talk, or anything you would like me to know</label><textarea id="msg" name="message" rows="3" maxlength="800"></textarea>' : '')
+          . '<label class="consent"><input type="checkbox" name="consent" value="1" required> <span>' . consent_html($a) . '</span></label>'
+          . '<button class="btn contact" type="submit"><span class="t">' . h($d['button']) . '</span></button></form>';
+    }
+    $h2 = isset($d['h2']) ? '<h2>' . h($d['h2']) . '</h2>' : '';
+    return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+      . '<title>' . h($title) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($d['sub']) . '">'
+      . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css"></head><body>'
+      . '<main class="card wide"><h1>' . h($title) . '</h1><p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner . agent_card($a)
+      . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
+}
+
+/** Store a lead, email the agent + broker, optionally post to a webhook (e.g. Zapier -> Google Sheet). Returns true when stored. */
+function save_lead(array $a, array $lead): bool {
+    if (!is_dir(DATA_DIR)) { mkdir(DATA_DIR, 0755, true); file_put_contents(DATA_DIR . '/.htaccess', "Require all denied\n"); }
+    $lead += ['received' => gmdate('c'), 'agent' => $a['code'], 'consent_version' => CONSENT_VERSION];
+    $ok = file_put_contents(DATA_DIR . '/leads.jsonl', json_encode($lead, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n", FILE_APPEND | LOCK_EX) !== false;
+
+    $c = config();
+    $to = array_values(array_unique(array_filter([$a['email'] ?? '', $c['broker_email']], fn($e) => filter_var($e, FILTER_VALIDATE_EMAIL))));
+    if ($to && function_exists('mail')) {
+        $clean = fn($s) => str_replace(["\r", "\n"], ' ', (string)$s);
+        $subject = 'New lead: ' . $clean($lead['form']) . ' - ' . $clean($lead['name']);
+        $body = "New lead for " . $a['name'] . " (" . $a['code'] . ")\nForm: {$lead['form']}\nName: {$lead['name']}\nPhone: {$lead['phone']}\nEmail: {$lead['email']}\n"
+              . (!empty($lead['address']) ? "Address: {$lead['address']}\n" : '') . (!empty($lead['message']) ? "Message: {$lead['message']}\n" : '')
+              . "Received: {$lead['received']}\nConsent given: yes (version " . CONSENT_VERSION . ")\n";
+        $hdr = "From: " . BROKERAGE . " <noreply@" . SITE_DOMAIN . ">\r\nReply-To: " . $clean($lead['email']) . "\r\nContent-Type: text/plain; charset=utf-8";
+        @mail(implode(',', $to), $subject, $body, $hdr);
+    }
+    if (!empty($c['webhook_url']) && preg_match('~^https://~', $c['webhook_url'])) {
+        @file_get_contents($c['webhook_url'], false, stream_context_create(['http' => ['method' => 'POST', 'timeout' => 4,
+            'header' => "Content-Type: application/json\r\n", 'content' => json_encode($lead, JSON_UNESCAPED_UNICODE)]]));
+    }
+    return $ok;
 }

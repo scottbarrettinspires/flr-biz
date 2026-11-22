@@ -21,6 +21,7 @@ function not_found(): never {
 
 if (!$parts) { header('Location: https://floridaluxuryrealty.com', true, 302); exit; }
 if ($parts[0] === 'setup' && count($parts) === 1) { require __DIR__ . '/_app/setup.php'; exit; }
+if ($parts[0] === 'lead' && count($parts) === 1) { require __DIR__ . '/_app/lead.php'; exit; }
 
 $routes = routes();
 $name = strtolower($parts[0]);
@@ -32,6 +33,11 @@ if (count($parts) === 2 && $parts[1] === 'contact.vcf' && $view === 'main') {
     header('Content-Type: text/vcard; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $code . '.vcf"');
     echo render_vcard($a); exit;
+}
+if (count($parts) === 2 && $view === 'main' && isset(page_defs()[$parts[1]])) {
+    if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/' . $parts[1] . '/', true, 301); exit; }
+    header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-store');
+    echo render_landing($a, $parts[1], isset($_GET['done'])); exit;
 }
 if (count($parts) !== 1) not_found();
 if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/', true, 301); exit; }

@@ -32,16 +32,17 @@
           {
             "title": "Book a 15 Minute Complimentary Buyer or Seller Consultation",
             "sub": "Free, no obligation. A quick call to help you understand your needs and your next step.",
-            "lofty": "/book-buyer-consultation"
+            "page": "buyer-consult"
           },
           {
             "title": "View All Local Homes For Sale - FREE Home Search Mobile App",
             "sub": "Search for your home in the area you want to live.",
-            "lofty": "/download-mobile-app"
+            "page": "app",
+            "pending": true
           },
           {
             "title": "Curious What Your Home Is Worth Today?",
-            "lofty": "/evaluation"
+            "page": "value"
           }
         ]
       },
@@ -58,12 +59,13 @@
           {
             "title": "Search for your DREAM HOME made easy - Download App Now!",
             "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
-            "lofty": "/download-mobile-app"
+            "page": "app",
+            "pending": true
           },
           {
             "title": "Book A 15 Minute Complimentary Home Buyer Consultation",
             "sub": "A free, no-obligation 15-minute consultation where I learn your situation and goals, offer resources and help you secure a strong financial outcome. I enjoy helping home buyers.",
-            "lofty": "/book-buyer-consultation"
+            "page": "buyer-consult"
           },
           {
             "title": "I need to SELL MY HOME before buying a home",
@@ -78,20 +80,21 @@
         "links": [
           {
             "title": "How To Maximize Your Home's Value - DOWNLOAD MY GUIDE",
-            "lofty": "/maximize-home-value-guide"
+            "page": "seller-guide"
           },
           {
             "title": "Curious What Your Home Is Worth Today? INSTANT VALUATION",
-            "lofty": "/free-home-value-report"
+            "page": "value"
           },
           {
             "title": "Book a 15-Minute Complimentary Seller Consultation",
-            "lofty": "/complimentary-seller-consultation"
+            "page": "seller-consult"
           },
           {
             "title": "See What Homes Are Selling For In Your Neighborhood",
-            "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
-            "lofty": "/download-mobile-app"
+            "sub": "One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+            "page": "app",
+            "pending": true
           },
           {
             "title": "I'm Interested in INFORMATION ABOUT BUYING a Home",
@@ -100,7 +103,10 @@
         ]
       },
       "code": "ab1",
-      "setup_hash": "b005f22e92ca663b080d60bdba38a9de38ba03e03eb369db8e31dba13bf47901"
+      "setup_hash": "b005f22e92ca663b080d60bdba38a9de38ba03e03eb369db8e31dba13bf47901",
+      "license": "",
+      "office": "",
+      "app_code": "abarrett"
     }
   ]
 }
