@@ -21,12 +21,12 @@
       "main": {
         "links": [
           {
-            "title": "Buying a Home? Start Here",
+            "title": "I'm Interested In Buying A Home",
             "sub": "Learn Everything You Need To Know Right Here",
             "view": "buyer"
           },
           {
-            "title": "Selling Your Home? Start Here",
+            "title": "I'm Interested In Selling My Home",
             "view": "seller"
           },
           {
