@@ -97,3 +97,12 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 .sc-qrbox{width:210px;max-width:210px;flex:none}
 .sc-url{font-size:.8rem;line-height:1.25;overflow-wrap:anywhere;word-break:normal}
 @media (max-width:600px){.sc-qrbox{width:auto;max-width:none}.sc-qrbox .sc-url{text-align:left}}
+.vidbar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;max-width:900px;margin:10px 0}
+.vidbar .vb-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:8px}
+.vidbar .vb-head strong{color:var(--navy);font-size:1.05rem}.vidbar .vb-head small{color:var(--muted);font-size:.85rem}
+.vidbar .vb-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.vidbar .vb-row>div{flex:1;min-width:200px}
+.vidbar label{display:block;font-weight:600;font-size:.88rem;margin-bottom:4px}
+.vidbar input[type=text]{width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--line);border-radius:10px;font:inherit}
+.vidbar input[type=text]:focus{outline:2px solid var(--orange);border-color:var(--orange)}
+.vidbar .sb.pri{background:var(--navy);border-color:var(--navy);color:#fff;padding:9px 16px}

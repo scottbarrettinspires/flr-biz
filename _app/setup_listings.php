@@ -160,14 +160,15 @@ $f2 = fn($id, $label, $v) => '<label for="' . $id . '">' . h($label) . '</label>
 <script>(function(){var t=document.getElementById('target'),c=document.getElementById('custom_wrap'),f=document.getElementById('slot_fields');
 function u(){c.style.display=t.value==='custom'?'':'none';f.style.display=(t.value===''?'':'none');}t.addEventListener('change',u);u();})();</script>
 <?php else: ?>
-<form method="post" class="form" style="margin-bottom:6px">
+<?php $cur = agent($code); $yt = fn($v) => !empty($v) ? 'https://youtu.be/' . $v : ''; $pv = fn($k) => $_SERVER['REQUEST_METHOD'] === 'POST' ? ($_POST[$k] ?? '') : $yt($cur[$k] ?? ''); ?>
+<form method="post" class="vidbar">
 <input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="act" value="videos">
-<label style="font-size:1.05rem">Videos for all your pages</label>
-<small style="margin-top:0">Paste a YouTube link once and it plays on every page of that kind. Leave blank for no video.</small>
-<?php $cur = agent($code); $yt = fn($v) => !empty($v) ? 'https://youtu.be/' . $v : ''; ?>
-<?= $f2('vid_listings', 'Video for all listing pages', $_SERVER['REQUEST_METHOD'] === 'POST' ? ($_POST['vid_listings'] ?? '') : $yt($cur['vid_listings'] ?? '')) ?>
-<?= $f2('vid_openhouses', 'Video for all open house pages', $_SERVER['REQUEST_METHOD'] === 'POST' ? ($_POST['vid_openhouses'] ?? '') : $yt($cur['vid_openhouses'] ?? '')) ?>
-<button class="btn contact" type="submit"><span class="t">Save videos</span></button></form>
+<div class="vb-head"><strong>Videos for all your pages</strong><small>Paste a YouTube link once and it plays on every page of that kind. Leave blank for no video.</small></div>
+<div class="vb-row">
+<div><label for="vid_listings">All listing pages</label><input id="vid_listings" name="vid_listings" type="text" value="<?= h($pv('vid_listings')) ?>" placeholder="https://youtu.be/..." autocomplete="off"></div>
+<div><label for="vid_openhouses">All open house pages</label><input id="vid_openhouses" name="vid_openhouses" type="text" value="<?= h($pv('vid_openhouses')) ?>" placeholder="https://youtu.be/..." autocomplete="off"></div>
+<button class="sb pri" type="submit">Save videos</button>
+</div></form>
 <?php foreach (['p' => ['Listing pages', 'For yard signs and listing flyers. One link per property.', 'Add another listing page'], 'o' => ['Open house pages', 'For open house and coming-soon signs. Includes the date and an Add to Calendar button.', 'Add another open house page']] as $pre => [$hd, $ds, $addlab]): ?>
 <h2><?= h($hd) ?></h2><p class="dsub" style="margin-bottom:6px"><?= h($ds) ?></p>
 <?php foreach ($slots as $id => $s) if ($id[0] === $pre) echo share_card(slot_kind($id) . ' ' . $id . ': ' . slot_status($agent, $s), $base . $id . '/', $code, $key, $id, $self . '&s=' . $id); ?>
