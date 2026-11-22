@@ -51,9 +51,12 @@ function render_app_inner(array $a, string $name): string {
     $o = '<section class="ahero"><h2 class="ah">Every home. Every detail.</h2>'
        . '<div class="afp"><img class="heroimg" src="/assets/app-phone.png?v=1" alt="Home search app on a smartphone" width="512" height="582"></div>' . $cta . '</section>';
     $o .= '<h2 class="asec">The Easiest Way To Find Homes</h2>';
-    $o .= $feat('pin', 'View Listings Near You', 'See the homes for sale closest to where you are right now, with the details that matter to you.', 'list', false);
-    $o .= $feat('photo', 'Photos and Details', 'Swipe through interior photos and see the details on any home, including taxes and schools.', 'details', true);
-    $o .= $feat('chat', 'Save Favorites & Get Help', 'Save the homes you love, then chat with me directly with questions or to set up a showing.', 'favorites', false);
+    $o .= '<ul class="abul">'
+        . '<li><strong>View Listings Near You</strong> See the homes for sale closest to where you are right now, with the details that matter to you.</li>'
+        . '<li><strong>Photos and Details</strong> Swipe through interior photos and see the details on any home, including taxes and schools.</li>'
+        . '<li><strong>Save Favorites</strong> Save the homes you love and come back to them any time.</li>'
+        . '<li><strong>Get Help From Me</strong> Chat with me directly with questions or to set up a showing.</li>'
+        . '</ul>';
     $o .= '<section class="adl"><h2>Download Your FREE App</h2><p class="lead">The local home search app is a free download from your smartphone app store.</p>' . $cta . '</section>';
     if (!empty($a['app_url'])) $o .= '<div class="astick"><a class="btn contact" href="' . h($a['app_url']) . '" target="_blank" rel="noopener"><span class="t">Download FREE Home Search App</span></a></div>';
     return $o;
