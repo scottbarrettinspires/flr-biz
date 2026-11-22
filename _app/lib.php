@@ -5,7 +5,7 @@ const BROKERAGE   = 'Florida Luxury Realty';
 const ROOT_DIR    = __DIR__ . '/..';
 const DATA_DIR    = ROOT_DIR . '/_data';
 const UPLOAD_DIR  = ROOT_DIR . '/uploads';
-const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid'];
+const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url'];
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -117,9 +117,10 @@ function render_page(array $a, string $view): string {
 
     $links = !empty($v['section']) ? '<h2 class="sec">' . h($v['section']) . '</h2>' : '';
     foreach ($v['links'] as $l) {
-        if (!empty($l['pending'])) continue;      // hidden until that feature is live
-        $ext = !isset($l['view']) && !isset($l['page']);
-        $links .= '<a class="btn" href="' . h(link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . btn_icon($l) . '<span class="tx"><span class="t">'
+        $isApp = ($l['page'] ?? '') === 'app';    // home-search app page: shows once the agent adds its link
+        if ($isApp ? empty($a['app_url']) : !empty($l['pending'])) continue;
+        $ext = $isApp || (!isset($l['view']) && !isset($l['page']));
+        $links .= '<a class="btn" href="' . h($isApp ? $a['app_url'] : link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . btn_icon($l) . '<span class="tx"><span class="t">'
             . h($l['title']) . '</span>' . (!empty($l['sub']) ? '<span class="sub">' . h($l['sub']) . '</span>' : '') . '</span></a>' . "\n";
     }
     $video = (!empty($a['youtube_id']) && $main)

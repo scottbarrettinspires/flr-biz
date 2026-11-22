@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'instagram'  => clean_url($_POST['instagram'] ?? '', 'https://instagram.com/'),
         'facebook'   => clean_url($_POST['facebook'] ?? '', 'https://facebook.com/'),
         'tiktok'     => clean_url($_POST['tiktok'] ?? '', 'https://tiktok.com/@'),
+        'app_url'    => clean_url($_POST['app_url'] ?? ''),
         'youtube_id' => youtube_id($_POST['youtube'] ?? ''),
         'vid_steps'  => youtube_id($_POST['vid_steps'] ?? ''),
         'vid_broker' => youtube_id($_POST['vid_broker'] ?? ''),
@@ -31,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
     if ($raw['phone'] === null) $errors[] = 'Phone can only contain numbers, spaces and ( ) + - .';
     if ($raw['email'] !== '' && !filter_var($raw['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'That email address does not look right.';
-    foreach (['website', 'instagram', 'facebook', 'tiktok'] as $k)
-        if (trim($_POST[$k] ?? '') !== '' && $raw[$k] === '') $errors[] = ucfirst($k) . ' link does not look right.';
+    foreach (['website', 'instagram', 'facebook', 'tiktok', 'app_url'] as $k)
+        if (trim($_POST[$k] ?? '') !== '' && $raw[$k] === '') $errors[] = ($k === 'app_url' ? 'Home search app' : ucfirst($k)) . ' link does not look right.';
     foreach (['youtube' => 'youtube_id', 'vid_steps' => 'vid_steps', 'vid_broker' => 'vid_broker', 'vid_avoid' => 'vid_avoid'] as $in => $out)
         if (trim($_POST[$in] ?? '') !== '' && $raw[$out] === '') $errors[] = 'Paste the full YouTube video link (youtube.com/watch?v=... or youtu.be/...).';
     $errors = array_values(array_unique($errors));
@@ -77,6 +78,7 @@ $field = fn($id, $label, $v, $ph, $type = 'text', $hint = '') =>
 <?= $field('instagram', 'Instagram', $val('instagram'), '@yourname or link') ?>
 <?= $field('facebook', 'Facebook', $val('facebook'), 'link to your page') ?>
 <?= $field('tiktok', 'TikTok', $val('tiktok'), '@yourname or link') ?>
+<?= $field('app_url', 'Home search app page (shows the "Search homes / download my app" button)', $val('app_url'), 'https://...') ?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>
 <footer><?= h(BROKERAGE) ?><br><span>Keep this link private. It is your personal setup link.</span></footer>
