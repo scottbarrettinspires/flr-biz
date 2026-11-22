@@ -26,8 +26,6 @@ echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="vie
   . '<a class="btn" href="https://www.instagram.com/" id="shp-ig">' . btn_icon(['icon' => 'instagram']) . '<span class="tx"><span class="t">Share To Instagram</span></span></a>'
   . '<p class="shp-note" id="shp-note" hidden>Link copied. Paste it into your Instagram story, post, bio or message.</p>'
   . '<a class="btn" href="#" id="shp-copy">' . btn_icon(['icon' => 'link']) . '<span class="tx"><span class="t">Copy Link</span></span></a>'
-  . '<a class="btn" href="#" id="shp-native" hidden>' . btn_icon(['icon' => 'share']) . '<span class="tx"><span class="t">More Ways To Share</span></span></a>'
-  . '<a class="btn" href="/share/qr/' . h($qs) . '&amp;fmt=png&amp;dl=1">' . btn_icon(['icon' => 'download']) . '<span class="tx"><span class="t">Download QR Code</span></span></a>'
   . '</nav><footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>'
   . '<script>(function(){var U=' . json_encode($u) . ',T=' . json_encode('From ' . $name) . ';'
   . 'function copy(){try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(U)}catch(e){}'
@@ -35,5 +33,4 @@ echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="vie
   . 'function flash(el,txt){var s=el.querySelector(".t"),o=s.textContent;s.textContent=txt;setTimeout(function(){s.textContent=o},2000)}'
   . 'document.getElementById("shp-copy").addEventListener("click",function(e){e.preventDefault();var el=this;copy().then(function(){flash(el,"Link copied!")})});'
   . 'document.getElementById("shp-ig").addEventListener("click",function(e){e.preventDefault();var n=document.getElementById("shp-note");copy().then(function(){n.hidden=false;setTimeout(function(){window.open("https://www.instagram.com/","_blank","noopener")},700)})});'
-  . 'if(navigator.share){var b=document.getElementById("shp-native");b.hidden=false;b.addEventListener("click",function(e){e.preventDefault();navigator.share({title:T,url:U}).catch(function(){})})}'
   . '})();</script></body></html>';
