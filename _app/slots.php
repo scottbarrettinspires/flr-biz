@@ -32,6 +32,13 @@ function slots_save(string $code, array $slots): void {
     file_put_contents($tmp, json_encode($slots, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
     rename($tmp, $f);
 }
+// Headline shown on the page. A page with no property is a WELCOME page; old default headlines are corrected by page kind.
+function slot_title(string $id, array $s): string {
+    $t = trim((string)($s['title'] ?? '')); $addr = trim((string)($s['address'] ?? '')); $oh = slot_is_oh($id);
+    if (!$oh && strcasecmp($t, 'OPEN HOUSE') === 0) $t = '';                                  // listing pages are never "open house"
+    if ($addr === '' && ($t === '' || in_array(strtoupper($t), ['OPEN HOUSE', 'JUST LISTED'], true))) return 'WELCOME';
+    return $t !== '' ? $t : ($oh ? 'OPEN HOUSE' : 'JUST LISTED');
+}
 function slot_status(array $a, array $s): string {
     if ($rd = slot_redirect($a, $s)) return 'Sends visitors to ' . (SLOT_TARGETS[$s['target']] ?? 'a link you pasted');
     $addr = trim((string)($s['address'] ?? ''));
@@ -110,7 +117,7 @@ function render_slot(array $a, string $id, array $s): string {
     $code = $a['code']; $p = paths_for($code); $name = ucwords(strtolower($a['name'])); $first = explode(' ', $name)[0];
     $addr = trim((string)($s['address'] ?? '')); $price = trim((string)($s['price'] ?? ''));
     $oh = slot_is_oh($id);
-    $title = trim((string)($s['title'] ?? '')) ?: ($addr !== '' ? ($oh ? 'OPEN HOUSE' : 'JUST LISTED') : 'WELCOME');
+    $title = slot_title($id, $s);
     $photo = slot_photo_url($code, $id);
     $heroPhoto = $photo ?: photo_url($code);   // no property photo yet: use the agent's headshot so the page is never blank
     $when = $oh ? slot_when($s) : null;

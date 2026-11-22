@@ -98,7 +98,7 @@ $f2 = fn($id, $label, $v) => '<label for="' . $id . '">' . h($label) . '</label>
 <div id="custom_wrap"><?= $f('custom_url', 'Link to send visitors to', $val('custom_url'), 'https://...') ?></div>
 <div id="slot_fields">
 <?php $oh = slot_is_oh($sid); ?>
-<?= $f('title', 'Headline', $val('title') ?: ($oh ? 'OPEN HOUSE' : 'JUST LISTED'), $oh ? 'GRAND OPEN HOUSE EVENT' : 'JUST LISTED', 'text', $oh ? 'Examples: OPEN HOUSE, GRAND OPEN HOUSE EVENT.' : 'Examples: JUST LISTED, COMING SOON, FOR SALE, UNDER CONTRACT, SOLD.') ?>
+<?= $f('title', 'Headline', (($t0 = trim((string)$val('title'))) !== '' && !(!$oh && strcasecmp($t0, 'OPEN HOUSE') === 0) ? $t0 : ($oh ? 'OPEN HOUSE' : 'JUST LISTED')), $oh ? 'GRAND OPEN HOUSE EVENT' : 'JUST LISTED', 'text', $oh ? 'Examples: OPEN HOUSE, GRAND OPEN HOUSE EVENT.' : 'Examples: JUST LISTED, COMING SOON, FOR SALE, UNDER CONTRACT, SOLD.') ?>
 <?= $f('address', 'Property address', $val('address'), '8716 Green Street, Port Richey') ?>
 <?= $f('price', 'Price (optional)', $val('price'), '$425,000') ?>
 <label for="welcome">Welcome message (optional)</label><textarea id="welcome" name="welcome" rows="2" maxlength="240" placeholder="Welcome to my open house!"><?= h($val('welcome')) ?></textarea>
