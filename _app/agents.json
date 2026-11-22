@@ -1,0 +1,106 @@
+{
+  "site": {
+    "domain": "flr.biz",
+    "brokerage": "Florida Luxury Realty"
+  },
+  "agents": [
+    {
+      "name": "ASHLEY BARRETT",
+      "title": "Realtor®",
+      "tagline": "Your 5 Star ⭐️⭐️⭐️⭐️⭐️ Agent with Florida Luxury Realty",
+      "headline": "Your Needs are My Passion",
+      "phone": "(727) 457-9933",
+      "email": "",
+      "website": "",
+      "instagram": "",
+      "facebook": "",
+      "tiktok": "",
+      "photo": "photo.jpg",
+      "youtube_id": "",
+      "lofty_base": "https://ashleybarrett.floridaluxuryrealty.com",
+      "main": {
+        "links": [
+          {
+            "title": "I'm interested in BUYING A HOME",
+            "sub": "Learn Everything You Need To Know Right Here",
+            "view": "buyer"
+          },
+          {
+            "title": "I'm interested in SELLING MY HOME",
+            "view": "seller"
+          },
+          {
+            "title": "Book a 15 Minute Complimentary Buyer or Seller Consultation",
+            "sub": "Free, no obligation. A quick call to help you understand your needs and your next step.",
+            "lofty": "/book-buyer-consultation"
+          },
+          {
+            "title": "View All Local Homes For Sale - FREE Home Search Mobile App",
+            "sub": "Search for your home in the area you want to live.",
+            "lofty": "/download-mobile-app"
+          },
+          {
+            "title": "Curious What Your Home Is Worth Today?",
+            "lofty": "/evaluation"
+          }
+        ]
+      },
+      "buyer": {
+        "name": "BUYING A 🏠 HOME 🏠 SOON?",
+        "headline": "Learn Everything You Need To Know Right Here",
+        "sub": "Ashley Barrett Helps Home Buyers",
+        "links": [
+          {
+            "title": "Get Answers To HOME BUYER Frequently Asked Questions",
+            "sub": "Learn Everything You Need To Know Right Here",
+            "url": "http://qrcc.me/syj3moqyqx3r"
+          },
+          {
+            "title": "Search for your DREAM HOME made easy - Download App Now!",
+            "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+            "lofty": "/download-mobile-app"
+          },
+          {
+            "title": "Book A 15 Minute Complimentary Home Buyer Consultation",
+            "sub": "A free, no-obligation 15-minute consultation where I learn your situation and goals, offer resources and help you secure a strong financial outcome. I enjoy helping home buyers.",
+            "lofty": "/book-buyer-consultation"
+          },
+          {
+            "title": "I need to SELL MY HOME before buying a home",
+            "url": "http://AshleyHelpsSellers.com"
+          }
+        ]
+      },
+      "seller": {
+        "name": "Let's get you to SOLD",
+        "headline": "Welcome!",
+        "sub": "Learn all you need to know with the resources below",
+        "links": [
+          {
+            "title": "How To Maximize Your Home's Value - DOWNLOAD MY GUIDE",
+            "lofty": "/maximize-home-value-guide"
+          },
+          {
+            "title": "Curious What Your Home Is Worth Today? INSTANT VALUATION",
+            "lofty": "/free-home-value-report"
+          },
+          {
+            "title": "Book a 15-Minute Complimentary Seller Consultation",
+            "lofty": "/complimentary-seller-consultation"
+          },
+          {
+            "title": "See What Homes Are Selling For In Your Neighborhood",
+            "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+            "lofty": "/download-mobile-app"
+          },
+          {
+            "title": "I'm Interested in INFORMATION ABOUT BUYING a Home",
+            "url": "http://AshleyHelpsBuyers.com"
+          }
+        ]
+      },
+      "code": "ab1",
+      "setup_hash": "b005f22e92ca663b080d60bdba38a9de38ba03e03eb369db8e31dba13bf47901"
+    }
+  ]
+}

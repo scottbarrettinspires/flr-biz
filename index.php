@@ -1,0 +1,40 @@
+<?php
+require __DIR__ . '/_app/lib.php';
+if (PHP_SAPI === 'cli-server') {           // local testing only
+    $f = __DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if (is_file($f) && substr($f, -4) !== '.php') return false;
+}
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+
+$uri  = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
+$path = trim(rawurldecode($uri), '/');
+$parts = $path === '' ? [] : explode('/', $path);
+
+function not_found(): never {
+    http_response_code(404);
+    echo '<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/assets/style.css">'
+       . '<main class="card"><h1>Page not found</h1><p class="tag">Check the link, or visit Florida Luxury Realty.</p>'
+       . '<a class="btn" href="https://floridaluxuryrealty.com"><span class="t">floridaluxuryrealty.com</span></a></main>';
+    exit;
+}
+
+if (!$parts) { header('Location: https://floridaluxuryrealty.com', true, 302); exit; }
+if ($parts[0] === 'setup' && count($parts) === 1) { require __DIR__ . '/_app/setup.php'; exit; }
+
+$routes = routes();
+$name = strtolower($parts[0]);
+if (!isset($routes[$name])) not_found();
+[$code, $view] = $routes[$name];
+$a = agent($code);
+
+if (count($parts) === 2 && $parts[1] === 'contact.vcf' && $view === 'main') {
+    header('Content-Type: text/vcard; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $code . '.vcf"');
+    echo render_vcard($a); exit;
+}
+if (count($parts) !== 1) not_found();
+if (substr($uri, -1) !== '/') { header('Location: /' . $name . '/', true, 301); exit; }
+header('Content-Type: text/html; charset=utf-8');
+header('Cache-Control: no-cache');
+echo render_page($a, $view);

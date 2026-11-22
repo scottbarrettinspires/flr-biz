@@ -1,7 +1,8 @@
-# Keep build sources private; serve clean URLs; force HTTPS
-RedirectMatch 404 ^/_source(/|$)
 Options -Indexes
-DirectoryIndex index.html
+DirectoryIndex index.php
 RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# Never serve app code, saved data or build sources
+RewriteRule ^(_app|_data|_source)(/|$) - [R=404,L]
+# Real files (assets, uploads) are served directly; everything else goes to the app
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]
