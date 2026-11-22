@@ -5,6 +5,7 @@ const BROKERAGE   = 'Florida Luxury Realty';
 const ROOT_DIR    = __DIR__ . '/..';
 const DATA_DIR    = ROOT_DIR . '/_data';
 const UPLOAD_DIR  = ROOT_DIR . '/uploads';
+const APP_URL_BASE = 'https://bk.homestack.com/floridaluxuryrealtyhomesearch/?aik=';   // current Lofty app download page; agents can replace it in setup
 const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url'];
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
@@ -41,6 +42,7 @@ function agent(string $code): ?array {
             $o = json_decode((string)file_get_contents($f), true) ?: [];
             foreach (EDITABLE as $k) if (array_key_exists($k, $o)) $a[$k === 'youtube_id' ? 'youtube_id' : $k] = $o[$k];
         }
+        if (!array_key_exists('app_url', $a) && !empty($a['app_code'])) $a['app_url'] = APP_URL_BASE . rawurlencode($a['app_code']);
         return $a;
     }
     return null;
@@ -78,6 +80,10 @@ const BTN_ICONS = [
  'list'=>'<path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>',
  'doc'=>'<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>',
  'download'=>'<path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>',
+ 'pin'=>'<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
+ 'photo'=>'<path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/>',
+ 'heart'=>'<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>',
+ 'chat'=>'<path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>',
  'search'=>'<path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>',
  'link'=>'<path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 0-10z"/>',
 ];
@@ -119,8 +125,8 @@ function render_page(array $a, string $view): string {
     foreach ($v['links'] as $l) {
         $isApp = ($l['page'] ?? '') === 'app';    // home-search app page: shows once the agent adds its link
         if ($isApp ? empty($a['app_url']) : !empty($l['pending'])) continue;
-        $ext = $isApp || (!isset($l['view']) && !isset($l['page']));
-        $links .= '<a class="btn" href="' . h($isApp ? $a['app_url'] : link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . btn_icon($l) . '<span class="tx"><span class="t">'
+        $ext = !isset($l['view']) && !isset($l['page']);
+        $links .= '<a class="btn" href="' . h(link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . btn_icon($l) . '<span class="tx"><span class="t">'
             . h($l['title']) . '</span>' . (!empty($l['sub']) ? '<span class="sub">' . h($l['sub']) . '</span>' : '') . '</span></a>' . "\n";
     }
     $video = (!empty($a['youtube_id']) && $main)
@@ -245,6 +251,19 @@ function render_landing(array $a, string $slug, bool $done): string {
     $fileUrl = null;
     if (($d['file'] ?? null) && is_file(ROOT_DIR . '/guides/' . $d['file'])) $fileUrl = '/guides/' . $d['file'];
 
+    if ($d['type'] === 'app') {
+        $feats = [['pin', 'View Listings Near You', 'See the homes for sale closest to where you are right now, with the details that matter to you.'],
+                  ['photo', 'Photos and Details', 'Look through interior photos and full property details, including taxes and schools.'],
+                  ['heart', 'Save Favorites', 'Save the homes you love and come back to them any time.'],
+                  ['chat', 'Get Help From Me', 'Chat with me directly with questions or to set up a showing.']];
+        $inner = '<h2>Easiest Way To Find Homes</h2><div class="feats">';
+        foreach ($feats as [$ik, $ft, $fd]) $inner .= '<div class="feat"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . BTN_ICONS[$ik] . '</svg></span><div><strong>' . h($ft) . '</strong><p>' . h($fd) . '</p></div></div>';
+        $inner .= '</div><h2>Download Your FREE App</h2><p class="lead">The local home search app is a free download from your smartphone app store.</p>';
+        $inner .= !empty($a['app_url'])
+            ? '<a class="btn contact" href="' . h($a['app_url']) . '" target="_blank" rel="noopener"><span class="t">CLICK TO DOWNLOAD NOW</span></a>'
+            : '<div class="note">The app link is coming soon. In the meantime, ask me directly.</div>';
+        $done = null;
+    }
     if ($d['type'] === 'video') {
         $vid = $a[$d['vkey']] ?? '';
         $inner = $vid ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($vid) . '" title="' . h($title) . '" loading="lazy" allowfullscreen></iframe></div>'

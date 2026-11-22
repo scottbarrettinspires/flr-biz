@@ -110,3 +110,9 @@ nav.links .btn .ic svg{width:22px;height:22px}
 nav.links .btn .tx{flex:1;min-width:0}
 
 .hero{min-height:340px;background-position:50% 38%}.hero-in{min-height:340px}
+
+/* App landing page */
+.feats{display:grid;gap:12px;text-align:left;margin:10px 0 6px}
+.feat{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:var(--radius);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14)}
+.feat .ic{flex:none;width:40px;height:40px;border-radius:50%;background:rgba(201,163,78,.16);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.feat .ic svg{width:22px;height:22px}.feat strong{display:block;font-size:1.02rem}.feat p{margin:4px 0 0;color:var(--muted);font-size:.92rem;line-height:1.45}
