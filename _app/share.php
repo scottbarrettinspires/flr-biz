@@ -56,9 +56,9 @@ function share_card(string $label, string $url, string $code, string $key, strin
     $file = preg_replace('~[^a-z0-9]+~', '-', strtolower($code . '-' . trim(preg_replace('~^https://[^/]+/~', '', $url), '/')));
     $png = '/setup/qr/' . $qs . '&fmt=png&dl=1&n=' . urlencode($file); $svg = '/setup/qr/' . $qs . '&fmt=svg&dl=1&n=' . urlencode($file);
     $body = rawurlencode($label . ': ' . $url);
-    return '<section class="sharecard"' . ($id ? ' id="' . h($id) . '"' : '') . '><div class="sc-top"><div class="sc-info"><strong>' . h($label) . '</strong>'
-      . '<code>' . h(preg_replace('~^https://~', '', $url)) . '</code></div>'
-      . '<img class="sc-qr" src="/setup/qr/' . h($qs) . '&fmt=svg" alt="QR code for ' . h($label) . '" width="110" height="110" loading="lazy"></div>'
+    return '<section class="sharecard"' . ($id ? ' id="' . h($id) . '"' : '') . '><div class="sc-top"><div class="sc-info"><strong>' . h($label) . '</strong></div>'
+      . '<div class="sc-qrbox"><img class="sc-qr" src="/setup/qr/' . h($qs) . '&fmt=svg" alt="QR code for ' . h($label) . '" width="110" height="110" loading="lazy">'
+      . '<a class="sc-url" href="' . h($url) . '" target="_blank" rel="noopener">' . h(preg_replace('~^https://|/$~', '', $url)) . '</a></div></div>'
       . '<div class="sc-btns">' . ($edit !== '' ? '<a class="sb pri" href="' . h($edit) . '">Edit property</a>' : '')
       . '<button type="button" class="sb" data-copy="' . h($url) . '">Copy link</button>'
       . '<a class="sb" href="sms:?&body=' . $body . '">Text it</a>'
