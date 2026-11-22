@@ -28,6 +28,7 @@ if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'links') { req
 if ($parts[0] === 'setup' && count($parts) === 2 && $parts[1] === 'qr') { require __DIR__ . '/_app/setup_qr.php'; exit; }
 if ($parts[0] === 'share' && count($parts) === 1) { require __DIR__ . '/_app/sharepage.php'; exit; }
 if ($parts[0] === 'share' && count($parts) === 2 && $parts[1] === 'qr') { require __DIR__ . '/_app/shareqr.php'; exit; }
+if ($parts[0] === 'lead-request' && count($parts) === 1) { require __DIR__ . '/_app/lead_request.php'; exit; }
 if ($parts[0] === 'lead' && count($parts) === 1) { require __DIR__ . '/_app/lead.php'; exit; }
 
 $routes = routes();
