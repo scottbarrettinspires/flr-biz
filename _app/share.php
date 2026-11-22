@@ -42,8 +42,8 @@ function agent_pages(array $agent): array {
     $out[] = ['Social media page', $abs($p['social'])];
     $labels = ['app' => 'Home search app page', 'buyer-consult' => 'Book a buyer consultation', 'private-showing' => 'Schedule a private showing', 'seller-consult' => 'Book a seller consultation',
                'seller-guide' => 'Free seller guide', 'buyer-guide' => 'Free buyer guide', 'value' => 'Home value page',
-               'buyer-steps' => 'Video: Right steps to buying a home', 'buyer-broker-agreement' => 'Video: Why a buyer broker agreement',
-               'avoid-buyer-agent-fee' => 'Video: Avoiding the buyer agent fee'];
+               'buyer-steps' => 'Right steps to buying a home', 'buyer-broker-agreement' => 'Why a buyer broker agreement',
+               'avoid-buyer-agent-fee' => 'Avoiding the buyer agent fee'];
     foreach (page_defs() as $slug => $d) {
         if (($d['type'] ?? '') === 'video' && !isset($agent['faq'])) continue;
         $out[] = [$labels[$slug] ?? $d['title'], $abs($code . '/' . $slug), ($d['type'] ?? '') === 'video' ? ($d['vkey'] ?? '') : ''];
