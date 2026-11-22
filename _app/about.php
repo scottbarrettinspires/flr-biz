@@ -35,5 +35,12 @@ function render_about(array $a): string {
       . '<h1 class="pt">About ' . h($first) . '</h1><p class="tag">' . h($name) . ' &middot; ' . h($tag) . '</p>'
       . $paras . ($facts !== '' ? '<div class="aboutfacts">' . $facts . '</div>' : '')
       . '<nav class="links">' . $links . '</nav>'
-      . '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span></footer></main></body></html>';
+      . page_footer($a) . '</main></body></html>';
+}
+
+/** Page footer: brokerage line plus the agent's "In Real Estate? Learn more here" recruiting link (set in the dashboard). */
+function page_footer(array $a): string {
+    $j = trim((string)($a['join_url'] ?? ''));
+    return '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span>'
+        . ($j !== '' ? '<p class="joinlink">In Real Estate? <a href="' . h($j) . '" target="_blank" rel="noopener">Learn more here</a></p>' : '') . '</footer>';
 }

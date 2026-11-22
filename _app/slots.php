@@ -166,7 +166,7 @@ function render_slot(array $a, string $id, array $s): string {
       . ($addr !== '' ? '<p class="tag">' . h($addr) . '</p>' : '') . ($price !== '' ? '<p class="headline">' . h($price) . '</p>' : '') . '</div></header>'
       . ($welcome !== '' ? '<p class="welcome">' . h($welcome) . '</p>' : '')
       . $soc . $video . '<nav class="links">' . $links . '</nav>' . $by
-      . '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
+      . page_footer($a) . '</main>' . fit_script() . '</body></html>';
 }
 
 
@@ -207,5 +207,5 @@ function render_slot_details(array $a, string $id, array $s): ?string {
       . ($d['remarks'] !== '' ? '<p class="remarks">' . nl2br(h($d['remarks'])) . '</p>' : '')
       . '<nav class="links">' . $links . share_button($code . '/' . $id . '/details') . '</nav>' . $by
       . '<p class="mlsdisc">' . ($d['office'] !== '' ? 'Listing courtesy of ' . h($d['office']) . '. ' : '') . 'Information is deemed reliable but is not guaranteed and should be independently verified. Listing data last updated ' . h($upd) . '.</p>'
-      . '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
+      . page_footer($a) . '</main>' . fit_script() . '</body></html>';
 }

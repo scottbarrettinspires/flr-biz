@@ -26,12 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'tiktok'     => clean_url($_POST['tiktok'] ?? '', 'https://tiktok.com/@'),
         'linkedin'   => clean_url($_POST['linkedin'] ?? '', 'https://linkedin.com/in/'),
         'x'          => clean_url($_POST['x'] ?? '', 'https://x.com/'),
+        'join_url'   => clean_url($_POST['join_url'] ?? ''),
         'bio'        => mb_substr(trim(str_replace("\r\n", "\n", (string)($_POST['bio'] ?? ''))), 0, 2000),
     ];
     if ($raw['phone'] === null) $errors[] = 'Phone can only contain numbers, spaces and ( ) + - .';
     if ($raw['email'] !== '' && !filter_var($raw['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'That email address does not look right.';
-    foreach (['website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x'] as $k)
-        if (trim($_POST[$k] ?? '') !== '' && $raw[$k] === '') $errors[] = ($k === 'x' ? 'X' : ($k === 'linkedin' ? 'LinkedIn' : ucfirst($k))) . ' link does not look right.';
+    foreach (['website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x', 'join_url'] as $k)
+        if (trim($_POST[$k] ?? '') !== '' && $raw[$k] === '') $errors[] = ($k === 'x' ? 'X' : ($k === 'linkedin' ? 'LinkedIn' : ($k === 'join_url' ? 'Real estate learn more' : ucfirst($k)))) . ' link does not look right.';
     $errors = array_values(array_unique($errors));
     if (!$errors) $errors[] = save_photo($code, $_FILES['photo'] ?? []) ?: null;
     $errors = array_values(array_filter($errors));
@@ -78,6 +79,7 @@ echo $ifield('tiktok', 'TikTok', '@yourname or link', 'text', '#111111');
 echo $ifield('linkedin', 'LinkedIn', 'link to your profile', 'text', '#0A66C2');
 echo $ifield('x', 'X (Twitter)', '@yourname or link', 'text', '#111111');
 echo '</div>';
+echo '<div style="margin-top:18px">' . $field('join_url', '"In Real Estate? Learn more here" link (shown at the bottom of your pages)', $val('join_url'), 'https://joinflr.com/agents/yourname/', 'text', 'Your page on joinflr.com for agents who want to learn about joining Florida Luxury Realty. Leave blank to hide the link.') . '</div>';
 ?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>

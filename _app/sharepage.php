@@ -26,7 +26,7 @@ echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="vie
   . '<a class="btn" href="https://www.instagram.com/" id="shp-ig">' . btn_icon(['icon' => 'instagram']) . '<span class="tx"><span class="t">Share To Instagram</span></span></a>'
   . '<p class="shp-note" id="shp-note" hidden>Link copied. Paste it into your Instagram story, post, bio or message.</p>'
   . '<a class="btn" href="#" id="shp-copy">' . btn_icon(['icon' => 'link']) . '<span class="tx"><span class="t">Copy Link</span></span></a>'
-  . '</nav><footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span></footer></main>'
+  . '</nav>' . page_footer($a) . '</main>'
   . '<script>(function(){var U=' . json_encode($u) . ',T=' . json_encode('From ' . $name) . ';'
   . 'function copy(){try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(U)}catch(e){}'
   . 'return new Promise(function(r){var t=document.createElement("textarea");t.value=U;document.body.appendChild(t);t.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(t);r()})}'

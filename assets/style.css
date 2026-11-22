@@ -299,3 +299,5 @@ nav.links.sharenav{margin-top:18px}
 .aboutpage .aboutphoto{width:150px;height:150px;border-radius:50%;object-fit:cover;margin:8px auto 4px;display:block}
 .aboutpage .aboutfacts{margin:14px 0 4px;color:var(--muted);font-size:.9rem;line-height:1.5}
 .aboutpage nav.links{margin-top:18px}
+footer .joinlink{margin:12px 0 0;opacity:1;font-size:.85rem}
+footer .joinlink a{color:var(--accent);font-weight:700;text-decoration:underline}
