@@ -203,9 +203,11 @@ function agent_card(array $a): string {
     $p = paths_for($a['code']); $photo = photo_url($a['code']);
     $rows = '';
     if (!empty($a['license'])) $rows .= '<div>Broker License ID: ' . h($a['license']) . '</div>';
-    if (!empty($a['phone']))   $rows .= '<div><a href="tel:' . h(preg_replace('/[^0-9+]/', '', $a['phone'])) . '">' . h($a['phone']) . '</a></div>';
-    if (!empty($a['email']))   $rows .= '<div><a href="mailto:' . h($a['email']) . '">' . h($a['email']) . '</a></div>';
     if (!empty($a['office']))  $rows .= '<div>' . h($a['office']) . '</div>';
+    $ic = '';
+    if (!empty($a['phone'])) $ic .= '<a class="soc" href="tel:' . h(preg_replace('/[^0-9+]/', '', $a['phone'])) . '" aria-label="Call">' . icon('phone') . '</a>';
+    if (!empty($a['email'])) $ic .= '<a class="soc" href="mailto:' . h($a['email']) . '" aria-label="Email">' . icon('email') . '</a>';
+    if ($ic) $rows .= '<div class="socials sm">' . $ic . '</div>';
     return '<header class="hero' . ($photo ? '' : ' nophoto') . '"' . ($photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '') . '>'
       . '<div class="hero-in"><a class="back" href="/' . $p['main'] . '/">&larr; My page</a>'
       . '<h1>' . h(ucwords(strtolower($a['name']))) . '</h1><p class="tag">' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</p>'
