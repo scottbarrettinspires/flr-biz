@@ -24,11 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'instagram'  => clean_url($_POST['instagram'] ?? '', 'https://instagram.com/'),
         'facebook'   => clean_url($_POST['facebook'] ?? '', 'https://facebook.com/'),
         'tiktok'     => clean_url($_POST['tiktok'] ?? '', 'https://tiktok.com/@'),
+        'linkedin'   => clean_url($_POST['linkedin'] ?? '', 'https://linkedin.com/in/'),
+        'x'          => clean_url($_POST['x'] ?? '', 'https://x.com/'),
     ];
     if ($raw['phone'] === null) $errors[] = 'Phone can only contain numbers, spaces and ( ) + - .';
     if ($raw['email'] !== '' && !filter_var($raw['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'That email address does not look right.';
-    foreach (['website', 'instagram', 'facebook', 'tiktok'] as $k)
-        if (trim($_POST[$k] ?? '') !== '' && $raw[$k] === '') $errors[] = ucfirst($k) . ' link does not look right.';
+    foreach (['website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x'] as $k)
+        if (trim($_POST[$k] ?? '') !== '' && $raw[$k] === '') $errors[] = ($k === 'x' ? 'X' : ($k === 'linkedin' ? 'LinkedIn' : ucfirst($k))) . ' link does not look right.';
     $errors = array_values(array_unique($errors));
     if (!$errors) $errors[] = save_photo($code, $_FILES['photo'] ?? []) ?: null;
     $errors = array_values(array_filter($errors));
@@ -61,12 +63,17 @@ echo dash_open('overview', $agent, $key, 'Welcome, ' . $first, 'Your LeadStream 
 <label>Your photo</label>
 <div class="photo-row"><div class="avatar sm" data-initials="<?= h(initials_text($agent['name'])) ?>"><?= $photo ? '<img src="' . h($photo) . '" alt="">' : '' ?></div>
 <input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div><small>JPG, PNG or WebP. A clear head-and-shoulders photo works best; it is cropped to a square.</small>
-<?= $field('phone', 'Phone', $val('phone'), '(727) 555-1234', 'tel') ?>
-<?= $field('email', 'Email', $val('email'), 'you@example.com', 'email') ?>
-<?= $field('website', 'Website', $val('website'), 'https://') ?>
-<?= $field('instagram', 'Instagram', $val('instagram'), '@yourname or link') ?>
-<?= $field('facebook', 'Facebook', $val('facebook'), 'link to your page') ?>
-<?= $field('tiktok', 'TikTok', $val('tiktok'), '@yourname or link') ?>
+<?php
+$ifield = fn($id, $label, $ph, $type, $color) => '<label for="' . $id . '">' . h($label) . '</label><div class="ifield"><span class="ico" style="color:' . $color . '"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' . ICONS[$id === 'x' ? 'x' : ($id === 'phone' || $id === 'email' || $id === 'website' ? $id : $id)] . '</svg></span><input id="' . $id . '" name="' . $id . '" type="' . $type . '" value="' . h($val($id)) . '" placeholder="' . h($ph) . '" autocomplete="off"></div>';
+echo $ifield('phone', 'Phone', '(727) 555-1234', 'tel', '#2e9e5b');
+echo $ifield('email', 'Email', 'you@example.com', 'email', '#e0302f');
+echo $ifield('website', 'Website', 'https://', 'text', '#0e3a4d');
+echo $ifield('instagram', 'Instagram', '@yourname or link', 'text', '#E4405F');
+echo $ifield('facebook', 'Facebook', 'link to your page', 'text', '#1877F2');
+echo $ifield('tiktok', 'TikTok', '@yourname or link', 'text', '#111111');
+echo $ifield('linkedin', 'LinkedIn', 'link to your profile', 'text', '#0A66C2');
+echo $ifield('x', 'X (Twitter)', '@yourname or link', 'text', '#111111');
+?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>
 <?= dash_close() ?>

@@ -106,3 +106,7 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 .vidbar input[type=text]{width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--line);border-radius:10px;font:inherit}
 .vidbar input[type=text]:focus{outline:2px solid var(--orange);border-color:var(--orange)}
 .vidbar .sb.pri{background:var(--navy);border-color:var(--navy);color:#fff;padding:9px 16px}
+.ifield{position:relative}
+.ifield .ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:22px;height:22px;display:flex;pointer-events:none}
+.ifield .ico svg{width:22px;height:22px}
+.dash .form .ifield input[type=text],.dash .form .ifield input[type=tel],.dash .form .ifield input[type=email]{padding-left:48px}
