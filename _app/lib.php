@@ -5,7 +5,7 @@ const BROKERAGE   = 'Florida Luxury Realty';
 const ROOT_DIR    = __DIR__ . '/..';
 const DATA_DIR    = ROOT_DIR . '/_data';
 const UPLOAD_DIR  = ROOT_DIR . '/uploads';
-const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'youtube_id'];
+const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid'];
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -22,6 +22,7 @@ function routes(): array {
         $m[$a['code']] = [$a['code'], 'main'];
         $m[$x[1] . 'b' . $x[2]] = [$a['code'], 'buyer'];
         $m[$x[1] . 's' . $x[2]] = [$a['code'], 'seller'];
+        if (isset($a['faq'])) $m[$x[1] . 'f' . $x[2]] = [$a['code'], 'faq'];
     }
     return $m;
 }
@@ -90,7 +91,7 @@ function render_page(array $a, string $view): string {
     foreach ($soc as [$k, $u, $lab, $ext])
         $socHtml .= '<a class="soc" href="' . h($u) . '" aria-label="' . $lab . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . icon($k) . '</a>';
 
-    $links = '';
+    $links = !empty($v['section']) ? '<h2 class="sec">' . h($v['section']) . '</h2>' : '';
     foreach ($v['links'] as $l) {
         if (!empty($l['pending'])) continue;      // hidden until that feature is live
         $ext = !isset($l['view']) && !isset($l['page']);
@@ -214,7 +215,18 @@ function render_landing(array $a, string $slug, bool $done): string {
     $fileUrl = null;
     if (($d['file'] ?? null) && is_file(ROOT_DIR . '/guides/' . $d['file'])) $fileUrl = '/guides/' . $d['file'];
 
-    if ($done) {
+    if ($d['type'] === 'video') {
+        $vid = $a[$d['vkey']] ?? '';
+        $inner = $vid ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($vid) . '" title="' . h($title) . '" loading="lazy" allowfullscreen></iframe></div>'
+                      : '<div class="note">My video for this question is coming soon. In the meantime, ask me directly.</div>';
+        $inner .= '<a class="btn contact" href="/' . $code . '/buyer-consult/"><span class="t">Book A 15 Minute Complimentary Consultation</span></a>';
+        $paths = paths_for($code);
+        if (isset($paths['faq'])) $inner .= '<a class="back" href="/' . $paths['faq'] . '/">&larr; More answers to your questions</a>';
+        $done = null;
+    }
+    if ($done === null) {
+        // video page: $inner already built
+    } elseif ($done) {
         $inner = '<div class="note ok">Submitted successfully. Thank you' . ($d['type'] === 'guide' ? '.' : ', ' . h(explode(' ', $name)[0]) . ' will be in touch shortly.') . '</div>';
         if ($d['type'] === 'guide') $inner .= $fileUrl
             ? '<p class="lead">Your guide should download automatically. If it does not, <a href="' . h($fileUrl) . '" download>click here</a>.</p><meta http-equiv="refresh" content="1;url=' . h($fileUrl) . '">'

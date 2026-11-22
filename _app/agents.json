@@ -10,10 +10,10 @@
       "tagline": "Your 5 Star ⭐️⭐️⭐️⭐️⭐️ Agent with Florida Luxury Realty",
       "headline": "Your Needs are My Passion",
       "phone": "(727) 457-9933",
-      "email": "",
+      "email": "ashley@ashleybarrettco.com",
       "website": "",
-      "instagram": "",
-      "facebook": "",
+      "instagram": "https://instagram.com/ashley.barrett.realtor",
+      "facebook": "https://www.facebook.com/Real-Estate-Professional-103471207696468",
       "tiktok": "",
       "photo": "photo.jpg",
       "youtube_id": "",
@@ -54,7 +54,7 @@
           {
             "title": "Get Answers To HOME BUYER Frequently Asked Questions",
             "sub": "Learn Everything You Need To Know Right Here",
-            "url": "http://qrcc.me/syj3moqyqx3r"
+            "view": "faq"
           },
           {
             "title": "Search for your DREAM HOME made easy - Download App Now!",
@@ -106,7 +106,38 @@
       "setup_hash": "b005f22e92ca663b080d60bdba38a9de38ba03e03eb369db8e31dba13bf47901",
       "license": "",
       "office": "",
-      "app_code": "abarrett"
+      "app_code": "abarrett",
+      "faq": {
+        "name": "ANSWERS TO YOUR QUESTIONS",
+        "headline": "Learn Everything You Need To Know Right Here",
+        "sub": "Learn Everything You Need To Know Right Here",
+        "section": "The Right Help For Homebuyers",
+        "links": [
+          {
+            "title": "What Are THE RIGHT STEPS To Buying A Home?",
+            "page": "buyer-steps"
+          },
+          {
+            "title": "Why Is A BUYER BROKER AGREEMENT Required?",
+            "page": "buyer-broker-agreement"
+          },
+          {
+            "title": "How Can I AVOID PAYING A BUYER AGENT To Help Me?",
+            "page": "avoid-buyer-agent-fee"
+          },
+          {
+            "title": "Book A 15 Minute Complimentary Home Buyer Consultation",
+            "sub": "A free consultation to understand your situation and needs, with zero obligation.",
+            "page": "buyer-consult"
+          },
+          {
+            "title": "Search for your DREAM HOME made easy - Download App Now!",
+            "sub": "Browse homes for sale in the areas where you want to live.",
+            "page": "app",
+            "pending": true
+          }
+        ]
+      }
     }
   ]
 }

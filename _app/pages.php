@@ -25,5 +25,11 @@ function page_defs(): array {
     'value' => ['type' => 'value', 'form' => 'value', 'title' => 'Curious What Your Home Is Worth Today?',
         'sub' => "Get Your FREE Home Market Value Report", 'h2' => "Know your home's current value. Sent to you. No obligation.",
         'body' => [], 'button' => 'Get My Report'],
+    'buyer-steps' => ['type' => 'video', 'vkey' => 'vid_steps', 'title' => 'What Are The Right Steps To Buying A Home?',
+        'sub' => 'Helping you with your questions is something I love to do.', 'body' => ['Watch my video to learn the right steps to buying a home.']],
+    'buyer-broker-agreement' => ['type' => 'video', 'vkey' => 'vid_broker', 'title' => 'Why Is A Buyer Broker Agreement Required?',
+        'sub' => 'Helping you with your questions is something I love to do.', 'body' => ["Watch my video to help you understand the purpose and benefits of a buyer's brokerage agreement."]],
+    'avoid-buyer-agent-fee' => ['type' => 'video', 'vkey' => 'vid_avoid', 'title' => 'Can I Avoid Paying For A Buyer\'s Agent To Help Me?',
+        'sub' => 'Helping you with your questions is something I love to do.', 'body' => ["Watch my video to understand how buyer agent compensation works and what your options are."]],
     ];
 }
