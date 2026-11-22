@@ -58,7 +58,7 @@ echo dash_open('overview', $agent, $key, 'Welcome, ' . $first, 'Your LeadStream 
 <h2 id="info">My Personal Information</h2>
 <?php if ($saved): ?><div class="note ok">Saved. Your page is updated. <a href="/<?= h($p['main']) ?>/" target="_blank" rel="noopener">View my page</a></div><?php endif; ?>
 <?php foreach ($errors as $e): ?><div class="note err"><?= h($e) ?></div><?php endforeach; ?>
-<form method="post" enctype="multipart/form-data" class="form">
+<form method="post" enctype="multipart/form-data" class="form wideform">
 <input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>">
 <label>Your photo</label>
 <div class="photo-row"><div class="avatar sm" data-initials="<?= h(initials_text($agent['name'])) ?>"><?= $photo ? '<img src="' . h($photo) . '" alt="">' : '' ?></div>
