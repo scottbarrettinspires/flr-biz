@@ -137,9 +137,7 @@ function render_slot(array $a, string $id, array $s): string {
     $when = $oh ? slot_when($s) : null;
     $base = '/' . $code . '/' . $id . '/';
 
-    $soc = '';
-    if (!empty($a['phone'])) $soc .= '<a class="soc" href="tel:' . h(preg_replace('/[^0-9+]/', '', $a['phone'])) . '" aria-label="Call">' . icon('phone') . '</a>';
-    if (!empty($a['email'])) $soc .= '<a class="soc" href="mailto:' . h($a['email']) . '" aria-label="Email">' . icon('email') . '</a>';
+    $soc = contact_row($a);
 
     $links = '';
     if ($when) $links .= menu_button('calendar', 'Open House ' . $when['short'], $base . 'calendar/');
@@ -167,7 +165,7 @@ function render_slot(array $a, string $id, array $s): string {
       . '<header class="hero slothero' . ($heroPhoto ? '' : ' nophoto') . '"' . $hero . '><div class="hero-in"><h1>' . h($title) . '</h1>'
       . ($addr !== '' ? '<p class="tag">' . h($addr) . '</p>' : '') . ($price !== '' ? '<p class="headline">' . h($price) . '</p>' : '') . '</div></header>'
       . ($welcome !== '' ? '<p class="welcome">' . h($welcome) . '</p>' : '')
-      . '<div class="socials">' . $soc . '</div>' . $video . '<nav class="links">' . $links . '</nav>' . $by
+      . $soc . $video . '<nav class="links">' . $links . '</nav>' . $by
       . '<footer>' . BROKERAGE . '<br><span>Equal Housing Opportunity</span></footer></main>' . fit_script() . '</body></html>';
 }
 
