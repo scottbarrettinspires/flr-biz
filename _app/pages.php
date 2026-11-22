@@ -25,7 +25,7 @@ function page_defs(): array {
     'value' => ['type' => 'value', 'form' => 'value', 'title' => 'Curious What Your Home Is Worth Today?',
         'sub' => "Get Your FREE Home Market Value Report", 'h2' => "Know your home's current value. Sent to you. No obligation.",
         'body' => [], 'button' => 'Get My Report'],
-    'app' => ['type' => 'app', 'title' => 'The Perfect App For Local Homes For Sale',
+    'app' => ['type' => 'app', 'title' => 'Your Home Search App',
         'sub' => 'Every home with all the details right at your fingertips!', 'body' => []],
     'buyer-steps' => ['type' => 'video', 'vkey' => 'vid_steps', 'title' => 'What Are The Right Steps To Buying A Home?',
         'sub' => 'Helping you with your questions is something I love to do.', 'body' => ['Watch my video to learn the right steps to buying a home.']],
