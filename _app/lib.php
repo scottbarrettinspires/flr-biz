@@ -297,12 +297,20 @@ function consult_fields(): string {
     return $o;
 }
 
+/** The home for a private showing: looked up from the listing page the visitor came from (?l=p1), so it is already filled in. */
+function showing_home(array $a): ?string {
+    $id = (string)($_GET['l'] ?? '');
+    if (!slot_id_ok($id)) return null;
+    $addr = trim((string)(slots_load($a['code'])[$id]['address'] ?? ''));
+    return $addr !== '' ? $addr : null;
+}
+
 function lead_form_html(array $a, array $d, string $return = ''): string {
     $code = $a['code']; $ts = time(); $extra = '';
     if ($d['type'] === 'value') $extra .= '<label for="address">Property address *</label><input id="address" name="address" type="text" required maxlength="200" placeholder="Street, city, state, ZIP" autocomplete="street-address">';
     if (!empty($d['address_field'])) {
-        $home = mb_substr(trim(preg_replace('/\s+/', ' ', (string)($_GET['home'] ?? ''))), 0, 200);
-        $extra .= '<label for="address">Home you would like to see *</label><input id="address" name="address" type="text" required maxlength="200" value="' . h($home) . '" placeholder="Street, city, state" autocomplete="off">';
+        if ($home = showing_home($a)) $extra .= '<input type="hidden" name="address" value="' . h($home) . '"><div class="homebox"><small>Private showing at</small><strong>' . h($home) . '</strong></div>';
+        else $extra .= '<label for="address">Home you would like to see *</label><input id="address" name="address" type="text" required maxlength="200" placeholder="Street, city, state" autocomplete="off">';
     }
     return '<form method="post" action="/lead" class="form">'
       . '<input type="hidden" name="agent" value="' . h($code) . '"><input type="hidden" name="form" value="' . h($d['form']) . '"><input type="hidden" name="ts" value="' . $ts . '">'
@@ -320,6 +328,7 @@ function lead_form_html(array $a, array $d, string $return = ''): string {
 
 function render_landing(array $a, string $slug, bool $done): string {
     $defs = page_defs(); $d = $defs[$slug]; $code = $a['code']; $name = ucwords(strtolower($a['name']));
+    if ($slug === 'private-showing' && ($home = showing_home($a))) $d['sub'] = $home;
     $title = $d['title'];
     $body = '';
     foreach ($d['body'] as $para) $body .= '<p class="lead">' . h($para) . '</p>';

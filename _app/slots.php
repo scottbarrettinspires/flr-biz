@@ -126,7 +126,7 @@ function render_slot(array $a, string $id, array $s): string {
     if ($addr !== '') $links .= menu_button('pin', 'Get Directions', 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($addr), true);
     if (!empty($a['app_url'])) $links .= menu_button('search', 'Find The Perfect Home Now', '/' . $code . '/app/');
     $links .= $oh ? menu_button('calendar', 'Book A Complimentary Consultation', '/' . $code . '/buyer-consult/')
-                  : menu_button('calendar', 'Book A Private Showing', '/' . $code . '/private-showing/' . ($addr !== '' ? '?home=' . rawurlencode($addr) : ''));
+                  : menu_button('calendar', 'Book A Private Showing', '/' . $code . '/private-showing/' . ($addr !== '' ? '?l=' . rawurlencode($id) : ''));
     $links .= menu_button('dollar', "Get Your Home's Value Instantly", '/' . $code . '/value/');
 
     $vid = $a[$oh ? 'vid_openhouses' : 'vid_listings'] ?? '';   // one video for all listing pages, one for all open house pages (set on the dashboard)
