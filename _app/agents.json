@@ -35,13 +35,13 @@
             "page": "buyer-consult"
           },
           {
-            "title": "Search Homes With My Free App",
+            "title": "Find The Perfect Home Now",
             "sub": "Search for your home in the area you want to live.",
             "page": "app",
             "pending": true
           },
           {
-            "title": "What's Your Home Worth?",
+            "title": "Get Your Home's Value Instantly",
             "page": "value"
           }
         ]
