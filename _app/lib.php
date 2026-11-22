@@ -252,16 +252,8 @@ function render_landing(array $a, string $slug, bool $done): string {
     if (($d['file'] ?? null) && is_file(ROOT_DIR . '/guides/' . $d['file'])) $fileUrl = '/guides/' . $d['file'];
 
     if ($d['type'] === 'app') {
-        $feats = [['pin', 'View Listings Near You', 'See the homes for sale closest to where you are right now, with the details that matter to you.'],
-                  ['photo', 'Photos and Details', 'Look through interior photos and full property details, including taxes and schools.'],
-                  ['heart', 'Save Favorites', 'Save the homes you love and come back to them any time.'],
-                  ['chat', 'Get Help From Me', 'Chat with me directly with questions or to set up a showing.']];
-        $inner = '<h2>Easiest Way To Find Homes</h2><div class="feats">';
-        foreach ($feats as [$ik, $ft, $fd]) $inner .= '<div class="feat"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . BTN_ICONS[$ik] . '</svg></span><div><strong>' . h($ft) . '</strong><p>' . h($fd) . '</p></div></div>';
-        $inner .= '</div><h2>Download Your FREE App</h2><p class="lead">The local home search app is a free download from your smartphone app store.</p>';
-        $inner .= !empty($a['app_url'])
-            ? '<a class="btn contact" href="' . h($a['app_url']) . '" target="_blank" rel="noopener"><span class="t">CLICK TO DOWNLOAD NOW</span></a>'
-            : '<div class="note">The app link is coming soon. In the meantime, ask me directly.</div>';
+        require_once __DIR__ . '/appview.php';
+        $inner = render_app_inner($a, $name);
         $done = null;
     }
     if ($d['type'] === 'video') {
