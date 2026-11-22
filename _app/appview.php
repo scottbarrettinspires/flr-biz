@@ -48,7 +48,7 @@ function render_app_inner(array $a, string $name): string {
     $feat = function (string $ico, string $title, string $text, string $screen, bool $flip) use ($photo) {
         return '<section class="afeat' . ($flip ? ' flip' : '') . '"><div class="afx"><span class="ic">' . app_icon($ico) . '</span><h3>' . h($title) . '</h3><p>' . h($text) . '</p></div><div class="afp">' . app_phone($screen, $photo) . '</div></section>';
     };
-    $o = '<section class="ahero"><p class="eyebrow">FREE HOME SEARCH APP</p><h2 class="ah">Every home.<br>Every detail.<br><span>Right in your pocket.</span></h2>'
+    $o = '<section class="ahero"><h2 class="ah">Every home.<br>Every detail.<br><span>Right in your pocket.</span></h2>'
        . '<div class="afp big">' . app_phone('near', $photo, 'lg') . '</div><p class="cap">Illustration of the app experience</p>' . $cta . '</section>';
     $o .= '<h2 class="asec">The Easiest Way To Find Homes</h2>';
     $o .= $feat('pin', 'View Listings Near You', 'See the homes for sale closest to where you are right now, with the details that matter to you.', 'list', false);
