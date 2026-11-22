@@ -80,3 +80,16 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 .sc-qrbox{display:flex;flex-direction:column;align-items:center;gap:6px;flex:none;max-width:180px}
 .sc-url{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;color:var(--navy);text-decoration:underline;word-break:break-all;text-align:center}
 .sc-url:hover{color:var(--red)}
+/* compact share card: text + buttons + video on the left, QR on the right */
+.sharecard{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:18px;align-items:start;padding:14px 16px}
+.sc-top{display:contents}
+.sc-info{grid-column:1;grid-row:1;align-self:center}
+.sc-qrbox{grid-column:2;grid-row:1 / span 3;align-self:start}
+.sc-qr{width:96px;height:96px}
+.sc-btns{grid-column:1;grid-row:2;margin-top:8px;gap:6px}
+.sharecard .vidform{grid-column:1;grid-row:3;margin-top:10px;padding-top:10px}
+.vidform label{display:inline-block;margin:0 0 4px}
+.vidform small{display:inline;margin-left:8px}
+.vidform input[type=text]{padding:8px 12px}
+.sb{padding:7px 13px}
+@media (max-width:600px){.sharecard{grid-template-columns:1fr}.sc-qrbox{grid-column:1;grid-row:auto;flex-direction:row;align-items:center;gap:12px;max-width:none;margin-top:8px;order:2}.sc-btns,.sharecard .vidform{grid-column:1;grid-row:auto}.sc-info{grid-row:auto}}
