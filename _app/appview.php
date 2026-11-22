@@ -49,7 +49,7 @@ function render_app_inner(array $a, string $name): string {
         return '<section class="afeat' . ($flip ? ' flip' : '') . '"><div class="afx"><span class="ic">' . app_icon($ico) . '</span><h3>' . h($title) . '</h3><p>' . h($text) . '</p></div><div class="afp">' . app_phone($screen, $photo) . '</div></section>';
     };
     $o = '<section class="ahero"><h2 class="ah">Every home. Every detail.</h2>'
-       . '<div class="afp"><img class="heroimg" src="/assets/app-phone.png?v=1" alt="Home search app on a smartphone" width="512" height="582"></div>' . $cta . '</section>';
+       . '<div class="afp"><img class="heroimg" src="/assets/app-phone.png?v=1" alt="Home search app on a smartphone" width="512" height="582"></div></section>';
     $o .= '<h2 class="asec">The Easiest Way To Find Homes</h2>';
     $o .= '<ul class="abul">'
         . '<li><strong>View Listings Near You</strong> See the homes for sale closest to where you are right now, with the details that matter to you.</li>'
