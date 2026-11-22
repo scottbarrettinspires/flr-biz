@@ -195,3 +195,8 @@ nav.links .btn .tx{flex:1;min-width:0}
 nav.links .btn:not(.contact){background:linear-gradient(180deg,#27406a 0%,#1f3559 100%);border-color:rgba(201,163,78,.7);
   box-shadow:0 4px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08)}
 nav.links .btn:not(.contact):hover{background:linear-gradient(180deg,#2d4a7a 0%,#243d66 100%)}
+
+/* Menu titles on one line */
+nav.links .btn:not(.contact){gap:10px;padding:14px 14px}
+nav.links .btn .ic{width:34px;height:34px}nav.links .btn .ic svg{width:19px;height:19px}
+nav.links .btn .t{white-space:nowrap;font-size:min(1rem,3.5vw);letter-spacing:-.005em}

@@ -30,12 +30,12 @@
             "view": "seller"
           },
           {
-            "title": "Book Your Free 15-Minute Consultation",
+            "title": "Schedule A Complimentary Consultation",
             "sub": "Free, no obligation. A quick call to help you understand your needs and your next step.",
             "page": "buyer-consult"
           },
           {
-            "title": "Search Homes For Sale With My Free App",
+            "title": "Search Homes With My Free App",
             "sub": "Search for your home in the area you want to live.",
             "page": "app",
             "pending": true
@@ -52,12 +52,12 @@
         "sub": "Ashley Barrett Helps Home Buyers",
         "links": [
           {
-            "title": "Get Your Home Buying Questions Answered",
+            "title": "Get Your Buying Questions Answered",
             "sub": "Learn Everything You Need To Know Right Here",
             "view": "faq"
           },
           {
-            "title": "Search Homes For Sale With My Free App",
+            "title": "Search Homes With My Free App",
             "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
             "page": "app",
             "pending": true
@@ -79,7 +79,7 @@
         "sub": "Learn all you need to know with the resources below",
         "links": [
           {
-            "title": "Get My Free Guide to Boost Your Home's Value",
+            "title": "Get My Free Guide To Maximize Value",
             "page": "seller-guide"
           },
           {
@@ -91,7 +91,7 @@
             "page": "seller-consult"
           },
           {
-            "title": "See What Homes Are Selling For Near You",
+            "title": "What Are Homes Selling For Near You?",
             "sub": "One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
             "page": "app",
             "pending": true
@@ -118,7 +118,7 @@
             "page": "buyer-steps"
           },
           {
-            "title": "Why Do I Need a Buyer Broker Agreement?",
+            "title": "Why a Buyer Broker Agreement?",
             "page": "buyer-broker-agreement"
           },
           {
@@ -131,7 +131,7 @@
             "page": "buyer-consult"
           },
           {
-            "title": "Search Homes For Sale With My Free App",
+            "title": "Search Homes With My Free App",
             "sub": "Browse homes for sale in the areas where you want to live.",
             "page": "app",
             "pending": true
