@@ -38,9 +38,9 @@ function render_about(array $a): string {
       . page_footer($a) . '</main></body></html>';
 }
 
-/** Page footer: brokerage line plus the agent's "In Real Estate? Learn more here" recruiting link (set in the dashboard). */
+/** Page footer: brokerage line plus the agent's "Are you a real estate agent? Learn more here" recruiting link (set in the dashboard). */
 function page_footer(array $a): string {
     $j = trim((string)($a['join_url'] ?? ''));
     return '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span>'
-        . ($j !== '' ? '<p class="joinlink">In Real Estate? <a href="' . h($j) . '" target="_blank" rel="noopener">Learn more here</a></p>' : '') . '</footer>';
+        . ($j !== '' ? '<p class="joinlink">Are you a real estate agent? <a href="' . h($j) . '" target="_blank" rel="noopener">Learn more here</a></p>' : '') . '</footer>';
 }
