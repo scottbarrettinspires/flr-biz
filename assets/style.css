@@ -188,3 +188,5 @@ nav.links .btn .tx{flex:1;min-width:0}
 .card h1.pt.ahd{white-space:normal;text-wrap:balance;font-size:min(1.75rem,6.4vw);line-height:1.15}
 .heroimg{width:min(345px,94%)}
 .abul{margin-bottom:6px}.card.wide:has(.astick) footer{margin-top:6px;padding-bottom:84px}
+.abul{margin-bottom:0}.card.wide:has(.astick) footer{margin-top:0;padding-top:0}.abul li:last-child{margin-bottom:0}
+.card.wide:has(.astick) footer{margin-top:14px}
