@@ -51,7 +51,7 @@ function agent_pages(array $agent): array {
     return $out;
 }
 
-function share_card(string $label, string $url, string $code, string $key, string $id = ''): string {
+function share_card(string $label, string $url, string $code, string $key, string $id = '', string $edit = ''): string {
     $qs = '?a=' . urlencode($code) . '&k=' . urlencode($key) . '&u=' . urlencode($url);
     $file = preg_replace('~[^a-z0-9]+~', '-', strtolower($code . '-' . trim(preg_replace('~^https://[^/]+/~', '', $url), '/')));
     $png = '/setup/qr/' . $qs . '&fmt=png&dl=1&n=' . urlencode($file); $svg = '/setup/qr/' . $qs . '&fmt=svg&dl=1&n=' . urlencode($file);
@@ -59,7 +59,7 @@ function share_card(string $label, string $url, string $code, string $key, strin
     return '<section class="sharecard"' . ($id ? ' id="' . h($id) . '"' : '') . '><div class="sc-top"><div class="sc-info"><strong>' . h($label) . '</strong>'
       . '<code>' . h(preg_replace('~^https://~', '', $url)) . '</code></div>'
       . '<img class="sc-qr" src="/setup/qr/' . h($qs) . '&fmt=svg" alt="QR code for ' . h($label) . '" width="110" height="110" loading="lazy"></div>'
-      . '<div class="sc-btns">'
+      . '<div class="sc-btns">' . ($edit !== '' ? '<a class="sb pri" href="' . h($edit) . '">Edit property</a>' : '')
       . '<button type="button" class="sb" data-copy="' . h($url) . '">Copy link</button>'
       . '<a class="sb" href="sms:?&body=' . $body . '">Text it</a>'
       . '<a class="sb" href="mailto:?subject=' . rawurlencode($label) . '&body=' . $body . '">Email it</a>'

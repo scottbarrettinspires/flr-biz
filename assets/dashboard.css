@@ -69,3 +69,4 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
   .dbody{flex-direction:column}.dside{width:auto;padding:10px}.dside nav{flex-direction:row;flex-wrap:wrap}.dside nav a{padding:9px 12px;font-size:.88rem}.dside nav a svg{display:none}.dpow{display:none}
   .dtop{padding:8px 14px}.dlogo img{height:36px}.dview{display:none}.dash .row3{grid-template-columns:1fr}.sc-qr{width:96px;height:96px}
 }
+.sb.pri{background:var(--navy);border-color:var(--navy);color:#fff}

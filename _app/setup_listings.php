@@ -25,12 +25,14 @@ if ($sid !== '' && !slot_id_ok($sid)) $sid = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act = (string)($_POST['act'] ?? '');
     if ($act === 'new') {
-        if (count($slots) >= MAX_SLOTS) { $errors[] = 'You have reached the limit of ' . MAX_SLOTS . ' pages. Reuse an existing one.'; }
+        $pre = (($_POST['kind'] ?? '') === 'o') ? 'o' : 'p';
+        $have = count(array_filter(array_keys($slots), fn($i) => $i[0] === $pre));
+        if ($have >= MAX_SLOTS) { $errors[] = 'You have reached the limit of ' . MAX_SLOTS . ' pages of this kind. Reuse an existing one.'; }
         else {
-            $n = 1; while (isset($slots['p' . $n])) $n++;
-            $slots['p' . $n] = ['title' => 'OPEN HOUSE'];
+            $n = 1; while (isset($slots[$pre . $n])) $n++;
+            $slots[$pre . $n] = ['title' => ''];
             slots_save($code, $slots);
-            header('Location: ' . $self . '&s=p' . $n . '&new=1', true, 303); exit;
+            header('Location: ' . $self . '&s=' . $pre . $n . '&new=1', true, 303); exit;
         }
     } elseif ($act === 'reset' && $sid !== '' && isset($slots[$sid])) {
         // Clear the property details but keep the permanent link live (printed signs and flyers depend on it).
@@ -44,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'address'  => mb_substr(trim((string)($_POST['address'] ?? '')), 0, 120),
             'price'    => mb_substr(trim((string)($_POST['price'] ?? '')), 0, 40),
             'welcome'  => mb_substr(trim((string)($_POST['welcome'] ?? '')), 0, 240),
-            'oh_date'  => trim((string)($_POST['oh_date'] ?? '')),
-            'oh_start' => trim((string)($_POST['oh_start'] ?? '')),
-            'oh_end'   => trim((string)($_POST['oh_end'] ?? '')),
+            'oh_date'  => slot_is_oh($sid) ? trim((string)($_POST['oh_date'] ?? '')) : '',
+            'oh_start' => slot_is_oh($sid) ? trim((string)($_POST['oh_start'] ?? '')) : '',
+            'oh_end'   => slot_is_oh($sid) ? trim((string)($_POST['oh_end'] ?? '')) : '',
             'property_url' => clean_url((string)($_POST['property_url'] ?? '')),
             'video'    => youtube_id((string)($_POST['video'] ?? '')),
             'target'   => (string)($_POST['target'] ?? ''),
@@ -71,35 +73,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
-?><?= dash_open('listings', $agent, $key, 'Listings & Open Houses', 'Each page has a permanent link and QR code that never change. Edit what it shows, or point it at any existing page, whenever you like.') ?>
+?><?= dash_open('listings', $agent, $key, $sid !== '' && isset($slots[$sid]) ? slot_kind($sid) . ' ' . $sid : 'Listings & Open Houses', $sid !== '' && isset($slots[$sid]) ? 'Choose which property this link shows. The link and QR code never change.' : 'Your listing pages and open house pages are ready, each with a permanent link and QR code for yard signs and flyers. Click Edit property to choose which home each one shows.') ?>
 <?php if (isset($_GET['saved'])): ?><div class="note ok">Saved. Your page is updated.</div><?php endif; ?>
 <?php if (isset($_GET['reset'])): ?><div class="note ok">Property cleared. The link and QR code still work and show a general welcome page until you add the next property.</div><?php endif; ?>
 <?php foreach ($errors as $e): ?><div class="note err"><?= h($e) ?></div><?php endforeach; ?>
 <?php if ($sid !== '' && isset($slots[$sid])): $s = $slots[$sid]; $photo = slot_photo_url($code, $sid);
   $val = fn($k) => $s[$k] ?? ''; $url = $base . $sid . '/';
   $f = fn($id, $label, $v, $ph, $type = 'text', $hint = '') => '<label for="' . $id . '">' . h($label) . '</label><input id="' . $id . '" name="' . $id . '" type="' . $type . '" value="' . h($v) . '" placeholder="' . h($ph) . '" autocomplete="off">' . ($hint ? '<small>' . h($hint) . '</small>' : ''); ?>
-<?= share_card(trim(($s['title'] ?? 'Listing') . ': ' . ($s['address'] ?? $sid), ': '), $url, $code, $key) ?>
+<?= share_card(slot_kind($sid) . ' ' . $sid . ': ' . slot_status($agent, $s), $url, $code, $key) ?>
 <p style="margin:6px 0 12px"><small>This link and QR code never change, even when you edit the page or point it somewhere else.</small></p>
 <form method="post" enctype="multipart/form-data" class="form">
 <input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="s" value="<?= h($sid) ?>"><input type="hidden" name="act" value="save">
-<label style="color:var(--accent)">What should this link do?</label>
+<label>What should this link do?</label>
 <select name="target" id="target">
-  <option value="">Show this listing / open house page</option>
+  <option value="">Show the property details below</option>
   <?php foreach (SLOT_TARGETS as $k => $lab): ?><option value="<?= h($k) ?>"<?= ($s['target'] ?? '') === $k ? ' selected' : '' ?>>Send visitors to: <?= h($lab) ?></option><?php endforeach; ?>
   <option value="custom"<?= ($s['target'] ?? '') === 'custom' ? ' selected' : '' ?>>Send visitors to a link I paste</option>
 </select>
 <small>Your QR code stays the same. Change this any time to switch what visitors see.</small>
 <div id="custom_wrap"><?= $f('custom_url', 'Link to send visitors to', $val('custom_url'), 'https://...') ?></div>
 <div id="slot_fields">
-<?= $f('title', 'Headline', $val('title') ?: 'OPEN HOUSE', 'GRAND OPEN HOUSE EVENT', 'text', 'Examples: OPEN HOUSE, JUST LISTED, COMING SOON.') ?>
+<?php $oh = slot_is_oh($sid); ?>
+<?= $f('title', 'Headline', $val('title') ?: ($oh ? 'OPEN HOUSE' : 'JUST LISTED'), $oh ? 'GRAND OPEN HOUSE EVENT' : 'JUST LISTED', 'text', $oh ? 'Examples: OPEN HOUSE, GRAND OPEN HOUSE EVENT.' : 'Examples: JUST LISTED, COMING SOON, FOR SALE, UNDER CONTRACT, SOLD.') ?>
 <?= $f('address', 'Property address', $val('address'), '8716 Green Street, Port Richey') ?>
 <?= $f('price', 'Price (optional)', $val('price'), '$425,000') ?>
 <label for="welcome">Welcome message (optional)</label><textarea id="welcome" name="welcome" rows="2" maxlength="240" placeholder="Welcome to my open house!"><?= h($val('welcome')) ?></textarea>
-<label style="margin-top:18px;color:var(--accent)">Open house date and time</label>
-<small>Leave blank for a listing page without an open house. The calendar button disappears automatically after the event.</small>
+<?php if ($oh): ?>
+<label style="margin-top:18px">Open house date and time</label>
+<small>Visitors get an Add to Calendar button. It disappears automatically after the event.</small>
 <div class="row3"><div><label for="oh_date">Date</label><input id="oh_date" name="oh_date" type="date" value="<?= h($val('oh_date')) ?>"></div>
 <div><label for="oh_start">Starts</label><input id="oh_start" name="oh_start" type="time" value="<?= h($val('oh_start')) ?>"></div>
 <div><label for="oh_end">Ends</label><input id="oh_end" name="oh_end" type="time" value="<?= h($val('oh_end')) ?>"></div></div>
+<?php endif; ?>
 <?= $f('property_url', 'Property page link (adds a "View This Home" button)', $val('property_url'), 'https://... (MLS, your website, Zillow, flyer)') ?>
 <?= $f('video', 'Home tour video (YouTube link, optional)', !empty($s['video']) ? 'https://youtu.be/' . $s['video'] : '', 'https://youtu.be/...') ?>
 <label>Property photo</label>
@@ -112,14 +117,15 @@ $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
 <input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="s" value="<?= h($sid) ?>"><input type="hidden" name="act" value="reset">
 <button class="linkbtn" type="submit">Done with this property: clear it for the next one</button></form>
 <p><small>Listing links can't be deleted, so printed signs and flyers with this QR code never lead to a dead page.</small></p>
-<p style="margin-top:14px"><a href="<?= h($self) ?>">&larr; All my listing pages</a></p>
+<p style="margin-top:14px"><a href="<?= h($self) ?>">&larr; All my listing and open house pages</a></p>
 <script>(function(){var t=document.getElementById('target'),c=document.getElementById('custom_wrap'),f=document.getElementById('slot_fields');
 function u(){c.style.display=t.value==='custom'?'':'none';f.style.display=(t.value===''?'':'none');}t.addEventListener('change',u);u();})();</script>
 <?php else: ?>
-<?php foreach ($slots as $id => $s): $rd = slot_redirect(agent($code), $s); ?>
-<a class="btn slotrow" href="<?= h($self . '&s=' . $id) ?>"><span class="tx"><span class="t"><?= h($id) ?> &middot; <?= h($rd ? 'Sends to ' . (SLOT_TARGETS[$s['target']] ?? 'a link') : (trim(($s['title'] ?? '') . ' ' . ($s['address'] ?? '')) ?: 'Not set up')) ?></span><small>flr.biz/<?= h($code) ?>/<?= h($id) ?>/</small></span></a>
+<?php foreach (['p' => ['Listing pages', 'For yard signs and listing flyers. One link per property.', 'Add another listing page'], 'o' => ['Open house pages', 'For open house and coming-soon signs. Includes the date and an Add to Calendar button.', 'Add another open house page']] as $pre => [$hd, $ds, $addlab]): ?>
+<h2><?= h($hd) ?></h2><p class="dsub" style="margin-bottom:6px"><?= h($ds) ?></p>
+<?php foreach ($slots as $id => $s) if ($id[0] === $pre) echo share_card(slot_kind($id) . ' ' . $id . ': ' . slot_status($agent, $s), $base . $id . '/', $code, $key, $id, $self . '&s=' . $id); ?>
+<form method="post"><input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="act" value="new"><input type="hidden" name="kind" value="<?= $pre ?>">
+<button class="btn contact" type="submit" style="margin-top:6px"><span class="t">+ <?= h($addlab) ?></span></button></form>
 <?php endforeach; ?>
-<form method="post"><input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="act" value="new">
-<button class="btn contact" type="submit"><span class="t">+ Add a listing or open house page</span></button></form>
 <?php endif; ?>
 <?= dash_close() ?>

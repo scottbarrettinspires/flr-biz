@@ -5,15 +5,37 @@
 const SLOT_TARGETS = ['main' => 'My main page', 'buyer' => 'My buyer page', 'seller' => 'My seller page', 'faq' => 'My buyer FAQ page', 'social' => 'My social media page',
                       'app' => 'My home search app page', 'consult' => 'Book a consultation page', 'value' => 'Home value page'];
 
-function slot_id_ok(string $id): bool { return (bool)preg_match('/^p[0-9]{1,3}$/', $id); }
+const SLOT_SEED = ['p1', 'p2', 'p3', 'p4', 'p5', 'o1'];   // created automatically for every agent
+
+function slot_id_ok(string $id): bool { return (bool)preg_match('/^[po][0-9]{1,3}$/', $id); }
+function slot_is_oh(string $id): bool { return ($id[0] ?? '') === 'o'; }
+function slot_kind(string $id): string { return slot_is_oh($id) ? 'Open house page' : 'Listing page'; }
 function slots_path(string $code): string { return DATA_DIR . "/$code.slots.json"; }
+// Every agent always has p1-p5 (listings) and o1 (open house). Pages are never removed, so printed QR codes never go dead.
 function slots_load(string $code): array {
-    $f = slots_path($code);
-    return is_file($f) ? (json_decode((string)file_get_contents($f), true) ?: []) : [];
+    $f = slots_path($code); $slots = []; $corrupt = false;
+    if (is_file($f)) {
+        $d = json_decode((string)file_get_contents($f), true);
+        if (is_array($d)) $slots = $d; else { $corrupt = true; error_log("flr.biz: unreadable $f"); }
+    }
+    $add = false;
+    foreach (SLOT_SEED as $id) if (!isset($slots[$id])) { $slots[$id] = ['title' => '']; $add = true; }
+    if ($add && !$corrupt) slots_save($code, $slots);    // never overwrite a file we could not read
+    uksort($slots, fn($x, $y) => [$x[0] === 'o', (int)substr($x, 1)] <=> [$y[0] === 'o', (int)substr($y, 1)]);
+    return $slots;
 }
 function slots_save(string $code, array $slots): void {
     if (!is_dir(DATA_DIR)) { mkdir(DATA_DIR, 0755, true); file_put_contents(DATA_DIR . '/.htaccess', "Require all denied\n"); }
-    file_put_contents(slots_path($code), json_encode($slots, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+    $f = slots_path($code);
+    if (is_file($f)) @copy($f, $f . '.bak');             // keep the previous version
+    $tmp = $f . '.tmp' . getmypid();
+    file_put_contents($tmp, json_encode($slots, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+    rename($tmp, $f);
+}
+function slot_status(array $a, array $s): string {
+    if ($rd = slot_redirect($a, $s)) return 'Sends visitors to ' . (SLOT_TARGETS[$s['target']] ?? 'a link you pasted');
+    $addr = trim((string)($s['address'] ?? ''));
+    return $addr !== '' ? $addr : 'Not set up yet (shows a welcome page)';
 }
 function slot_photo_url(string $code, string $id): ?string {
     $f = UPLOAD_DIR . "/$code-$id.jpg";
@@ -87,10 +109,11 @@ function render_slot_ics(array $a, string $id, array $s): ?string {
 function render_slot(array $a, string $id, array $s): string {
     $code = $a['code']; $p = paths_for($code); $name = ucwords(strtolower($a['name'])); $first = explode(' ', $name)[0];
     $addr = trim((string)($s['address'] ?? '')); $price = trim((string)($s['price'] ?? ''));
-    $title = trim((string)($s['title'] ?? '')) ?: (($addr !== '' || !empty($s['oh_date'])) ? 'OPEN HOUSE' : 'WELCOME');
+    $oh = slot_is_oh($id);
+    $title = trim((string)($s['title'] ?? '')) ?: ($addr !== '' ? ($oh ? 'OPEN HOUSE' : 'JUST LISTED') : 'WELCOME');
     $photo = slot_photo_url($code, $id);
     $heroPhoto = $photo ?: photo_url($code);   // no property photo yet: use the agent's headshot so the page is never blank
-    $when = slot_when($s);
+    $when = $oh ? slot_when($s) : null;
     $base = '/' . $code . '/' . $id . '/';
 
     $soc = '';
@@ -102,7 +125,7 @@ function render_slot(array $a, string $id, array $s): string {
     if (!empty($s['property_url'])) $links .= menu_button('home', 'View This Home', $s['property_url'], true);
     if ($addr !== '') $links .= menu_button('pin', 'Get Directions', 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($addr), true);
     if (!empty($a['app_url'])) $links .= menu_button('search', 'Find The Perfect Home Now', '/' . $code . '/app/');
-    $links .= menu_button('calendar', 'Book A Complimentary Consultation', '/' . $code . '/buyer-consult/');
+    $links .= menu_button('calendar', $oh ? 'Book A Complimentary Consultation' : 'Book A Private Showing', '/' . $code . '/buyer-consult/');
     $links .= menu_button('dollar', "Get Your Home's Value Instantly", '/' . $code . '/value/');
 
     $video = !empty($s['video']) ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($s['video']) . '" title="Home tour" loading="lazy" allowfullscreen></iframe></div>' : '';
