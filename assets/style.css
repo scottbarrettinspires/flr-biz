@@ -164,3 +164,5 @@ nav.links .btn .tx{flex:1;min-width:0}
 .mh{display:flex;align-items:center;gap:12px}
 .mh img{width:56px;height:56px;border-radius:10px;object-fit:cover;object-position:50% 20%;flex:none;border:1px solid rgba(255,255,255,.2)}
 .mh strong{display:block;font-size:1.05rem}.mh span{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
+
+.heroimg{width:min(300px,82%);height:auto;filter:drop-shadow(0 24px 30px rgba(0,0,0,.5));margin:4px 0 14px}
