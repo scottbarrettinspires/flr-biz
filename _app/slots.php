@@ -86,9 +86,10 @@ function render_slot_ics(array $a, string $id, array $s): ?string {
 
 function render_slot(array $a, string $id, array $s): string {
     $code = $a['code']; $p = paths_for($code); $name = ucwords(strtolower($a['name'])); $first = explode(' ', $name)[0];
-    $title = trim((string)($s['title'] ?? '')) ?: 'OPEN HOUSE';
     $addr = trim((string)($s['address'] ?? '')); $price = trim((string)($s['price'] ?? ''));
+    $title = trim((string)($s['title'] ?? '')) ?: (($addr !== '' || !empty($s['oh_date'])) ? 'OPEN HOUSE' : 'WELCOME');
     $photo = slot_photo_url($code, $id);
+    $heroPhoto = $photo ?: photo_url($code);   // no property photo yet: use the agent's headshot so the page is never blank
     $when = slot_when($s);
     $base = '/' . $code . '/' . $id . '/';
 
@@ -109,13 +110,13 @@ function render_slot(array $a, string $id, array $s): string {
     $ap = photo_url($code);
     $by = '<a class="presby" href="/' . $p['main'] . '/">' . ($ap ? '<img src="' . h($ap) . '" alt="">' : '')
         . '<span><small>Presented by</small><strong>' . h($name) . '</strong><em>' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</em></span></a>';
-    $hero = $photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '';
+    $hero = $heroPhoto ? ' style="--hero:url(\'' . h($heroPhoto) . '\')"' : '';
     $ogt = $title . ($addr !== '' ? ' - ' . $addr : '');
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($ogt) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta property="og:title" content="' . h($ogt) . '">'
       . ($photo ? '<meta property="og:image" content="https://' . SITE_DOMAIN . h($photo) . '">' : '')
       . '<link rel="canonical" href="https://' . SITE_DOMAIN . $base . '"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body><main class="card">'
-      . '<header class="hero slothero' . ($photo ? '' : ' nophoto') . '"' . $hero . '><div class="hero-in"><h1>' . h($title) . '</h1>'
+      . '<header class="hero slothero' . ($heroPhoto ? '' : ' nophoto') . '"' . $hero . '><div class="hero-in"><h1>' . h($title) . '</h1>'
       . ($addr !== '' ? '<p class="tag">' . h($addr) . '</p>' : '') . ($price !== '' ? '<p class="headline">' . h($price) . '</p>' : '') . '</div></header>'
       . ($welcome !== '' ? '<p class="welcome">' . h($welcome) . '</p>' : '')
       . '<div class="socials">' . $soc . '</div>' . $video . '<nav class="links">' . $links . '</nav>' . $by

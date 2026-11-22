@@ -32,10 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             slots_save($code, $slots);
             header('Location: ' . $self . '&s=p' . $n . '&new=1', true, 303); exit;
         }
-    } elseif ($act === 'delete' && $sid !== '' && isset($slots[$sid])) {
-        unset($slots[$sid]); slots_save($code, $slots);
+    } elseif ($act === 'reset' && $sid !== '' && isset($slots[$sid])) {
+        // Clear the property details but keep the permanent link live (printed signs and flyers depend on it).
+        $slots[$sid] = ['title' => ''];
+        slots_save($code, $slots);
         @unlink(UPLOAD_DIR . "/$code-$sid.jpg");
-        header('Location: ' . $self . '&deleted=1', true, 303); exit;
+        header('Location: ' . $self . '&s=' . $sid . '&reset=1', true, 303); exit;
     } elseif ($act === 'save' && $sid !== '' && isset($slots[$sid])) {
         $s = [
             'title'    => mb_substr(trim((string)($_POST['title'] ?? '')), 0, 60),
@@ -71,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
 ?><?= dash_open('listings', $agent, $key, 'Listings & Open Houses', 'Each page has a permanent link and QR code that never change. Edit what it shows, or point it at any existing page, whenever you like.') ?>
 <?php if (isset($_GET['saved'])): ?><div class="note ok">Saved. Your page is updated.</div><?php endif; ?>
-<?php if (isset($_GET['deleted'])): ?><div class="note ok">Page cleared.</div><?php endif; ?>
+<?php if (isset($_GET['reset'])): ?><div class="note ok">Property cleared. The link and QR code still work and show a general welcome page until you add the next property.</div><?php endif; ?>
 <?php foreach ($errors as $e): ?><div class="note err"><?= h($e) ?></div><?php endforeach; ?>
 <?php if ($sid !== '' && isset($slots[$sid])): $s = $slots[$sid]; $photo = slot_photo_url($code, $sid);
   $val = fn($k) => $s[$k] ?? ''; $url = $base . $sid . '/';
@@ -106,9 +108,10 @@ $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
 </div>
 <button class="btn contact" type="submit"><span class="t">Save this page</span></button>
 </form>
-<form method="post" onsubmit="return confirm('Clear this page? The link stays reserved but the page will show Not Found until you set it up again.');" style="margin-top:14px">
-<input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="s" value="<?= h($sid) ?>"><input type="hidden" name="act" value="delete">
-<button class="linkbtn" type="submit">Delete this page</button></form>
+<form method="post" onsubmit="return confirm('Clear the property details on this page? The link and QR code keep working and show a general welcome page until you add the next property.');" style="margin-top:14px">
+<input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="s" value="<?= h($sid) ?>"><input type="hidden" name="act" value="reset">
+<button class="linkbtn" type="submit">Done with this property: clear it for the next one</button></form>
+<p><small>Listing links can't be deleted, so printed signs and flyers with this QR code never lead to a dead page.</small></p>
 <p style="margin-top:14px"><a href="<?= h($self) ?>">&larr; All my listing pages</a></p>
 <script>(function(){var t=document.getElementById('target'),c=document.getElementById('custom_wrap'),f=document.getElementById('slot_fields');
 function u(){c.style.display=t.value==='custom'?'':'none';f.style.display=(t.value===''?'':'none');}t.addEventListener('change',u);u();})();</script>
