@@ -64,7 +64,8 @@ echo dash_open('overview', $agent, $key, 'Welcome, ' . $first, 'Your LeadStream 
 <div class="photo-row"><div class="avatar sm" data-initials="<?= h(initials_text($agent['name'])) ?>"><?= $photo ? '<img src="' . h($photo) . '" alt="">' : '' ?></div>
 <input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div><small>JPG, PNG or WebP. A clear head-and-shoulders photo works best; it is cropped to a square.</small>
 <?php
-$ifield = fn($id, $label, $ph, $type, $color) => '<label for="' . $id . '">' . h($label) . '</label><div class="ifield"><span class="ico" style="color:' . $color . '"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' . ICONS[$id === 'x' ? 'x' : ($id === 'phone' || $id === 'email' || $id === 'website' ? $id : $id)] . '</svg></span><input id="' . $id . '" name="' . $id . '" type="' . $type . '" value="' . h($val($id)) . '" placeholder="' . h($ph) . '" autocomplete="off"></div>';
+$ifield = fn($id, $label, $ph, $type, $color) => '<div class="icell"><label for="' . $id . '">' . h($label) . '</label><div class="ifield"><span class="ico" style="color:' . $color . '"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' . ICONS[$id === 'x' ? 'x' : ($id === 'phone' || $id === 'email' || $id === 'website' ? $id : $id)] . '</svg></span><input id="' . $id . '" name="' . $id . '" type="' . $type . '" value="' . h($val($id)) . '" placeholder="' . h($ph) . '" autocomplete="off"></div></div>';
+echo '<div class="igrid">';
 echo $ifield('phone', 'Phone', '(727) 555-1234', 'tel', '#2e9e5b');
 echo $ifield('email', 'Email', 'you@example.com', 'email', '#e0302f');
 echo $ifield('website', 'Website', 'https://', 'text', '#0e3a4d');
@@ -73,6 +74,7 @@ echo $ifield('facebook', 'Facebook', 'link to your page', 'text', '#1877F2');
 echo $ifield('tiktok', 'TikTok', '@yourname or link', 'text', '#111111');
 echo $ifield('linkedin', 'LinkedIn', 'link to your profile', 'text', '#0A66C2');
 echo $ifield('x', 'X (Twitter)', '@yourname or link', 'text', '#111111');
+echo '</div>';
 ?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>
