@@ -60,7 +60,7 @@ echo dash_open('overview', $agent, $key, 'Welcome, ' . $first, 'Your LeadStream 
 <div class="tiles">
   <a class="tile" href="#info"><span class="n">1</span><strong>Complete your info</strong><small>Photo, phone, email, social links, intro video and your home search app link.</small></a>
   <a class="tile" href="/setup/listings/<?= h($q) ?>"><span class="n">2</span><strong>Add listing &amp; open house pages</strong><small><?= $nslots ?> page<?= $nslots === 1 ? '' : 's' ?> ready for yard signs and flyers. Choose which home each one shows.</small></a>
-  <a class="tile" href="/setup/links/<?= h($q) ?>"><span class="n">3</span><strong>Share links &amp; QR codes</strong><small>Text, email or post any page, or download its QR code to print.</small></a>
+  <a class="tile" href="/setup/links/<?= h($q) ?>"><span class="n">3</span><strong>Share your mobile pages &amp; QR codes</strong><small>Text, email or post any page, or download its QR code to print.</small></a>
 </div>
 <h2 id="info">My Page &amp; Info</h2>
 <p class="dsub">Update the details shown on your mobile page: <b>flr.biz/<?= h($p['main']) ?></b></p>

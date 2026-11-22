@@ -17,7 +17,7 @@ function dash_open(string $active, array $agent, string $key, string $title, str
     $ic = ['home' => '<path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/>', 'user' => '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>',
            'house' => '<path d="M3 21V10l9-6 9 6v11h-7v-6h-4v6z"/>', 'qr' => '<path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM14 14h3v3h-3zM18 18h3v3h-3zM18 14h3v2h-3zM14 18h2v3h-2z"/>'];
     $items = ['overview' => ['Overview', '/setup/', 'home'],
-              'listings' => ['Listings & Open Houses', '/setup/listings/', 'house'], 'links' => ['Links & QR Codes', '/setup/links/', 'qr']];
+              'listings' => ['Listings & Open Houses', '/setup/listings/', 'house'], 'links' => ['My Mobile Pages', '/setup/links/', 'qr']];
     $nav = '';
     foreach ($items as $k => [$lab, $path, $i]) $nav .= '<a href="' . h($path . $q) . '"' . ($k === $active ? ' class="on"' : '') . '><svg viewBox="0 0 24 24" aria-hidden="true">' . $ic[$i] . '</svg><span>' . h($lab) . '</span></a>';
     $photo = photo_url($code);
