@@ -127,8 +127,13 @@ function menu_button(string $icon, string $title, string $href, bool $ext = fals
 
 /** "Share This" button: opens the public share page (QR code + email / text / Facebook / Instagram) for this page. */
 function share_href(string $path): string { return '/share/?u=' . rawurlencode('https://' . SITE_DOMAIN . '/' . trim($path, '/') . '/'); }
+/** Label for the share button/page: "Share This With Someone" on the app page and listing / open house pages, else "Share Me With Others". */
+function share_label(string $path): string {
+    $seg = explode('/', trim($path, '/'))[1] ?? '';
+    return ($seg === 'app' || ($seg !== '' && slot_id_ok($seg))) ? 'Share This With Someone' : 'Share Me With Others';
+}
 function share_button(string $path): string {
-    return '<a class="btn contact" href="' . h(share_href($path)) . '"><span class="t"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . BTN_ICONS['share'] . '</svg> Share Me With Someone</span></a>' . "\n";
+    return '<a class="btn contact" href="' . h(share_href($path)) . '"><span class="t"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . BTN_ICONS['share'] . '</svg> ' . share_label($path) . '</span></a>' . "\n";
 }
 
 function render_page(array $a, string $view): string {
