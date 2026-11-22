@@ -1,6 +1,11 @@
 <?php
 // Landing page definitions. Copy is first person (the agent speaking). type: consult | guide | value
 const CONSENT_VERSION = '2026-11-22';
+function consult_times(): array { return ['9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM']; }
+function consult_window(): array {   // earliest and latest bookable dates, in Eastern Time
+    $tz = new DateTimeZone('America/New_York');
+    return [(new DateTime('tomorrow', $tz))->format('Y-m-d'), (new DateTime('+60 days', $tz))->format('Y-m-d')];
+}
 function page_defs(): array {
     return [
     'buyer-consult' => ['type' => 'consult', 'form' => 'buyer-consult', 'title' => 'Complimentary 15-Minute Buyer Consultation',

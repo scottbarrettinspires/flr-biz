@@ -248,6 +248,14 @@ function agent_card(array $a, bool $compact = false): string {
       . '<div class="ainfo">' . $rows . '</div></div></header>';
 }
 
+function consult_fields(): string {
+    [$min, $max] = consult_window();
+    $o = '<label for="pref_date">Choose a date *</label><input id="pref_date" name="pref_date" type="date" required min="' . $min . '" max="' . $max . '">'
+       . '<label>Choose a time (Eastern Time) *</label><div class="times">';
+    foreach (consult_times() as $i => $t) $o .= '<label class="tm"><input type="radio" name="pref_time" value="' . h($t) . '"' . ($i === 0 ? ' required' : '') . '><span>' . h($t) . '</span></label>';
+    return $o . '</div><p class="hint">This is a request. I will confirm your appointment by phone or email.</p>';
+}
+
 function render_landing(array $a, string $slug, bool $done): string {
     $defs = page_defs(); $d = $defs[$slug]; $code = $a['code']; $name = ucwords(strtolower($a['name']));
     $title = $d['title'];
@@ -273,7 +281,7 @@ function render_landing(array $a, string $slug, bool $done): string {
     if ($done === null) {
         // video page: $inner already built
     } elseif ($done) {
-        $inner = '<div class="note ok">Submitted successfully. Thank you' . ($d['type'] === 'guide' ? '.' : ', ' . h(explode(' ', $name)[0]) . ' will be in touch shortly.') . '</div>';
+        $inner = '<div class="note ok">Submitted successfully. Thank you' . ($d['type'] === 'guide' ? '.' : ', ' . h(explode(' ', $name)[0]) . (($d['type'] === 'consult') ? ' will confirm your appointment time shortly.' : ' will be in touch shortly.')) . '</div>';
         if ($d['type'] === 'guide') $inner .= $fileUrl
             ? '<p class="lead">Your guide should download automatically. If it does not, <a href="' . h($fileUrl) . '" download>click here</a>.</p><meta http-equiv="refresh" content="1;url=' . h($fileUrl) . '">'
             : '<p class="lead">Your guide is on its way. ' . h($name) . ' will send it to you shortly.</p>';
@@ -289,7 +297,7 @@ function render_landing(array $a, string $slug, bool $done): string {
           . '<label for="name">Name *</label><input id="name" name="name" type="text" required maxlength="100" autocomplete="name">'
           . '<label for="phone">Phone *</label><input id="phone" name="phone" type="tel" required maxlength="24" autocomplete="tel">'
           . '<label for="email">Email *</label><input id="email" name="email" type="email" required maxlength="120" autocomplete="email">'
-          . (!empty($d['time_field']) ? '<label for="msg">Best days or times to talk, or anything you would like me to know</label><textarea id="msg" name="message" rows="3" maxlength="800"></textarea>' : '')
+          . (!empty($d['time_field']) ? consult_fields() . '<label for="msg">Anything you would like me to know (optional)</label><textarea id="msg" name="message" rows="3" maxlength="800"></textarea>' : '')
           . '<label class="consent"><input type="checkbox" name="consent" value="1" required> <span>' . consent_html($a) . '</span></label>'
           . '<button class="btn contact" type="submit"><span class="t">' . h($d['button']) . '</span></button></form>';
     }
@@ -313,7 +321,7 @@ function save_lead(array $a, array $lead): bool {
         $clean = fn($s) => str_replace(["\r", "\n"], ' ', (string)$s);
         $subject = 'New lead: ' . $clean($lead['form']) . ' - ' . $clean($lead['name']);
         $body = "New lead for " . $a['name'] . " (" . $a['code'] . ")\nForm: {$lead['form']}\nName: {$lead['name']}\nPhone: {$lead['phone']}\nEmail: {$lead['email']}\n"
-              . (!empty($lead['address']) ? "Address: {$lead['address']}\n" : '') . (!empty($lead['message']) ? "Message: {$lead['message']}\n" : '')
+              . (!empty($lead['address']) ? "Address: {$lead['address']}\n" : '') . (!empty($lead['pref_date']) ? "Requested appointment: {$lead['pref_date']} at {$lead['pref_time']} Eastern\n" : '') . (!empty($lead['message']) ? "Message: {$lead['message']}\n" : '')
               . "Received: {$lead['received']}\nConsent given: yes (version " . CONSENT_VERSION . ")\n";
         $hdr = "From: " . BROKERAGE . " <noreply@" . SITE_DOMAIN . ">\r\nReply-To: " . $clean($lead['email']) . "\r\nContent-Type: text/plain; charset=utf-8";
         @mail(implode(',', $to), $subject, $body, $hdr);

@@ -200,3 +200,12 @@ nav.links .btn:not(.contact):hover{background:linear-gradient(180deg,#2d4a7a 0%,
 nav.links .btn:not(.contact){gap:10px;padding:14px 14px}
 nav.links .btn .ic{width:34px;height:34px}nav.links .btn .ic svg{width:19px;height:19px}
 nav.links .btn .t{white-space:nowrap;font-size:min(1rem,3.5vw);letter-spacing:-.005em}
+
+/* Consultation scheduler */
+input[type=date]{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:var(--text);font:inherit;color-scheme:dark}
+.times{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.form .tm{display:block;margin:0;cursor:pointer;position:relative;font-weight:400}.tm input{position:absolute;opacity:0;pointer-events:none}
+.tm span{display:block;text-align:center;padding:11px 4px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.07);font-weight:600;font-size:.92rem}
+.tm input:checked+span{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tm input:focus-visible+span{outline:2px solid #fff;outline-offset:2px}
+.hint{margin:10px 0 0;color:var(--muted);font-size:.85rem}

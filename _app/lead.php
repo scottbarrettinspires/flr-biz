@@ -37,6 +37,14 @@ if ($defs[$form]['type'] === 'value') {
     if ($addr === '' || mb_strlen($addr) > 200) $fail('Please enter the property address.');
     $lead['address'] = $addr;
 }
+if (!empty($defs[$form]['time_field'])) {
+    [$dmin, $dmax] = consult_window();
+    $pd = (string)($_POST['pref_date'] ?? ''); $pt = (string)($_POST['pref_time'] ?? '');
+    $okd = preg_match('/^\d{4}-\d{2}-\d{2}$/', $pd) && checkdate((int)substr($pd, 5, 2), (int)substr($pd, 8, 2), (int)substr($pd, 0, 4)) && $pd >= $dmin && $pd <= $dmax;
+    if (!$okd) $fail('Please choose a date from tomorrow up to 60 days out.');
+    if (!in_array($pt, consult_times(), true)) $fail('Please choose a time.');
+    $lead['pref_date'] = $pd; $lead['pref_time'] = $pt;
+}
 if (!empty($_POST['message'])) $lead['message'] = mb_substr(trim((string)$_POST['message']), 0, 800);
 if (!save_lead($a, $lead)) $fail('Sorry, something went wrong. Please call instead.');
 header('Location: ' . $back . '?done=1', true, 303);
