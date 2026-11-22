@@ -127,7 +127,9 @@ function menu_button(string $icon, string $title, string $href, bool $ext = fals
 
 /** "Share This" button: opens the public share page (QR code + email / text / Facebook / Instagram) for this page. */
 function share_href(string $path): string { return '/share/?u=' . rawurlencode('https://' . SITE_DOMAIN . '/' . trim($path, '/') . '/'); }
-function share_button(string $path): string { return menu_button('share', 'Share This', share_href($path)); }
+function share_button(string $path): string {
+    return '<a class="btn contact" href="' . h(share_href($path)) . '"><span class="t"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . BTN_ICONS['share'] . '</svg> Share Me With Someone</span></a>' . "\n";
+}
 
 function render_page(array $a, string $view): string {
     if ($view === 'social') $a['social'] = ['name' => 'CONNECT WITH ME', 'sub' => 'Follow along on social media', 'headline' => '', 'section' => '', 'links' => social_links($a)];

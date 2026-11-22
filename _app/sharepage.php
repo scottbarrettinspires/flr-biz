@@ -13,11 +13,11 @@ $short = preg_replace('~^https://|/$~', '', $u);
 $back = parse_url($u, PHP_URL_PATH);
 header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-store'); header('X-Robots-Tag: noindex, nofollow');
 echo '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">'
-  . '<title>Share This | ' . h($name) . ' | ' . BROKERAGE . '</title>'
+  . '<title>Share Me With Someone | ' . h($name) . ' | ' . BROKERAGE . '</title>'
   . '<link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body><main class="card sharepage">'
   . '<a class="back vback" href="' . h($back) . '">&larr; Back</a>'
   . '<div class="shp-who">' . ($photo ? '<img src="' . h($photo) . '" alt="">' : '') . '<div><strong>' . h($name) . '</strong><span>' . h($a['title']) . ' &middot; ' . h(BROKERAGE) . '</span></div></div>'
-  . '<h1 class="pt">Share This</h1><p class="tag">Have someone scan the QR code with their phone camera, or send them the link.</p>'
+  . '<h1 class="pt">Share Me With Someone</h1><p class="tag">Have someone scan the QR code with their phone camera, or send them the link.</p>'
   . '<div class="shp-qr"><img src="/share/qr/' . h($qs) . '&amp;fmt=svg" alt="QR code for ' . h($short) . '" width="220" height="220"><a class="shp-url" href="' . h($u) . '">' . h($short) . '</a></div>'
   . '<nav class="links">'
   . menu_button('email', 'Email It To Someone', 'mailto:?subject=' . rawurlencode('A link from ' . $name) . '&body=' . rawurlencode($msg))
