@@ -128,7 +128,8 @@ function render_slot(array $a, string $id, array $s): string {
     $links .= menu_button('calendar', $oh ? 'Book A Complimentary Consultation' : 'Book A Private Showing', '/' . $code . '/buyer-consult/');
     $links .= menu_button('dollar', "Get Your Home's Value Instantly", '/' . $code . '/value/');
 
-    $video = !empty($s['video']) ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($s['video']) . '" title="Home tour" loading="lazy" allowfullscreen></iframe></div>' : '';
+    $vid = $a[$oh ? 'vid_openhouses' : 'vid_listings'] ?? '';   // one video for all listing pages, one for all open house pages (set on the dashboard)
+    $video = $vid !== '' ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($vid) . '" title="Video" loading="lazy" allowfullscreen></iframe></div>' : '';
     $welcome = trim((string)($s['welcome'] ?? ''));
     $ap = photo_url($code);
     $by = '<a class="presby" href="/' . $p['main'] . '/">' . ($ap ? '<img src="' . h($ap) . '" alt="">' : '')

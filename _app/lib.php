@@ -6,7 +6,7 @@ const ROOT_DIR    = __DIR__ . '/..';
 const DATA_DIR    = ROOT_DIR . '/_data';
 const UPLOAD_DIR  = ROOT_DIR . '/uploads';
 const APP_URL_BASE = 'https://bk.homestack.com/floridaluxuryrealtyhomesearch/?aik=';   // current Lofty app download page; agents can replace it in setup
-const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url'];
+const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url', 'vid_listings', 'vid_openhouses'];
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -199,7 +199,9 @@ function youtube_id(string $s): string {
 
 function save_overrides(string $code, array $vals): void {
     if (!is_dir(DATA_DIR)) { mkdir(DATA_DIR, 0755, true); file_put_contents(DATA_DIR . '/.htaccess', "Require all denied\n"); }
-    file_put_contents(DATA_DIR . "/$code.json", json_encode($vals, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+    $f = DATA_DIR . "/$code.json";
+    $old = is_file($f) ? (json_decode((string)file_get_contents($f), true) ?: []) : [];
+    file_put_contents($f, json_encode(array_merge($old, $vals), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);   // merge: each setup screen saves only its own fields
 }
 
 /** Validate an uploaded photo, crop to a square and re-encode as a clean JPEG. Returns error text or ''. */

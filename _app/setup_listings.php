@@ -34,6 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             slots_save($code, $slots);
             header('Location: ' . $self . '&s=' . $pre . $n . '&new=1', true, 303); exit;
         }
+    } elseif ($act === 'videos') {
+        $v = ['vid_listings' => youtube_id((string)($_POST['vid_listings'] ?? '')), 'vid_openhouses' => youtube_id((string)($_POST['vid_openhouses'] ?? ''))];
+        foreach (['vid_listings', 'vid_openhouses'] as $k) if (trim((string)($_POST[$k] ?? '')) !== '' && $v[$k] === '') $errors[] = 'Paste the full YouTube video link (youtube.com/watch?v=... or youtu.be/...).';
+        if (!$errors) { save_overrides($code, $v); header('Location: ' . $self . '&videos=1', true, 303); exit; }
     } elseif ($act === 'reset' && $sid !== '' && isset($slots[$sid])) {
         // Clear the property details but keep the permanent link live (printed signs and flyers depend on it).
         $slots[$sid] = ['title' => ''];
@@ -50,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'oh_start' => slot_is_oh($sid) ? trim((string)($_POST['oh_start'] ?? '')) : '',
             'oh_end'   => slot_is_oh($sid) ? trim((string)($_POST['oh_end'] ?? '')) : '',
             'property_url' => clean_url((string)($_POST['property_url'] ?? '')),
-            'video'    => youtube_id((string)($_POST['video'] ?? '')),
             'target'   => (string)($_POST['target'] ?? ''),
             'custom_url' => clean_url((string)($_POST['custom_url'] ?? '')),
         ];
@@ -58,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach (['oh_start', 'oh_end'] as $k) if ($s[$k] !== '' && !preg_match('/^\d{2}:\d{2}$/', $s[$k])) $errors[] = 'Open house time does not look right.';
         if (($s['oh_date'] !== '') xor ($s['oh_start'] !== '')) $errors[] = 'For an open house, enter both the date and the start time (or leave both blank).';
         if (trim((string)($_POST['property_url'] ?? '')) !== '' && $s['property_url'] === '') $errors[] = 'Property page link does not look right.';
-        if (trim((string)($_POST['video'] ?? '')) !== '' && $s['video'] === '') $errors[] = 'Paste the full YouTube video link.';
         if ($s['target'] !== '' && $s['target'] !== 'custom' && !isset(SLOT_TARGETS[$s['target']])) $s['target'] = '';
         if ($s['target'] === 'custom' && $s['custom_url'] === '') $errors[] = 'Enter the link to send visitors to, or choose a different option.';
         if ($s['target'] !== 'custom') $s['custom_url'] = '';
@@ -73,8 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
+$f2 = fn($id, $label, $v) => '<label for="' . $id . '">' . h($label) . '</label><input id="' . $id . '" name="' . $id . '" type="text" value="' . h($v) . '" placeholder="https://youtu.be/..." autocomplete="off">';
 ?><?= dash_open('listings', $agent, $key, $sid !== '' && isset($slots[$sid]) ? slot_kind($sid) . ' ' . $sid : 'Listings & Open Houses', $sid !== '' && isset($slots[$sid]) ? 'Choose which property this link shows. The link and QR code never change.' : 'Your listing pages and open house pages are ready, each with a permanent link and QR code for yard signs and flyers. Click Edit property to choose which home each one shows.') ?>
 <?php if (isset($_GET['saved'])): ?><div class="note ok">Saved. Your page is updated.</div><?php endif; ?>
+<?php if (isset($_GET['videos'])): ?><div class="note ok">Videos saved. They now show on all of your listing and open house pages.</div><?php endif; ?>
 <?php if (isset($_GET['reset'])): ?><div class="note ok">Property cleared. The link and QR code still work and show a general welcome page until you add the next property.</div><?php endif; ?>
 <?php foreach ($errors as $e): ?><div class="note err"><?= h($e) ?></div><?php endforeach; ?>
 <?php if ($sid !== '' && isset($slots[$sid])): $s = $slots[$sid]; $photo = slot_photo_url($code, $sid);
@@ -106,10 +110,9 @@ $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
 <div><label for="oh_end">Ends</label><input id="oh_end" name="oh_end" type="time" value="<?= h($val('oh_end')) ?>"></div></div>
 <?php endif; ?>
 <?= $f('property_url', 'Property page link (adds a "View This Home" button)', $val('property_url'), 'https://... (MLS, your website, Zillow, flyer)') ?>
-<?= $f('video', 'Home tour video (YouTube link, optional)', !empty($s['video']) ? 'https://youtu.be/' . $s['video'] : '', 'https://youtu.be/...') ?>
-<label>Property photo</label>
+<label>Cover image</label>
 <?php if ($photo): ?><img class="slotprev" src="<?= h($photo) ?>" alt=""><?php endif; ?>
-<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG or WebP. Landscape works best; it is cropped to 3:2. Leave empty to keep the current photo.</small>
+<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"><small>The photo behind the headline at the top of this page, usually the front of the home. JPG, PNG or WebP; landscape works best (cropped to 3:2). Leave empty to keep the current image. With no cover image, your headshot is used.</small>
 </div>
 <button class="btn contact" type="submit"><span class="t">Save this page</span></button>
 </form>
@@ -121,6 +124,14 @@ $base = 'https://' . SITE_DOMAIN . '/' . $code . '/';
 <script>(function(){var t=document.getElementById('target'),c=document.getElementById('custom_wrap'),f=document.getElementById('slot_fields');
 function u(){c.style.display=t.value==='custom'?'':'none';f.style.display=(t.value===''?'':'none');}t.addEventListener('change',u);u();})();</script>
 <?php else: ?>
+<form method="post" class="form" style="margin-bottom:6px">
+<input type="hidden" name="a" value="<?= h($code) ?>"><input type="hidden" name="k" value="<?= h($key) ?>"><input type="hidden" name="act" value="videos">
+<label style="font-size:1.05rem">Videos for all your pages</label>
+<small style="margin-top:0">Paste a YouTube link once and it plays on every page of that kind. Leave blank for no video.</small>
+<?php $cur = agent($code); $yt = fn($v) => !empty($v) ? 'https://youtu.be/' . $v : ''; ?>
+<?= $f2('vid_listings', 'Video for all listing pages', $_SERVER['REQUEST_METHOD'] === 'POST' ? ($_POST['vid_listings'] ?? '') : $yt($cur['vid_listings'] ?? '')) ?>
+<?= $f2('vid_openhouses', 'Video for all open house pages', $_SERVER['REQUEST_METHOD'] === 'POST' ? ($_POST['vid_openhouses'] ?? '') : $yt($cur['vid_openhouses'] ?? '')) ?>
+<button class="btn contact" type="submit"><span class="t">Save videos</span></button></form>
 <?php foreach (['p' => ['Listing pages', 'For yard signs and listing flyers. One link per property.', 'Add another listing page'], 'o' => ['Open house pages', 'For open house and coming-soon signs. Includes the date and an Add to Calendar button.', 'Add another open house page']] as $pre => [$hd, $ds, $addlab]): ?>
 <h2><?= h($hd) ?></h2><p class="dsub" style="margin-bottom:6px"><?= h($ds) ?></p>
 <?php foreach ($slots as $id => $s) if ($id[0] === $pre) echo share_card(slot_kind($id) . ' ' . $id . ': ' . slot_status($agent, $s), $base . $id . '/', $code, $key, $id, $self . '&s=' . $id); ?>
