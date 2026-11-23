@@ -26,7 +26,7 @@ function dash_open(string $active, array $agent, string $key, string $title, str
       . '<link rel="stylesheet" href="/assets/dashboard.css?v=' . filemtime(dirname(__DIR__) . '/assets/dashboard.css') . '"></head><body class="dash">'
       . '<header class="dtop"><a class="dlogo" href="/setup/' . h($q) . '"><img src="/assets/leadstream-logo.png" alt="LeadStream Systems"></a>'
       . '<div class="dtop-r"><a class="dview" href="' . h($main) . '" target="_blank" rel="noopener">View my mobile page &#8599;</a>'
-      . '<span class="dwho">' . ($photo ? '<img src="' . h($photo) . '" alt="">' : '') . '<b>' . h($name) . '</b></span></div></header>'
+      . '<span class="dwho">' . (logo_url($code, 'color') ? '<img class="dashbrand" src="' . h(logo_url($code, 'color')) . '" alt="">' : '') . ($photo ? '<img src="' . h($photo) . '" alt="">' : '') . '<b>' . h($name) . '</b></span></div></header>'
       . '<div class="dbody"><aside class="dside"><nav>' . $nav . '</nav><p class="dpow">Florida Luxury Realty<br>Agent Dashboard</p></aside>'
       . '<main class="dmain"><h1>' . h($title) . '</h1>' . ($sub !== '' ? '<p class="dsub">' . $sub . '</p>' : '');
 }

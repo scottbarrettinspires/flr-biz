@@ -16,7 +16,12 @@ header('X-Robots-Tag: noindex, nofollow');
 $p = paths_for($code);
 $errors = []; $saved = isset($_GET['saved']);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$brandErr = []; $brandNotes = []; $brandSaved = isset($_GET['brand']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['form'] ?? '') === 'brand') {
+    [$brandErr, $brandNotes] = brand_save($code);
+    if (!$brandErr && !$brandNotes) { header('Location: /setup/?a=' . urlencode($code) . '&k=' . urlencode($key) . '&brand=1#brand', true, 303); exit; }
+    $brandSaved = !$brandErr;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $raw = [
         'phone'      => preg_match('/^[0-9()+ .\-]{0,24}$/', trim($_POST['phone'] ?? '')) ? trim($_POST['phone'] ?? '') : null,
         'email'      => trim($_POST['email'] ?? ''),
@@ -81,4 +86,7 @@ echo '</div>';
 ?>
 <button class="btn contact" type="submit"><span class="t">Save my page</span></button>
 </form>
+<h2 id="brand">My Brand</h2>
+<p class="dsub">Upload your logo and choose your colors. Your mobile pages are built in your brand colors.</p>
+<?= brand_form_html($cur, $key, $brandErr, $brandNotes, $brandSaved) ?>
 <?= dash_close() ?>

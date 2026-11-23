@@ -6,7 +6,7 @@ const ROOT_DIR    = __DIR__ . '/..';
 const DATA_DIR    = ROOT_DIR . '/_data';
 const UPLOAD_DIR  = ROOT_DIR . '/uploads';
 const APP_URL_BASE = 'https://bk.homestack.com/floridaluxuryrealtyhomesearch/?aik=';   // current Lofty app download page; agents can replace it in setup
-const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x', 'bio', 'join_url', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url', 'vid_listings', 'vid_openhouses'];
+const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x', 'bio', 'join_url', 'brand_primary', 'brand_2', 'brand_3', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url', 'vid_listings', 'vid_openhouses'];
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -165,7 +165,7 @@ function render_page(array $a, string $view): string {
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($title) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($tag) . '">'
       . '<meta property="og:title" content="' . h($title) . '"><meta property="og:description" content="' . h($tag) . '">' . $og
-      . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $p[$view] . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body><main class="card">'
+      . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $p[$view] . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '">' . brand_style($a) . '</head><body><main class="card">'
       . '<header class="hero' . ($photo ? '' : ' nophoto') . '"' . ($photo ? ' style="--hero:url(\'' . h($photo) . '\')"' : '') . '>'
       . '<div class="hero-in">' . $back . '<div class="avatar" data-initials="' . h(initials_text($a['name'])) . '">' . $img . '</div>'
       . '<h1>' . h($title) . '</h1><p class="tag">' . h($tag) . '</p>' . '</div></header>'
@@ -239,6 +239,7 @@ require_once __DIR__ . '/share.php';
 require_once __DIR__ . '/mls.php';
 require_once __DIR__ . '/about.php';
 require_once __DIR__ . '/lspitch.php';
+require_once __DIR__ . '/brand.php';
 
 function config(): array {
     static $c;
@@ -376,7 +377,7 @@ function render_landing(array $a, string $slug, bool $done): string {
     $h2 = isset($d['h2']) ? '<h2>' . h($d['h2']) . '</h2>' : '';
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($title) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($d['sub']) . '">'
-      . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body>'
+      . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $code . '/' . $slug . '/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '">' . brand_style($a) . '</head><body>'
       . '<main class="card wide">' . ($d['type'] === 'video' ? '<a class="back vback" href="/' . paths_for($code)['main'] . '/">&larr; My page</a>' : agent_card($a, in_array($d['type'], ['app', 'consult', 'value'], true))) . ($d['type'] === 'app' ? '<h1 class="pt ahd">The Home Search App for Every Home and Detail.</h1>' : '<h1 class="pt' . ($slug === 'private-showing' ? ' gold' : '') . '">' . h($title) . '</h1>') . '<p class="tag">' . h($d['sub']) . '</p>' . $h2 . $body . $inner
       . '<nav class="links sharenav">' . share_button($code . '/' . $slug) . '</nav>'
       . page_footer($a) . '</main></body></html>';

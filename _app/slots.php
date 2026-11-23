@@ -161,7 +161,7 @@ function render_slot(array $a, string $id, array $s): string {
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($ogt) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta property="og:title" content="' . h($ogt) . '">'
       . ($photo ? '<meta property="og:image" content="https://' . SITE_DOMAIN . h($photo) . '">' : '')
-      . '<link rel="canonical" href="https://' . SITE_DOMAIN . $base . '"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body><main class="card">'
+      . '<link rel="canonical" href="https://' . SITE_DOMAIN . $base . '"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '">' . brand_style($a) . '</head><body><main class="card">'
       . '<header class="hero slothero' . ($heroPhoto ? '' : ' nophoto') . '"' . $hero . '><div class="hero-in"><h1>' . h($title) . '</h1>'
       . ($addr !== '' ? '<p class="tag">' . h($addr) . '</p>' : '') . ($price !== '' ? '<p class="headline">' . h($price) . '</p>' : '') . '</div></header>'
       . ($welcome !== '' ? '<p class="welcome">' . h($welcome) . '</p>' : '')
@@ -197,7 +197,7 @@ function render_slot_details(array $a, string $id, array $s): ?string {
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($d['address']) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="robots" content="noindex">'
       . ($photos ? '<meta property="og:image" content="https://' . SITE_DOMAIN . h(strtok($photos[0], '?')) . '">' : '')
-      . '<link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body><main class="card wide">'
+      . '<link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '">' . brand_style($a) . '</head><body><main class="card wide">'
       . '<a class="back vback" href="' . h($base) . '">&larr; Back</a>'
       . '<header class="hero slothero' . ($photos ? '' : ' nophoto') . '"' . $hero . '><div class="hero-in"><p class="statusbadge">' . h($statusLab) . '</p><h1>' . h($d['street']) . '</h1>'
       . '<p class="tag">' . h(trim($d['city'] . ', ' . $d['state'] . ' ' . $d['zip'], ' ,')) . '</p>' . ($d['price'] > 0 ? '<p class="headline">' . h(mls_money($d['price'])) . '</p>' : '') . '</div></header>'

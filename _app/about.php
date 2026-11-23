@@ -29,7 +29,7 @@ function render_about(array $a): string {
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>About ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($tag) . '">'
       . '<meta property="og:title" content="About ' . h($name) . '">' . ($photo ? '<meta property="og:image" content="https://' . SITE_DOMAIN . h($photo) . '">' : '')
-      . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $p['main'] . '/about/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '"></head><body>'
+      . '<link rel="canonical" href="https://' . SITE_DOMAIN . '/' . $p['main'] . '/about/"><link rel="stylesheet" href="/assets/style.css?v=' . filemtime(dirname(__DIR__) . '/assets/style.css') . '">' . brand_style($a) . '</head><body>'
       . '<main class="card wide aboutpage"><a class="back vback" href="/' . h($p['main']) . '/">&larr; My page</a>'
       . ($photo ? '<img class="aboutphoto" src="' . h($photo) . '" alt="' . h($name) . '">' : '')
       . '<h1 class="pt">About ' . h($first) . '</h1><p class="tag">' . h($name) . ' &middot; ' . h($tag) . '</p>'
@@ -41,6 +41,7 @@ function render_about(array $a): string {
 /** Page footer: brokerage line plus the "Are you a real estate agent? Learn more here" link to the agent's LeadStream page. */
 function page_footer(array $a): string {
     $p = paths_for($a['code']);
-    return '<footer>' . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span>'
+    $lg = logo_url($a['code'], 'white');
+    return '<footer>' . ($lg ? '<img class="agentlogo" src="' . h($lg) . '" alt="' . h($a['name'] ?? '') . '">' : '') . BROKERAGE . ', Inc.<br><span>Equal Housing Opportunity</span>'
         . '<p class="joinlink">Are you a real estate agent? <a href="/' . h($p['main']) . '/leadstream/">Learn more here</a></p></footer>';
 }

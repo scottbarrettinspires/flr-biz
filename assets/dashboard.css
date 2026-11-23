@@ -122,3 +122,18 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 .sc-qrs{display:flex;gap:8px;justify-content:flex-end}
 .sc-qrs .sc-qr{width:96px;height:96px}
 @media(max-width:600px){.sc-qrs{justify-content:flex-start}}
+
+.brandform .logos{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:6px}
+.logobox label:first-child{display:block;margin:0 0 6px}.logobox input[type=file]{width:100%;font-size:.85rem}.logobox small{display:block;margin-top:6px}
+.logoprev{height:96px;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px dashed rgba(128,128,128,.5);margin-bottom:8px;overflow:hidden}
+.logoprev.light{background:#fff;color:#777}.logoprev.dark{background:#0f1b2d;color:#aab}.logoprev img{max-width:90%;max-height:80px}
+.logobox .rm{display:flex;gap:6px;align-items:center;margin-top:6px;font-size:.85rem}.logobox .rm input{width:auto}
+.brandform .bh{margin:18px 0 2px}.brandform .bhs{display:block;margin-bottom:10px}
+.brandform .colors{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.colorrow label{display:block;margin:0 0 6px}.colorrow .cr{display:flex;gap:8px;align-items:center}
+.colorrow .sw{flex:none;width:40px;height:40px;border-radius:6px;border:1px solid rgba(128,128,128,.6)}
+.colorrow input[type=color]{flex:none;width:44px;height:40px;padding:0;border:0;background:none;cursor:pointer}
+.colorrow input[type=text]{min-width:0;width:100%}
+.dashbrand{height:30px;width:auto;max-width:120px;vertical-align:middle;margin-right:8px}
+@media(max-width:640px){.brandform .logos,.brandform .colors{grid-template-columns:1fr}}
+.dwho img.dashbrand{width:auto;height:28px;max-width:110px;border-radius:0;object-fit:contain}
