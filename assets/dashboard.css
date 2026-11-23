@@ -94,7 +94,7 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 .sb{padding:7px 13px}
 @media (max-width:600px){.sharecard{grid-template-columns:1fr}.sc-qrbox{grid-column:1;grid-row:auto;flex-direction:row;align-items:center;gap:12px;max-width:none;margin-top:8px;order:2}.sc-btns,.sharecard .vidform{grid-column:1;grid-row:auto}.sc-info{grid-row:auto}}
 /* fixed-width QR column so every QR code lines up regardless of URL length */
-.sc-qrbox{width:210px;max-width:210px;flex:none}
+.sc-qrbox{width:224px;max-width:224px;flex:none}
 .sc-url{font-size:.8rem;line-height:1.25;overflow-wrap:anywhere;word-break:normal}
 @media (max-width:600px){.sc-qrbox{width:auto;max-width:none}.sc-qrbox .sc-url{text-align:left}}
 .vidbar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;max-width:900px;margin:10px 0}
@@ -119,3 +119,6 @@ body.dash{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,s
 .dash .form.wideform{max-width:none}
 .dash .form textarea#bio{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font:inherit;line-height:1.5;resize:vertical}
 .dash .form textarea#bio:focus{outline:2px solid var(--orange);border-color:var(--orange)}
+.sc-qrs{display:flex;gap:8px;justify-content:flex-end}
+.sc-qrs .sc-qr{width:96px;height:96px}
+@media(max-width:600px){.sc-qrs{justify-content:flex-start}}

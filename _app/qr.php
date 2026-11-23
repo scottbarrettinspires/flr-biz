@@ -1,12 +1,15 @@
 <?php
-// Minimal QR Code generator (byte mode, error correction level M, versions 1-10: URLs up to 213 characters).
+// Minimal QR Code generator (byte mode, error correction level M or H, versions 1-10: URLs up to 213 characters at M, 119 at H).
 // No dependencies. qr_matrix() returns a 2D array of bools; qr_svg() and qr_png() render it with a 4-module quiet zone.
 
-function qr_matrix(string $text, ?int $forceMask = null): ?array {
+function qr_matrix(string $text, ?int $forceMask = null, string $ecc = 'M'): ?array {
     // per version at level M: [data codewords per block group list [[count, dataCw]...], ecCw per block]
-    static $V = [1 => [[[1, 16]], 10], 2 => [[[1, 28]], 16], 3 => [[[1, 44]], 26], 4 => [[[2, 32]], 18], 5 => [[[2, 43]], 24],
+    static $VM = [1 => [[[1, 16]], 10], 2 => [[[1, 28]], 16], 3 => [[[1, 44]], 26], 4 => [[[2, 32]], 18], 5 => [[[2, 43]], 24],
                  6 => [[[4, 27]], 16], 7 => [[[4, 31]], 18], 8 => [[[2, 38], [2, 39]], 22], 9 => [[[3, 36], [2, 37]], 22], 10 => [[[4, 43], [1, 44]], 26]];
+    static $VH = [1 => [[[1, 9]], 17], 2 => [[[1, 16]], 28], 3 => [[[2, 13]], 22], 4 => [[[4, 9]], 16], 5 => [[[2, 11], [2, 12]], 22],
+                  6 => [[[4, 15]], 28], 7 => [[[4, 13], [1, 14]], 26], 8 => [[[4, 14], [2, 15]], 26], 9 => [[[4, 12], [4, 13]], 24], 10 => [[[6, 15], [2, 16]], 28]];
     static $ALIGN = [1 => [], 2 => [6, 18], 3 => [6, 22], 4 => [6, 26], 5 => [6, 30], 6 => [6, 34], 7 => [6, 22, 38], 8 => [6, 24, 42], 9 => [6, 26, 46], 10 => [6, 28, 50]];
+    $V = $ecc === 'H' ? $VH : $VM;
     $bytes = array_values(unpack('C*', $text) ?: []);
     $n = count($bytes);
     $ver = 0;
@@ -108,8 +111,8 @@ function qr_matrix(string $text, ?int $forceMask = null): ?array {
         if ($forceMask !== null && $mk !== $forceMask) continue;
         $t = $data;
         for ($r = 0; $r < $N; $r++) for ($c = 0; $c < $N; $c++) if (!$fn[$r][$c] && $masks[$mk]($r, $c)) $t[$r][$c] ^= 1;
-        // format info (level M = 00)
-        $fd = (0 << 3) | $mk; $rem = $fd; for ($i = 0; $i < 10; $i++) $rem = ($rem << 1) ^ (($rem >> 9) * 0x537);
+        // format info (level M = 00, H = 10)
+        $fd = (($ecc === 'H' ? 2 : 0) << 3) | $mk; $rem = $fd; for ($i = 0; $i < 10; $i++) $rem = ($rem << 1) ^ (($rem >> 9) * 0x537);
         $fmt = ((($fd << 10) | $rem) ^ 0x5412);
         for ($i = 0; $i < 15; $i++) {
             $bit = ($fmt >> $i) & 1;
@@ -160,5 +163,55 @@ function qr_png(string $text, int $targetPx = 1200, int $quiet = 4): ?string {
     $w = imagecolorallocate($im, 255, 255, 255); $b = imagecolorallocate($im, 0, 0, 0);
     imagefill($im, 0, 0, $w);
     foreach ($m as $r => $row) foreach ($row as $c => $v) if ($v) imagefilledrectangle($im, ($c + $quiet) * $scale, ($r + $quiet) * $scale, ($c + $quiet + 1) * $scale - 1, ($r + $quiet + 1) * $scale - 1, $b);
+    ob_start(); imagepng($im); return ob_get_clean();
+}
+
+
+/** Square, centered-on-top crop of the agent's photo (or the LeadStream icon when there is none) as a JPEG/PNG data URI for the middle of a branded QR code. */
+function qr_logo_file(string $code): string {
+    foreach ([UPLOAD_DIR . "/$code.jpg", dirname(__DIR__) . "/assets/agents/$code.jpg"] as $f) if (is_file($f)) return $f;
+    return dirname(__DIR__) . '/assets/leadstream-favicon.png';
+}
+function qr_logo_image(string $code, int $px) {
+    $raw = @file_get_contents(qr_logo_file($code)); $src = $raw ? @imagecreatefromstring($raw) : false;
+    if (!$src) return null;
+    $w = imagesx($src); $h = imagesy($src); $side = min($w, $h);
+    $sx = intdiv($w - $side, 2); $sy = $h > $w ? intdiv(($h - $side), 5) : 0;     // headshots: keep the top of a tall photo
+    $dst = imagecreatetruecolor($px, $px); imagefill($dst, 0, 0, imagecolorallocate($dst, 255, 255, 255));
+    imagecopyresampled($dst, $src, 0, 0, $sx, $sy, $px, $px, $side, $side);
+    return $dst;
+}
+
+/** Branded QR (error correction H) with the agent's photo in a white circle in the middle. */
+function qr_svg_branded(string $text, string $code, int $quiet = 4): ?string {
+    $m = qr_matrix($text, null, 'H'); if (!$m) return null;
+    $n = count($m); $s = $n + 2 * $quiet; $d = '';
+    foreach ($m as $r => $row) { $c = 0; while ($c < $n) {
+        if (!$row[$c]) { $c++; continue; }
+        $st = $c; while ($c < $n && $row[$c]) $c++;
+        $d .= 'M' . ($st + $quiet) . ' ' . ($r + $quiet) . 'h' . ($c - $st) . 'v1h-' . ($c - $st) . 'z';
+    } }
+    $img = qr_logo_image($code, 240); if (!$img) return null;
+    ob_start(); imagejpeg($img, null, 88); $uri = 'data:image/jpeg;base64,' . base64_encode(ob_get_clean());
+    $cx = $s / 2; $ro = round($n * 0.145, 2); $ri = round($n * 0.12, 2);
+    return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ' . $s . ' ' . $s . '"><rect width="' . $s . '" height="' . $s . '" fill="#fff"/>'
+        . '<path d="' . $d . '" fill="#000" shape-rendering="crispEdges"/><circle cx="' . $cx . '" cy="' . $cx . '" r="' . $ro . '" fill="#fff"/>'
+        . '<clipPath id="lc"><circle cx="' . $cx . '" cy="' . $cx . '" r="' . $ri . '"/></clipPath>'
+        . '<image href="' . $uri . '" xlink:href="' . $uri . '" x="' . ($cx - $ri) . '" y="' . ($cx - $ri) . '" width="' . (2 * $ri) . '" height="' . (2 * $ri) . '" clip-path="url(#lc)" preserveAspectRatio="xMidYMid slice"/></svg>';
+}
+function qr_png_branded(string $text, string $code, int $targetPx = 1200, int $quiet = 4): ?string {
+    $m = qr_matrix($text, null, 'H'); if (!$m) return null;
+    $n = count($m); $s = $n + 2 * $quiet; $scale = max(4, intdiv($targetPx, $s)); $W = $s * $scale;
+    $im = imagecreatetruecolor($W, $W);
+    $w = imagecolorallocate($im, 255, 255, 255); $b = imagecolorallocate($im, 0, 0, 0);
+    imagefill($im, 0, 0, $w);
+    foreach ($m as $r => $row) foreach ($row as $c => $v) if ($v) imagefilledrectangle($im, ($c + $quiet) * $scale, ($r + $quiet) * $scale, ($c + $quiet + 1) * $scale - 1, ($r + $quiet + 1) * $scale - 1, $b);
+    $cx = intdiv($W, 2); $ro = (int)round($n * 0.145 * $scale); $ri = (int)round($n * 0.12 * $scale);
+    imagefilledellipse($im, $cx, $cx, $ro * 2, $ro * 2, $w);
+    $logo = qr_logo_image($code, $ri * 2); if (!$logo) return null;
+    for ($y = 0; $y < $ri * 2; $y++) for ($x = 0; $x < $ri * 2; $x++) {                // circular crop
+        $dx = $x - $ri + .5; $dy = $y - $ri + .5;
+        if ($dx * $dx + $dy * $dy <= $ri * $ri) imagesetpixel($im, $cx - $ri + $x, $cx - $ri + $y, imagecolorat($logo, $x, $y));
+    }
     ob_start(); imagepng($im); return ob_get_clean();
 }

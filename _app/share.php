@@ -57,7 +57,8 @@ function share_card(string $label, string $url, string $code, string $key, strin
     $png = '/setup/qr/' . $qs . '&fmt=png&dl=1&n=' . urlencode($file); $svg = '/setup/qr/' . $qs . '&fmt=svg&dl=1&n=' . urlencode($file);
     $body = rawurlencode($label . ': ' . $url);
     return '<section class="sharecard"' . ($id ? ' id="' . h($id) . '"' : '') . '><div class="sc-top"><div class="sc-info"><strong>' . h($label) . '</strong></div>'
-      . '<div class="sc-qrbox"><img class="sc-qr" src="/setup/qr/' . h($qs) . '&fmt=svg" alt="QR code for ' . h($label) . '" width="110" height="110" loading="lazy">'
+      . '<div class="sc-qrbox"><div class="sc-qrs"><img class="sc-qr" src="/setup/qr/' . h($qs) . '&fmt=svg" alt="QR code for ' . h($label) . '" width="96" height="96" loading="lazy">'
+      . '<img class="sc-qr" src="/setup/qr/' . h($qs) . '&fmt=svg&brand=1" alt="QR code with your photo for ' . h($label) . '" width="96" height="96" loading="lazy"></div>'
       . '<a class="sc-url" href="' . h($url) . '" target="_blank" rel="noopener">' . h(preg_replace('~^https://|/$~', '', $url)) . '</a></div></div>'
       . '<div class="sc-btns">' . ($edit !== '' ? '<a class="sb pri" href="' . h($edit) . '">Edit property</a>' : '')
       . '<button type="button" class="sb" data-copy="' . h($url) . '">Copy link</button>'
@@ -65,7 +66,8 @@ function share_card(string $label, string $url, string $code, string $key, strin
       . '<a class="sb" href="mailto:?subject=' . rawurlencode($label) . '&body=' . $body . '">Email it</a>'
       . '<a class="sb" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' . rawurlencode($url) . '">Facebook</a>'
       . '<button type="button" class="sb sbshare" data-share-url="' . h($url) . '" data-share-title="' . h($label) . '" hidden>Share&hellip;</button>'
-      . '<a class="sb gold" href="' . h($png) . '">QR PNG</a><a class="sb gold" href="' . h($svg) . '">QR SVG (print)</a></div>' . $extra . '</section>';
+      . '<a class="sb gold" href="' . h($png) . '">QR PNG</a><a class="sb gold" href="' . h($svg) . '">QR SVG (print)</a>'
+      . '<a class="sb gold" href="' . h($png . '&brand=1') . '">Photo QR PNG</a><a class="sb gold" href="' . h($svg . '&brand=1') . '">Photo QR SVG (print)</a></div>' . $extra . '</section>';
 }
 
 function share_script(): string {

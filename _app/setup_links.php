@@ -18,5 +18,5 @@ $cur = agent($code);
 <?php if ($msg === 'errapp'): ?><div class="note err">That app download link does not look right.</div><?php endif; ?>
 <?php if ($msg === 'err'): ?><div class="note err">Paste the full YouTube video link (youtube.com/watch?v=... or youtu.be/...).</div><?php endif; ?>
 <h2>My pages</h2>
-<?php foreach (agent_pages($agent) as [$lab, $url, $vk]) echo share_card($lab, $url, $code, $key, '', '', ($vk !== '' && isset($vkeys[$vk])) ? ($vk === 'app_url' ? applink_form($code, $key, (string)($cur['app_url'] ?? '')) : video_form($code, $key, $vk, $cur[$vk] ?? '', $vkeys[$vk])) : ''); ?>
+<?php foreach (agent_pages($agent) as $pg) { [$lab, $url] = $pg; $vk = $pg[2] ?? ''; echo share_card($lab, $url, $code, $key, '', '', ($vk !== '' && isset($vkeys[$vk])) ? ($vk === 'app_url' ? applink_form($code, $key, (string)($cur['app_url'] ?? '')) : video_form($code, $key, $vk, $cur[$vk] ?? '', $vkeys[$vk])) : ''); } ?>
 <?= dash_close() ?>
