@@ -183,7 +183,9 @@ function qr_logo_image(string $code, int $px) {
 }
 
 /** Branded QR (error correction H) with the agent's photo in a white circle in the middle. */
-function qr_svg_branded(string $text, string $code, int $quiet = 4): ?string {
+const QR_HOUSE = [12,3, 22,11.5, 19,11.5, 19,21, 13.5,21, 13.5,15, 10.5,15, 10.5,21, 5,21, 5,11.5, 2,11.5];   // house icon (24x24 grid) for listing and open house codes
+
+function qr_svg_branded(string $text, string $code, int $quiet = 4, string $style = 'photo'): ?string {
     $m = qr_matrix($text, null, 'H'); if (!$m) return null;
     $n = count($m); $s = $n + 2 * $quiet; $d = '';
     foreach ($m as $r => $row) { $c = 0; while ($c < $n) {
@@ -191,15 +193,21 @@ function qr_svg_branded(string $text, string $code, int $quiet = 4): ?string {
         $st = $c; while ($c < $n && $row[$c]) $c++;
         $d .= 'M' . ($st + $quiet) . ' ' . ($r + $quiet) . 'h' . ($c - $st) . 'v1h-' . ($c - $st) . 'z';
     } }
+    $cx = $s / 2; $ro = round($n * 0.145, 2); $ri = round($n * 0.12, 2);
+    if ($style === 'house') {
+        $k = round(2 * $ri * 0.92 / 24, 4); $ox = round($cx - 12 * $k, 3); $oy = round($cx - 12.2 * $k, 3);
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' . $s . ' ' . $s . '"><rect width="' . $s . '" height="' . $s . '" fill="#fff"/>'
+            . '<path d="' . $d . '" fill="#000" shape-rendering="crispEdges"/><circle cx="' . $cx . '" cy="' . $cx . '" r="' . $ro . '" fill="#fff"/>'
+            . '<polygon transform="translate(' . $ox . ' ' . $oy . ') scale(' . $k . ')" fill="#0e3a4d" points="' . implode(' ', array_map(null, array_map(fn($i) => QR_HOUSE[$i] . ',' . QR_HOUSE[$i + 1], range(0, count(QR_HOUSE) - 2, 2)))) . '"/></svg>';
+    }
     $img = qr_logo_image($code, 240); if (!$img) return null;
     ob_start(); imagejpeg($img, null, 88); $uri = 'data:image/jpeg;base64,' . base64_encode(ob_get_clean());
-    $cx = $s / 2; $ro = round($n * 0.145, 2); $ri = round($n * 0.12, 2);
     return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ' . $s . ' ' . $s . '"><rect width="' . $s . '" height="' . $s . '" fill="#fff"/>'
         . '<path d="' . $d . '" fill="#000" shape-rendering="crispEdges"/><circle cx="' . $cx . '" cy="' . $cx . '" r="' . $ro . '" fill="#fff"/>'
         . '<clipPath id="lc"><circle cx="' . $cx . '" cy="' . $cx . '" r="' . $ri . '"/></clipPath>'
         . '<image href="' . $uri . '" xlink:href="' . $uri . '" x="' . ($cx - $ri) . '" y="' . ($cx - $ri) . '" width="' . (2 * $ri) . '" height="' . (2 * $ri) . '" clip-path="url(#lc)" preserveAspectRatio="xMidYMid slice"/></svg>';
 }
-function qr_png_branded(string $text, string $code, int $targetPx = 1200, int $quiet = 4): ?string {
+function qr_png_branded(string $text, string $code, int $targetPx = 1200, int $quiet = 4, string $style = 'photo'): ?string {
     $m = qr_matrix($text, null, 'H'); if (!$m) return null;
     $n = count($m); $s = $n + 2 * $quiet; $scale = max(4, intdiv($targetPx, $s)); $W = $s * $scale;
     $im = imagecreatetruecolor($W, $W);
@@ -208,6 +216,12 @@ function qr_png_branded(string $text, string $code, int $targetPx = 1200, int $q
     foreach ($m as $r => $row) foreach ($row as $c => $v) if ($v) imagefilledrectangle($im, ($c + $quiet) * $scale, ($r + $quiet) * $scale, ($c + $quiet + 1) * $scale - 1, ($r + $quiet + 1) * $scale - 1, $b);
     $cx = intdiv($W, 2); $ro = (int)round($n * 0.145 * $scale); $ri = (int)round($n * 0.12 * $scale);
     imagefilledellipse($im, $cx, $cx, $ro * 2, $ro * 2, $w);
+    if ($style === 'house') {
+        $k = 2 * $ri * 0.92 / 24; $ox = $cx - 12 * $k; $oy = $cx - 12.2 * $k; $pts = [];
+        foreach (QR_HOUSE as $i => $v) $pts[] = (int)round(($i % 2 ? $oy : $ox) + $v * $k);
+        imagefilledpolygon($im, $pts, imagecolorallocate($im, 14, 58, 77));
+        ob_start(); imagepng($im); return ob_get_clean();
+    }
     $logo = qr_logo_image($code, $ri * 2); if (!$logo) return null;
     for ($y = 0; $y < $ri * 2; $y++) for ($x = 0; $x < $ri * 2; $x++) {                // circular crop
         $dx = $x - $ri + .5; $dy = $y - $ri + .5;
