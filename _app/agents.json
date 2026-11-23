@@ -1,146 +1,422 @@
 {
-  "site": {
-    "domain": "flr.biz",
-    "brokerage": "Florida Luxury Realty"
+ "site": {
+  "domain": "flr.biz",
+  "brokerage": "Florida Luxury Realty"
+ },
+ "agents": [
+  {
+   "name": "ASHLEY BARRETT",
+   "title": "Realtor®",
+   "tagline": "Your 5 Star ⭐️⭐️⭐️⭐️⭐️ Agent with Florida Luxury Realty",
+   "headline": "Your Needs are My Passion",
+   "phone": "(727) 457-9933",
+   "email": "ashley@ashleybarrettco.com",
+   "website": "",
+   "instagram": "https://instagram.com/ashley.barrett.realtor",
+   "facebook": "https://www.facebook.com/Real-Estate-Professional-103471207696468",
+   "tiktok": "",
+   "photo": "photo.jpg",
+   "youtube_id": "",
+   "join_url": "https://joinflr.com/agents/ashleybarrett/",
+   "vid_listings": "x-RqHcfCfX8",
+   "vid_openhouses": "x-RqHcfCfX8",
+   "lofty_base": "https://ashleybarrett.floridaluxuryrealty.com",
+   "main": {
+    "links": [
+     {
+      "title": "I'm Interested In Buying A Home",
+      "sub": "Learn Everything You Need To Know Right Here",
+      "view": "buyer"
+     },
+     {
+      "title": "I'm Interested In Selling My Home",
+      "view": "seller"
+     },
+     {
+      "title": "Book A Complimentary Consultation",
+      "sub": "Free, no obligation. A quick call to help you understand your needs and your next step.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Find The Perfect Home Now",
+      "sub": "Search for your home in the area you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Get Your Home's Value Instantly",
+      "page": "value"
+     }
+    ]
+   },
+   "buyer": {
+    "name": "BUYING A 🏠 HOME 🏠 SOON?",
+    "headline": "Learn Everything You Need To Know Right Here",
+    "sub": "Ashley Barrett Helps Home Buyers",
+    "links": [
+     {
+      "title": "Get Your Buying Questions Answered",
+      "sub": "Learn Everything You Need To Know Right Here",
+      "view": "faq"
+     },
+     {
+      "title": "Search Homes With My Free App",
+      "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Book Your Free Buyer Consultation",
+      "sub": "A free, no-obligation 15-minute consultation where I learn your situation and goals, offer resources and help you secure a strong financial outcome. I enjoy helping home buyers.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Need to Sell Before You Buy?",
+      "view": "seller"
+     }
+    ]
+   },
+   "seller": {
+    "name": "Let's get you to SOLD",
+    "headline": "Welcome!",
+    "sub": "Learn all you need to know with the resources below",
+    "links": [
+     {
+      "title": "Get My Free Guide To Maximize Value",
+      "page": "seller-guide"
+     },
+     {
+      "title": "Get Your Free Home Value Report",
+      "page": "value"
+     },
+     {
+      "title": "Book Your Free Seller Consultation",
+      "page": "seller-consult"
+     },
+     {
+      "title": "What Are Homes Selling For Near You?",
+      "sub": "One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Thinking About Buying Too?",
+      "view": "buyer"
+     }
+    ]
+   },
+   "code": "ab1",
+   "setup_hash": "b005f22e92ca663b080d60bdba38a9de38ba03e03eb369db8e31dba13bf47901",
+   "license": "",
+   "office": "",
+   "app_code": "abarrett",
+   "faq": {
+    "name": "ANSWERS TO YOUR QUESTIONS",
+    "headline": "Learn Everything You Need To Know Right Here",
+    "sub": "Learn Everything You Need To Know Right Here",
+    "section": "The Right Help For Homebuyers",
+    "links": [
+     {
+      "title": "The Right Steps To Buying a Home",
+      "page": "buyer-steps"
+     },
+     {
+      "title": "Why a Buyer Broker Agreement?",
+      "page": "buyer-broker-agreement"
+     },
+     {
+      "title": "Can I Avoid Paying a Buyer Agent?",
+      "page": "avoid-buyer-agent-fee"
+     },
+     {
+      "title": "Book Your Free Buyer Consultation",
+      "sub": "A free consultation to understand your situation and needs, with zero obligation.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Search Homes With My Free App",
+      "sub": "Browse homes for sale in the areas where you want to live.",
+      "page": "app",
+      "pending": true
+     }
+    ]
+   }
   },
-  "agents": [
-    {
-      "name": "ASHLEY BARRETT",
-      "title": "Realtor®",
-      "tagline": "Your 5 Star ⭐️⭐️⭐️⭐️⭐️ Agent with Florida Luxury Realty",
-      "headline": "Your Needs are My Passion",
-      "phone": "(727) 457-9933",
-      "email": "ashley@ashleybarrettco.com",
-      "website": "",
-      "instagram": "https://instagram.com/ashley.barrett.realtor",
-      "facebook": "https://www.facebook.com/Real-Estate-Professional-103471207696468",
-      "tiktok": "",
-      "photo": "photo.jpg",
-      "youtube_id": "",
-      "join_url": "https://joinflr.com/agents/ashleybarrett/",
-      "vid_listings": "x-RqHcfCfX8",
-      "vid_openhouses": "x-RqHcfCfX8",
-      "lofty_base": "https://ashleybarrett.floridaluxuryrealty.com",
-      "main": {
-        "links": [
-          {
-            "title": "I'm Interested In Buying A Home",
-            "sub": "Learn Everything You Need To Know Right Here",
-            "view": "buyer"
-          },
-          {
-            "title": "I'm Interested In Selling My Home",
-            "view": "seller"
-          },
-          {
-            "title": "Book A Complimentary Consultation",
-            "sub": "Free, no obligation. A quick call to help you understand your needs and your next step.",
-            "page": "buyer-consult"
-          },
-          {
-            "title": "Find The Perfect Home Now",
-            "sub": "Search for your home in the area you want to live.",
-            "page": "app",
-            "pending": true
-          },
-          {
-            "title": "Get Your Home's Value Instantly",
-            "page": "value"
-          }
-        ]
-      },
-      "buyer": {
-        "name": "BUYING A 🏠 HOME 🏠 SOON?",
-        "headline": "Learn Everything You Need To Know Right Here",
-        "sub": "Ashley Barrett Helps Home Buyers",
-        "links": [
-          {
-            "title": "Get Your Buying Questions Answered",
-            "sub": "Learn Everything You Need To Know Right Here",
-            "view": "faq"
-          },
-          {
-            "title": "Search Homes With My Free App",
-            "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
-            "page": "app",
-            "pending": true
-          },
-          {
-            "title": "Book Your Free Buyer Consultation",
-            "sub": "A free, no-obligation 15-minute consultation where I learn your situation and goals, offer resources and help you secure a strong financial outcome. I enjoy helping home buyers.",
-            "page": "buyer-consult"
-          },
-          {
-            "title": "Need to Sell Before You Buy?",
-            "view": "seller"
-          }
-        ]
-      },
-      "seller": {
-        "name": "Let's get you to SOLD",
-        "headline": "Welcome!",
-        "sub": "Learn all you need to know with the resources below",
-        "links": [
-          {
-            "title": "Get My Free Guide To Maximize Value",
-            "page": "seller-guide"
-          },
-          {
-            "title": "Get Your Free Home Value Report",
-            "page": "value"
-          },
-          {
-            "title": "Book Your Free Seller Consultation",
-            "page": "seller-consult"
-          },
-          {
-            "title": "What Are Homes Selling For Near You?",
-            "sub": "One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
-            "page": "app",
-            "pending": true
-          },
-          {
-            "title": "Thinking About Buying Too?",
-            "view": "buyer"
-          }
-        ]
-      },
-      "code": "ab1",
-      "setup_hash": "b005f22e92ca663b080d60bdba38a9de38ba03e03eb369db8e31dba13bf47901",
-      "license": "",
-      "office": "",
-      "app_code": "abarrett",
-      "faq": {
-        "name": "ANSWERS TO YOUR QUESTIONS",
-        "headline": "Learn Everything You Need To Know Right Here",
-        "sub": "Learn Everything You Need To Know Right Here",
-        "section": "The Right Help For Homebuyers",
-        "links": [
-          {
-            "title": "The Right Steps To Buying a Home",
-            "page": "buyer-steps"
-          },
-          {
-            "title": "Why a Buyer Broker Agreement?",
-            "page": "buyer-broker-agreement"
-          },
-          {
-            "title": "Can I Avoid Paying a Buyer Agent?",
-            "page": "avoid-buyer-agent-fee"
-          },
-          {
-            "title": "Book Your Free Buyer Consultation",
-            "sub": "A free consultation to understand your situation and needs, with zero obligation.",
-            "page": "buyer-consult"
-          },
-          {
-            "title": "Search Homes With My Free App",
-            "sub": "Browse homes for sale in the areas where you want to live.",
-            "page": "app",
-            "pending": true
-          }
-        ]
-      }
-    }
-  ]
+  {
+   "name": "JAMIE LAVALLEY",
+   "title": "Realtor®",
+   "tagline": "Your Agent with Florida Luxury Realty",
+   "headline": "Your Needs are My Passion",
+   "phone": "",
+   "email": "",
+   "website": "",
+   "instagram": "",
+   "facebook": "",
+   "tiktok": "",
+   "photo": "",
+   "youtube_id": "",
+   "join_url": "",
+   "vid_listings": "",
+   "vid_openhouses": "",
+   "lofty_base": "",
+   "main": {
+    "links": [
+     {
+      "title": "I'm Interested In Buying A Home",
+      "sub": "Learn Everything You Need To Know Right Here",
+      "view": "buyer"
+     },
+     {
+      "title": "I'm Interested In Selling My Home",
+      "view": "seller"
+     },
+     {
+      "title": "Book A Complimentary Consultation",
+      "sub": "Free, no obligation. A quick call to help you understand your needs and your next step.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Find The Perfect Home Now",
+      "sub": "Search for your home in the area you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Get Your Home's Value Instantly",
+      "page": "value"
+     }
+    ]
+   },
+   "buyer": {
+    "name": "BUYING A 🏠 HOME 🏠 SOON?",
+    "headline": "Learn Everything You Need To Know Right Here",
+    "sub": "Jamie Lavalley Helps Home Buyers",
+    "links": [
+     {
+      "title": "Get Your Buying Questions Answered",
+      "sub": "Learn Everything You Need To Know Right Here",
+      "view": "faq"
+     },
+     {
+      "title": "Search Homes With My Free App",
+      "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Book Your Free Buyer Consultation",
+      "sub": "A free, no-obligation 15-minute consultation where I learn your situation and goals, offer resources and help you secure a strong financial outcome. I enjoy helping home buyers.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Need to Sell Before You Buy?",
+      "view": "seller"
+     }
+    ]
+   },
+   "seller": {
+    "name": "Let's get you to SOLD",
+    "headline": "Welcome!",
+    "sub": "Learn all you need to know with the resources below",
+    "links": [
+     {
+      "title": "Get My Free Guide To Maximize Value",
+      "page": "seller-guide"
+     },
+     {
+      "title": "Get Your Free Home Value Report",
+      "page": "value"
+     },
+     {
+      "title": "Book Your Free Seller Consultation",
+      "page": "seller-consult"
+     },
+     {
+      "title": "What Are Homes Selling For Near You?",
+      "sub": "One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Thinking About Buying Too?",
+      "view": "buyer"
+     }
+    ]
+   },
+   "code": "jl1",
+   "setup_hash": "128962b6ffbc09da5e87d5efd5af7995adf3ee15845ff00fc5a82c9797e9f934",
+   "license": "",
+   "office": "",
+   "app_code": "",
+   "faq": {
+    "name": "ANSWERS TO YOUR QUESTIONS",
+    "headline": "Learn Everything You Need To Know Right Here",
+    "sub": "Learn Everything You Need To Know Right Here",
+    "section": "The Right Help For Homebuyers",
+    "links": [
+     {
+      "title": "The Right Steps To Buying a Home",
+      "page": "buyer-steps"
+     },
+     {
+      "title": "Why a Buyer Broker Agreement?",
+      "page": "buyer-broker-agreement"
+     },
+     {
+      "title": "Can I Avoid Paying a Buyer Agent?",
+      "page": "avoid-buyer-agent-fee"
+     },
+     {
+      "title": "Book Your Free Buyer Consultation",
+      "sub": "A free consultation to understand your situation and needs, with zero obligation.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Search Homes With My Free App",
+      "sub": "Browse homes for sale in the areas where you want to live.",
+      "page": "app",
+      "pending": true
+     }
+    ]
+   }
+  },
+  {
+   "name": "STEPHANIE HILL",
+   "title": "Realtor®",
+   "tagline": "Your Agent with Florida Luxury Realty",
+   "headline": "Your Needs are My Passion",
+   "phone": "",
+   "email": "",
+   "website": "",
+   "instagram": "",
+   "facebook": "",
+   "tiktok": "",
+   "photo": "",
+   "youtube_id": "",
+   "join_url": "",
+   "vid_listings": "",
+   "vid_openhouses": "",
+   "lofty_base": "",
+   "main": {
+    "links": [
+     {
+      "title": "I'm Interested In Buying A Home",
+      "sub": "Learn Everything You Need To Know Right Here",
+      "view": "buyer"
+     },
+     {
+      "title": "I'm Interested In Selling My Home",
+      "view": "seller"
+     },
+     {
+      "title": "Book A Complimentary Consultation",
+      "sub": "Free, no obligation. A quick call to help you understand your needs and your next step.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Find The Perfect Home Now",
+      "sub": "Search for your home in the area you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Get Your Home's Value Instantly",
+      "page": "value"
+     }
+    ]
+   },
+   "buyer": {
+    "name": "BUYING A 🏠 HOME 🏠 SOON?",
+    "headline": "Learn Everything You Need To Know Right Here",
+    "sub": "Stephanie Hill Helps Home Buyers",
+    "links": [
+     {
+      "title": "Get Your Buying Questions Answered",
+      "sub": "Learn Everything You Need To Know Right Here",
+      "view": "faq"
+     },
+     {
+      "title": "Search Homes With My Free App",
+      "sub": "Searching for the PERFECT HOME. One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Book Your Free Buyer Consultation",
+      "sub": "A free, no-obligation 15-minute consultation where I learn your situation and goals, offer resources and help you secure a strong financial outcome. I enjoy helping home buyers.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Need to Sell Before You Buy?",
+      "view": "seller"
+     }
+    ]
+   },
+   "seller": {
+    "name": "Let's get you to SOLD",
+    "headline": "Welcome!",
+    "sub": "Learn all you need to know with the resources below",
+    "links": [
+     {
+      "title": "Get My Free Guide To Maximize Value",
+      "page": "seller-guide"
+     },
+     {
+      "title": "Get Your Free Home Value Report",
+      "page": "value"
+     },
+     {
+      "title": "Book Your Free Seller Consultation",
+      "page": "seller-consult"
+     },
+     {
+      "title": "What Are Homes Selling For Near You?",
+      "sub": "One of the easiest and most enjoyable ways to view ALL homes for sale where you want to live.",
+      "page": "app",
+      "pending": true
+     },
+     {
+      "title": "Thinking About Buying Too?",
+      "view": "buyer"
+     }
+    ]
+   },
+   "code": "sh1",
+   "setup_hash": "01b0979c7286e386899af2459273e78800252b337883c565a3aa078cc3cc7bb4",
+   "license": "",
+   "office": "",
+   "app_code": "",
+   "faq": {
+    "name": "ANSWERS TO YOUR QUESTIONS",
+    "headline": "Learn Everything You Need To Know Right Here",
+    "sub": "Learn Everything You Need To Know Right Here",
+    "section": "The Right Help For Homebuyers",
+    "links": [
+     {
+      "title": "The Right Steps To Buying a Home",
+      "page": "buyer-steps"
+     },
+     {
+      "title": "Why a Buyer Broker Agreement?",
+      "page": "buyer-broker-agreement"
+     },
+     {
+      "title": "Can I Avoid Paying a Buyer Agent?",
+      "page": "avoid-buyer-agent-fee"
+     },
+     {
+      "title": "Book Your Free Buyer Consultation",
+      "sub": "A free consultation to understand your situation and needs, with zero obligation.",
+      "page": "buyer-consult"
+     },
+     {
+      "title": "Search Homes With My Free App",
+      "sub": "Browse homes for sale in the areas where you want to live.",
+      "page": "app",
+      "pending": true
+     }
+    ]
+   }
+  }
+ ]
 }
