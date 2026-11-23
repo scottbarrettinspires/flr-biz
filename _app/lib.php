@@ -6,7 +6,7 @@ const ROOT_DIR    = __DIR__ . '/..';
 const DATA_DIR    = ROOT_DIR . '/_data';
 const UPLOAD_DIR  = ROOT_DIR . '/uploads';
 const APP_URL_BASE = 'https://bk.homestack.com/floridaluxuryrealtyhomesearch/?aik=';   // current Lofty app download page; agents can replace it in setup
-const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x', 'bio', 'join_url', 'brand_primary', 'brand_2', 'brand_3', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url', 'vid_listings', 'vid_openhouses'];
+const EDITABLE    = ['phone', 'email', 'website', 'instagram', 'facebook', 'tiktok', 'linkedin', 'x', 'bio', 'join_url', 'pvid', 'brand_primary', 'brand_2', 'brand_3', 'youtube_id', 'vid_steps', 'vid_broker', 'vid_avoid', 'app_url', 'vid_listings', 'vid_openhouses'];
 
 function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 
@@ -136,6 +136,11 @@ function share_button(string $path): string {
     return '<a class="btn contact" href="' . h(share_href($path)) . '"><span class="t"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' . BTN_ICONS['share'] . '</svg> ' . share_label($path) . '</span></a>' . "\n";
 }
 
+/** Optional YouTube video an agent adds to any page (keyed by view or landing slug). */
+function page_video(array $a, string $key): string {
+    $id = $a['pvid'][$key] ?? '';
+    return $id ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($id) . '" title="Video" loading="lazy" allowfullscreen></iframe></div>' : '';
+}
 function render_page(array $a, string $view): string {
     if ($view === 'social') $a['social'] = ['name' => 'CONNECT WITH ME', 'sub' => 'Follow along on social media', 'headline' => '', 'section' => '', 'links' => social_links($a)];
     $code = $a['code']; $main = $view === 'main'; $v = $a[$view]; $p = paths_for($code);
@@ -155,8 +160,8 @@ function render_page(array $a, string $view): string {
         $links .= '<a class="btn" href="' . h(link_href($a, $l)) . '"' . ($ext ? ' target="_blank" rel="noopener"' : '') . '>' . btn_icon($l) . '<span class="tx"><span class="t">'
             . h($l['title']) . '</span></span></a>' . "\n";
     }
-    $video = (!empty($a['youtube_id']) && $main)
-        ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($a['youtube_id']) . '" title="Video" loading="lazy" allowfullscreen></iframe></div>' : '';
+    $video = $main ? (!empty($a['youtube_id'])
+        ? '<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/' . h($a['youtube_id']) . '" title="Video" loading="lazy" allowfullscreen></iframe></div>' : '') : page_video($a, $view);
     $back = $main ? '' : '<a class="back" href="/' . $p['main'] . '/">&larr; ' . h(ucwords(strtolower($a['name']))) . '</a>';
     $contact = $main ? '<a class="btn contact" href="/' . $p['main'] . '/contact.vcf" download><span class="t">' . icon('contact') . ' Add me to your contacts</span></a>' : '';
     $img = $photo ? '<img src="' . h($photo) . '" alt="' . h(ucwords(strtolower($a['name']))) . '">' : '';
@@ -374,6 +379,7 @@ function render_landing(array $a, string $slug, bool $done): string {
     } else {
         $inner = lead_form_html($a, $d);
     }
+    if ($d['type'] !== 'video') $inner = page_video($a, $slug) . $inner;
     $h2 = isset($d['h2']) ? '<h2>' . h($d['h2']) . '</h2>' : '';
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
       . '<title>' . h($title) . ' | ' . h($name) . ' | ' . BROKERAGE . '</title><meta name="description" content="' . h($d['sub']) . '">'

@@ -36,17 +36,17 @@ function dash_close(): string { return '<p class="dfoot">LeadStream Systems &mid
 function agent_pages(array $agent): array {
     $code = $agent['code']; $p = paths_for($code); $abs = fn($path) => 'https://' . SITE_DOMAIN . '/' . $path . '/';
     $out = [['Mobile Business Card', $abs($p['main']), 'youtube_id']];
-    if (isset($p['buyer']))  $out[] = ['Buyer page', $abs($p['buyer'])];
-    if (isset($p['seller'])) $out[] = ['Seller page', $abs($p['seller'])];
-    if (isset($p['faq']))    $out[] = ['Buyer FAQ page', $abs($p['faq'])];
-    $out[] = ['Social media page', $abs($p['social'])];
+    if (isset($p['buyer']))  $out[] = ['Buyer page', $abs($p['buyer']), 'pv:buyer'];
+    if (isset($p['seller'])) $out[] = ['Seller page', $abs($p['seller']), 'pv:seller'];
+    if (isset($p['faq']))    $out[] = ['Buyer FAQ page', $abs($p['faq']), 'pv:faq'];
+    $out[] = ['Social media page', $abs($p['social']), 'pv:social'];
     $labels = ['app' => 'Home search app page', 'buyer-consult' => 'Book a buyer consultation', 'private-showing' => 'Schedule a private showing', 'seller-consult' => 'Book a seller consultation',
                'seller-guide' => 'Download Free seller guide', 'buyer-guide' => 'Download Free buyer guide', 'value' => 'Home value page',
                'buyer-steps' => 'Right steps to buying a home', 'buyer-broker-agreement' => 'Why a buyer broker agreement',
                'avoid-buyer-agent-fee' => 'Avoiding the buyer agent fee'];
     foreach (page_defs() as $slug => $d) {
         if (($d['type'] ?? '') === 'video' && !isset($agent['faq'])) continue;
-        $out[] = [$labels[$slug] ?? $d['title'], $abs($code . '/' . $slug), ($d['type'] ?? '') === 'video' ? ($d['vkey'] ?? '') : (($d['type'] ?? '') === 'app' ? 'app_url' : '')];
+        $out[] = [$labels[$slug] ?? $d['title'], $abs($code . '/' . $slug), ($d['type'] ?? '') === 'video' ? ($d['vkey'] ?? '') : (($d['type'] ?? '') === 'app' ? 'app_url' : 'pv:' . $slug), 'pv:' . $slug];
     }
     return $out;
 }
